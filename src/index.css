@@ -107,29 +107,117 @@
 @layer components {
   .match-card {
     @apply relative overflow-hidden rounded-xl bg-card border border-border;
-    @apply transition-all duration-300 hover:scale-105 hover:shadow-2xl;
+    @apply transition-all duration-500 ease-out;
+    @apply hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/20;
+    @apply hover:-translate-y-2 hover:border-accent/30;
+    @apply animate-fade-in;
+  }
+
+  .match-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0;
+    @apply transition-opacity duration-300;
+  }
+
+  .match-card:hover::before {
+    @apply opacity-100;
   }
 
   .watch-live-btn {
-    @apply w-full py-3 font-bold text-white transition-all duration-200;
-    @apply hover:scale-105 active:scale-95;
+    @apply w-full py-4 font-bold text-white transition-all duration-300;
+    @apply hover:scale-105 active:scale-95 hover:shadow-lg;
+    @apply relative overflow-hidden;
+  }
+
+  .watch-live-btn::before {
+    content: '';
+    @apply absolute inset-0 bg-white/20 transform translate-x-[-100%];
+    @apply transition-transform duration-500;
+  }
+
+  .watch-live-btn:hover::before {
+    @apply translate-x-[100%];
   }
 
   .sport-badge {
     @apply absolute top-3 left-3 z-10 px-3 py-1 rounded-full text-xs font-medium;
-    @apply bg-accent text-accent-foreground;
+    @apply bg-accent text-accent-foreground backdrop-blur-sm;
+    @apply transition-all duration-300 hover:scale-110;
+    @apply shadow-lg shadow-accent/20;
   }
 
   .team-vs {
-    @apply flex items-center justify-between p-4 bg-card/80 backdrop-blur-sm;
+    @apply flex items-center justify-between p-4 bg-card/90 backdrop-blur-md;
+    @apply transition-all duration-300;
   }
 
   .team-logo {
-    @apply w-12 h-12 rounded-full border-2 border-accent/20;
+    @apply w-12 h-12 rounded-full border-2 border-accent/30;
+    @apply transition-all duration-300 hover:scale-110 hover:border-accent;
+    @apply shadow-lg hover:shadow-accent/20;
   }
 
   .vs-divider {
     @apply flex items-center justify-center w-12 h-12 rounded-full;
     @apply bg-accent text-accent-foreground font-bold text-lg;
+    @apply transition-all duration-300 hover:scale-110 hover:rotate-12;
+    @apply shadow-lg shadow-accent/30 animate-pulse-slow;
+  }
+
+  .header-time {
+    @apply font-mono text-sm bg-card/50 px-3 py-1 rounded-lg;
+    @apply border border-accent/20 backdrop-blur-sm;
+    @apply transition-all duration-300 hover:bg-accent/10;
+  }
+
+  .telegram-btn {
+    @apply relative overflow-hidden;
+    @apply transition-all duration-300 hover:scale-105;
+    @apply hover:shadow-lg hover:shadow-fc-cyan/30;
+  }
+
+  .telegram-btn::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    @apply transform translate-x-[-100%] transition-transform duration-700;
+  }
+
+  .telegram-btn:hover::after {
+    @apply translate-x-[100%];
+  }
+
+  .alert-banner {
+    @apply animate-slide-up transition-all duration-300;
+    @apply hover:shadow-lg hover:shadow-destructive/20;
+  }
+
+  .card-stagger {
+    animation-delay: calc(var(--stagger) * 0.1s);
+  }
+
+  .smooth-scroll {
+    scroll-behavior: smooth;
+  }
+
+  /* Hover effects for links */
+  .match-link {
+    @apply block transition-all duration-300;
+    @apply hover:transform hover:scale-[1.02];
+  }
+
+  /* Loading states */
+  .loading-shimmer {
+    @apply relative overflow-hidden bg-muted;
+  }
+
+  .loading-shimmer::after {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    @apply animate-[shimmer_2s_ease-in-out_infinite];
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
 }

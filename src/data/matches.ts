@@ -123,5 +123,59 @@ export const matches: Match[] = [
     image: "https://www.fancode.com/skillup-uploads/cms-media/F3-Belgium-2025_match-card.jpg",
     buttonColor: "red",
     sportIcon: "🏎️"
+  },
+  {
+    id: "131274",
+    tournament: "ICC Women's Championship",
+    sport: "cricket",
+    team1: {
+      code: "AUS-W",
+      name: "Australia Women",
+      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-AUSW@2x.png"
+    },
+    team2: {
+      code: "ENG-W",
+      name: "England Women",
+      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-ENGW@2x.png"
+    },
+    image: "https://www.fancode.com/skillup-uploads/cms-media/ICC-Womens-Championship_match-card.jpg",
+    buttonColor: "purple",
+    sportIcon: "🏏"
+  },
+  {
+    id: "131275",
+    tournament: "Big Bash League 2025",
+    sport: "cricket",
+    team1: {
+      code: "SYS",
+      name: "Sydney Sixers",
+      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-SYS@2x.png"
+    },
+    team2: {
+      code: "MLS",
+      name: "Melbourne Stars",
+      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-MLS@2x.png"
+    },
+    image: "https://www.fancode.com/skillup-uploads/cms-media/Big-Bash-League-2025_match-card.jpg",
+    buttonColor: "green",
+    sportIcon: "🏏"
+  },
+  {
+    id: "131276",
+    tournament: "UEFA Champions League",
+    sport: "football",
+    team1: {
+      code: "BAR",
+      name: "Barcelona",
+      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/fb-flags/FC-BAR@2x.png"
+    },
+    team2: {
+      code: "PSG",
+      name: "Paris Saint-Germain",
+      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/fb-flags/FC-PSG@2x.png"
+    },
+    image: "https://www.fancode.com/skillup-uploads/cms-media/UEFA-Champions-League_match-card.jpg",
+    buttonColor: "blue",
+    sportIcon: "⚽"
   }
 ];
