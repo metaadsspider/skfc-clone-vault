@@ -52,6 +52,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// FC LIVE custom colors
+				'fc-green': 'hsl(var(--fc-green))',
+				'fc-green-dark': 'hsl(var(--fc-green-dark))',
+				'fc-dark': 'hsl(var(--fc-dark))',
+				'fc-card': 'hsl(var(--fc-card))',
+				'fc-red': 'hsl(var(--fc-red))',
+				'fc-cyan': 'hsl(var(--fc-cyan))',
+				'fc-purple': 'hsl(var(--fc-purple))',
+				'fc-orange': 'hsl(var(--fc-orange))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
