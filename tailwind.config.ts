@@ -52,7 +52,7 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// FC LIVE custom colors
+				// CRICK ON TIME custom colors
 				'fc-green': 'hsl(var(--fc-green))',
 				'fc-green-dark': 'hsl(var(--fc-green-dark))',
 				'fc-dark': 'hsl(var(--fc-dark))',

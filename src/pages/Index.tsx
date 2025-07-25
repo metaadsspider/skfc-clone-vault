@@ -37,7 +37,7 @@ const Index = () => {
         {/* Footer */}
         <footer className="mt-16 text-center text-muted-foreground animate-fade-in">
           <p className="text-sm">
-            © 2025 FC LIVE - Premium Sports Streaming Platform
+            © 2025 CRICK ON TIME - Premium Sports Streaming Platform
           </p>
         </footer>
       </main>

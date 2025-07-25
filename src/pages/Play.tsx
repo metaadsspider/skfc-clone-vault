@@ -38,7 +38,7 @@ const Play = () => {
           <div className="text-center">
             <h3 className="text-xl font-bold mb-2">Live Sports Streaming</h3>
             <p className="text-muted-foreground">
-              Enjoy high-quality live sports streaming with FC LIVE
+              Enjoy high-quality live sports streaming with CRICK ON TIME
             </p>
           </div>
         </Card>

@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* FC LIVE Sports Streaming Design System */
+/* CRICK ON TIME Sports Streaming Design System */
 
 @layer base {
   :root {
@@ -36,7 +36,7 @@
 
     --radius: 0.75rem;
 
-    /* Custom FC LIVE colors */
+    /* Custom CRICK ON TIME colors */
     --fc-green: 147 73% 50%;
     --fc-green-dark: 147 100% 12%;
     --fc-dark: 214 27% 11%;
