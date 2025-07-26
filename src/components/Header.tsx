@@ -38,18 +38,10 @@ export const Header = () => {
             variant="outline" 
             size="sm"
             className="telegram-btn bg-fc-cyan text-white border-fc-cyan hover:bg-fc-cyan/90"
-            onClick={() => window.open('https://t.me/sktechsports', '_blank')}
+            onClick={() => window.open('https://t.me/@skulltossline', '_blank')}
           >
             🔵 Join Telegram
           </Button>
-        </div>
-      </div>
-      
-      <div className="max-w-7xl mx-auto mt-3">
-        <div className="alert-banner bg-destructive/10 border border-destructive/20 rounded-lg px-4 py-2 text-center">
-          <span className="text-destructive text-sm font-medium">
-            🚨 Join our Telegram channel for more updates: @SKtechsports ➡️
-          </span>
         </div>
       </div>
     </header>
