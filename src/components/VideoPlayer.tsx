@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 declare global {
   interface Window {
-    shaka: any;
+    Hls: any;
   }
 }
 
@@ -15,104 +14,124 @@ interface VideoPlayerProps {
 
 export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const playerRef = useRef<any>(null);
+  const hlsRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [playerType, setPlayerType] = useState<'shaka' | 'ns'>('shaka');
 
   // Live streaming URL
   const streamUrl = "https://in-mc-fdlive.fancode.com/mumbai/131881_english_hls_47240ta-di_h264/index.m3u8";
 
-  useEffect(() => {
-    // Load Shaka Player script
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/shaka-player@4.7.0/dist/shaka-player.compiled.js';
-    script.onload = () => {
-      initShakaPlayer();
-    };
-    script.onerror = () => {
-      // Fallback to NS Player if Shaka fails to load
-      initNSPlayer();
-    };
-    document.head.appendChild(script);
-
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.destroy();
-      }
-    };
-  }, []);
-
-  const initShakaPlayer = async () => {
-    if (!videoRef.current || !window.shaka) return;
+  const initNSPlayer = async () => {
+    if (!videoRef.current || !window.Hls) return;
 
     try {
       setIsLoading(true);
       setError(null);
 
-      // Check if browser is supported
-      if (!window.shaka.Player.isBrowserSupported()) {
-        setError('Browser not supported for Shaka Player');
-        return;
+      if (window.Hls.isSupported()) {
+        const hls = new window.Hls({
+          // Live streaming optimizations for 5-minute buffer
+          liveSyncDurationCount: 3, // Keep only 3 segments in sync
+          liveMaxLatencyDurationCount: 10, // Max 10 segments latency
+          maxBufferLength: 300, // 5 minutes buffer (300 seconds)
+          maxMaxBufferLength: 300, // Maximum buffer length
+          maxBufferSize: 60 * 1000 * 1000, // 60MB max buffer size
+          maxBufferHole: 0.5, // Max gap to fill
+          lowLatencyMode: true, // Enable low latency for live streams
+          backBufferLength: 30, // Keep only 30 seconds behind current position
+          enableWorker: true, // Use web worker for better performance
+          debug: false
+        });
+
+        hlsRef.current = hls;
+
+        // Buffer management - automatically remove old segments
+        hls.on(window.Hls.Events.BUFFER_APPENDED, () => {
+          const video = videoRef.current;
+          if (video && video.buffered.length > 0) {
+            const currentTime = video.currentTime;
+            const bufferedStart = video.buffered.start(0);
+            
+            // Remove buffer older than 5 minutes
+            if (currentTime - bufferedStart > 300) {
+              try {
+                // Clear old buffer to prevent lag
+                const mediaSource = hls.media?.srcObject || hls.media;
+                if (mediaSource && mediaSource.sourceBuffers) {
+                  for (let i = 0; i < mediaSource.sourceBuffers.length; i++) {
+                    const sourceBuffer = mediaSource.sourceBuffers[i];
+                    if (!sourceBuffer.updating) {
+                      const removeEnd = currentTime - 300; // Keep only last 5 minutes
+                      if (removeEnd > bufferedStart) {
+                        sourceBuffer.remove(bufferedStart, removeEnd);
+                      }
+                    }
+                  }
+                }
+              } catch (e) {
+                console.log('Buffer cleanup skipped:', e);
+              }
+            }
+          }
+        });
+
+        // Error handling with automatic recovery
+        hls.on(window.Hls.Events.ERROR, (event, data) => {
+          console.warn('HLS Error:', data);
+          if (data.fatal) {
+            switch (data.type) {
+              case window.Hls.ErrorTypes.NETWORK_ERROR:
+                console.log('Network error, trying to recover...');
+                hls.startLoad();
+                break;
+              case window.Hls.ErrorTypes.MEDIA_ERROR:
+                console.log('Media error, trying to recover...');
+                hls.recoverMediaError();
+                break;
+              default:
+                console.log('Fatal error, cannot recover');
+                setError('Stream error occurred. Refreshing...');
+                setTimeout(() => initNSPlayer(), 3000);
+                break;
+            }
+          }
+        });
+
+        hls.on(window.Hls.Events.MANIFEST_LOADED, () => {
+          setIsLoading(false);
+        });
+
+        hls.loadSource(streamUrl);
+        hls.attachMedia(videoRef.current);
+
+      } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+        // Safari native HLS support
+        initNativePlayer();
+      } else {
+        setError('HLS not supported in this browser');
       }
 
-      // Create player
-      const player = new window.shaka.Player(videoRef.current);
-      playerRef.current = player;
-
-      // Configure player
-      player.configure({
-        streaming: {
-          rebufferingGoal: 2,
-          bufferingGoal: 10,
-          bufferBehind: 30,
-        },
-        drm: {
-          retryParameters: {
-            timeout: 30000,
-            maxAttempts: 2,
-            baseDelay: 1000,
-            backoffFactor: 2,
-            fuzzFactor: 0.5
-          }
-        }
-      });
-
-      // Set up error handling
-      player.addEventListener('error', (event: any) => {
-        console.error('Shaka Player Error:', event.detail);
-        setError(`Playback Error: ${event.detail.message || 'Unknown error'}`);
-        setIsLoading(false);
-      });
-
-      // Load the stream - try HLS first
-      await player.load(streamUrl);
-      setPlayerType('shaka');
-
     } catch (err: any) {
-      console.error('Shaka Player failed, trying NS Player:', err);
-      // Fallback to NS Player
-      initNSPlayer();
+      console.error('NS Player failed:', err);
+      setError(`Failed to load stream: ${err.message}`);
+      setIsLoading(false);
     }
   };
 
-  const initNSPlayer = () => {
+  const initNativePlayer = () => {
     if (!videoRef.current) return;
 
     setIsLoading(true);
     setError(null);
-    setPlayerType('ns');
 
-    // Use native HTML5 video with HLS support
+    // Native HLS support (Safari)
     const video = videoRef.current;
-    
-    // Set the stream URL
     video.src = streamUrl;
     
     video.addEventListener('loadstart', () => setIsLoading(true));
     video.addEventListener('canplay', () => setIsLoading(false));
     video.addEventListener('error', (e) => {
-      console.error('NS Player Error:', e);
+      console.error('Native Player Error:', e);
       setError('Failed to load stream. Please try refreshing.');
       setIsLoading(false);
     });
@@ -120,22 +139,25 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
     video.load();
   };
 
-  const refreshStream = () => {
-    if (playerRef.current) {
-      playerRef.current.destroy();
-      playerRef.current = null;
-    }
-    
-    setIsLoading(true);
-    setError(null);
-    
-    // Try Shaka Player first, fallback to NS Player
-    if (window.shaka) {
-      initShakaPlayer();
-    } else {
+  useEffect(() => {
+    // Load HLS.js script for NS Player
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+    script.onload = () => {
       initNSPlayer();
-    }
-  };
+    };
+    script.onerror = () => {
+      // Fallback to native HLS if HLS.js fails to load
+      initNativePlayer();
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+      }
+    };
+  }, []);
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
@@ -145,18 +167,9 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
           <h2 className="text-xl font-bold text-accent">{matchTitle}</h2>
           <div className="flex items-center space-x-2">
             <div className="flex items-center space-x-2 px-3 py-1 bg-card rounded-lg border">
-              <div className={`w-2 h-2 rounded-full ${playerType === 'shaka' ? 'bg-green-500' : 'bg-blue-500'}`}></div>
-              <span className="text-sm font-medium">
-                {playerType === 'shaka' ? 'Shaka Player' : 'NS Player'}
-              </span>
+              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+              <span className="text-sm font-medium">LIVE</span>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={refreshStream}
-            >
-              Refresh
-            </Button>
           </div>
         </div>
 
@@ -176,9 +189,6 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
               <div className="text-center max-w-md p-4">
                 <div className="text-red-400 text-lg mb-2">⚠️</div>
                 <p className="text-red-400 text-sm mb-4">{error}</p>
-                <Button size="sm" onClick={refreshStream}>
-                  Try Again
-                </Button>
               </div>
             </div>
           )}
@@ -188,6 +198,8 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
             className="w-full h-full"
             controls
             playsInline
+            muted
+            autoPlay
             crossOrigin="anonymous"
             poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='800' height='450' fill='%23000'/%3E%3Ctext x='400' y='225' font-family='Arial' font-size='24' fill='%23fff' text-anchor='middle'%3ELive Stream%3C/text%3E%3C/svg%3E"
           >
@@ -197,29 +209,16 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
         {/* Stream Info */}
         <div className="mt-4 text-sm text-muted-foreground">
-          <p>Player: {playerType === 'shaka' ? 'Shaka Player (Advanced HLS/DASH)' : 'NS Player (Native HLS)'}</p>
+          <p>Player: NS Player (HLS.js with 5-minute buffer management)</p>
           <p>Stream: FanCode Live Stream</p>
           <p className="flex items-center">
             Status: 
-            <span className={`ml-1 w-2 h-2 rounded-full ${!error ? 'bg-green-500' : 'bg-red-500'}`}></span>
-            <span className="ml-1">{!error ? 'Connected' : 'Error'}</span>
+            <span className={`ml-1 w-2 h-2 rounded-full ${!error ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
+            <span className="ml-1">{!error ? 'Live' : 'Error'}</span>
           </p>
-        </div>
-      </Card>
-
-      {/* Stream Options */}
-      <Card className="p-4">
-        <h3 className="font-semibold mb-3">Stream Quality Options</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <Button variant="outline" size="sm" className="justify-start">
-            🔴 Auto Quality
-          </Button>
-          <Button variant="outline" size="sm" className="justify-start">
-            📺 HD (720p)
-          </Button>
-          <Button variant="outline" size="sm" className="justify-start">
-            🎬 Full HD (1080p)
-          </Button>
+          <p className="text-xs mt-1 text-muted-foreground/70">
+            Auto-removes old buffer to prevent lag • Optimized for live streaming
+          </p>
         </div>
       </Card>
     </div>
