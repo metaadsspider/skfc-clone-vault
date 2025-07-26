@@ -31,15 +31,13 @@ export const MatchCard = ({
 }: MatchCardProps & { index?: number }) => {
   const handleWatchLive = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Create the same URL structure as the original site
-    const url = `https://sk-fc.pages.dev/play.html?id=${id}`;
-    window.open(url, '_blank');
+    // Navigate to internal play page
+    window.location.href = `/play?id=${id}`;
   };
 
   const handleCardClick = () => {
-    // Same functionality as watch live button
-    const url = `https://sk-fc.pages.dev/play.html?id=${id}`;
-    window.open(url, '_blank');
+    // Navigate to internal play page
+    window.location.href = `/play?id=${id}`;
   };
 
   const getButtonColorClass = (color: string) => {
