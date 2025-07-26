@@ -20,21 +20,19 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   const [error, setError] = useState<string | null>(null);
   const [playerType, setPlayerType] = useState<'shaka' | 'ns'>('shaka');
 
-  // Sample streaming URLs (replace with your actual streaming URLs)
-  const streamUrls = {
-    hls: `https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8`,
-    dash: `https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd`,
-    mp4: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`
-  };
+  // Live streaming URL
+  const streamUrl = "https://in-mc-fdlive.fancode.com/mumbai/131881_english_hls_47240ta-di_h264/index.m3u8";
 
   useEffect(() => {
     // Load Shaka Player script
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/shaka-player@4.7.0/dist/shaka-player.compiled.js';
     script.onload = () => {
-      if (playerType === 'shaka') {
-        initShakaPlayer();
-      }
+      initShakaPlayer();
+    };
+    script.onerror = () => {
+      // Fallback to NS Player if Shaka fails to load
+      initNSPlayer();
     };
     document.head.appendChild(script);
 
@@ -43,7 +41,7 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
         playerRef.current.destroy();
       }
     };
-  }, [playerType]);
+  }, []);
 
   const initShakaPlayer = async () => {
     if (!videoRef.current || !window.shaka) return;
@@ -87,14 +85,14 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
         setIsLoading(false);
       });
 
-      // Load the stream
-      await player.load(streamUrls.dash);
-      setIsLoading(false);
+      // Load the stream - try HLS first
+      await player.load(streamUrl);
+      setPlayerType('shaka');
 
     } catch (err: any) {
-      console.error('Failed to initialize Shaka Player:', err);
-      setError(`Failed to load stream: ${err.message}`);
-      setIsLoading(false);
+      console.error('Shaka Player failed, trying NS Player:', err);
+      // Fallback to NS Player
+      initNSPlayer();
     }
   };
 
@@ -103,39 +101,36 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
     setIsLoading(true);
     setError(null);
+    setPlayerType('ns');
 
-    // Simple HLS/MP4 player using native HTML5 video
+    // Use native HTML5 video with HLS support
     const video = videoRef.current;
     
-    // Try HLS first, fallback to MP4
-    video.src = streamUrls.hls;
+    // Set the stream URL
+    video.src = streamUrl;
     
     video.addEventListener('loadstart', () => setIsLoading(true));
     video.addEventListener('canplay', () => setIsLoading(false));
     video.addEventListener('error', (e) => {
       console.error('NS Player Error:', e);
-      // Fallback to MP4
-      video.src = streamUrls.mp4;
+      setError('Failed to load stream. Please try refreshing.');
+      setIsLoading(false);
     });
 
     video.load();
   };
 
-  const switchPlayer = (type: 'shaka' | 'ns') => {
+  const refreshStream = () => {
     if (playerRef.current) {
       playerRef.current.destroy();
       playerRef.current = null;
     }
     
-    setPlayerType(type);
+    setIsLoading(true);
+    setError(null);
     
-    if (type === 'ns') {
-      setTimeout(() => initNSPlayer(), 100);
-    }
-  };
-
-  const refreshStream = () => {
-    if (playerType === 'shaka') {
+    // Try Shaka Player first, fallback to NS Player
+    if (window.shaka) {
       initShakaPlayer();
     } else {
       initNSPlayer();
@@ -149,20 +144,12 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-accent">{matchTitle}</h2>
           <div className="flex items-center space-x-2">
-            <Button
-              variant={playerType === 'shaka' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => switchPlayer('shaka')}
-            >
-              Shaka Player
-            </Button>
-            <Button
-              variant={playerType === 'ns' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => switchPlayer('ns')}
-            >
-              NS Player
-            </Button>
+            <div className="flex items-center space-x-2 px-3 py-1 bg-card rounded-lg border">
+              <div className={`w-2 h-2 rounded-full ${playerType === 'shaka' ? 'bg-green-500' : 'bg-blue-500'}`}></div>
+              <span className="text-sm font-medium">
+                {playerType === 'shaka' ? 'Shaka Player' : 'NS Player'}
+              </span>
+            </div>
             <Button
               variant="outline"
               size="sm"
@@ -210,8 +197,8 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
         {/* Stream Info */}
         <div className="mt-4 text-sm text-muted-foreground">
-          <p>Player: {playerType === 'shaka' ? 'Shaka Player (DASH/HLS)' : 'NS Player (HLS/MP4)'}</p>
-          <p>Quality: Auto (adaptive bitrate)</p>
+          <p>Player: {playerType === 'shaka' ? 'Shaka Player (Advanced HLS/DASH)' : 'NS Player (Native HLS)'}</p>
+          <p>Stream: FanCode Live Stream</p>
           <p className="flex items-center">
             Status: 
             <span className={`ml-1 w-2 h-2 rounded-full ${!error ? 'bg-green-500' : 'bg-red-500'}`}></span>
