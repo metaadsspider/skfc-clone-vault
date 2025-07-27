@@ -17,165 +17,111 @@ export interface Match {
 
 export const matches: Match[] = [
   {
-    id: "130800",
-    tournament: "Shpageeza Cricket League, 2025",
+    id: "live001",
+    tournament: "India vs England Test Series 2025",
     sport: "cricket",
     team1: {
-      code: "BD",
-      name: "Band E Amir Dragons",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-BD@2x.png"
+      code: "IND",
+      name: "India",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304665.png"
     },
     team2: {
-      code: "SG",
-      name: "Speen Ghar Tigers",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-ST@2x.png"
+      code: "ENG",
+      name: "England",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304661.png"
     },
-    image: "https://www.fancode.com/skillup-uploads/cms-media/130800_5425_BD_SG_fc-App.jpg",
+    image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_w_1200,q_50/lsci/db/PICTURES/CMS/381300/381345.jpg",
     buttonColor: "red",
     sportIcon: "🏏"
   },
   {
-    id: "130771",
-    tournament: "Pearl of Africa T20, 2025",
+    id: "live002",
+    tournament: "Pearl of Africa T20 2025",
     sport: "cricket",
     team1: {
-      code: "NIG",
-      name: "Nigeria",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-NIGE@2x.png"
+      code: "UGA",
+      name: "Uganda",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304697.png"
     },
     team2: {
+      code: "KEN",
+      name: "Kenya",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304669.png"
+    },
+    image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_w_1200,q_50/lsci/db/PICTURES/CMS/381200/381234.jpg",
+    buttonColor: "red",
+    sportIcon: "🏏"
+  },
+  {
+    id: "live003",
+    tournament: "Pearl of Africa T20 2025",
+    sport: "cricket",
+    team1: {
       code: "NAM-A",
       name: "Namibia A",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-NAMA@2x.png"
-    },
-    image: "https://www.fancode.com/skillup-uploads/cms-media/Pearl-of-Africa-T20-old.jpg",
-    buttonColor: "red",
-    sportIcon: "🏏"
-  },
-  {
-    id: "131913",
-    tournament: "ECS Sweden, Stockholm, 2025",
-    sport: "cricket",
-    team1: {
-      code: "MAR",
-      name: "Marsta",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-MAR@2x.png"
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304677.png"
     },
     team2: {
-      code: "ALZ",
-      name: "Alby Zalmi",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-ALZ@2x.png"
+      code: "NIG",
+      name: "Nigeria",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304678.png"
     },
-    image: "https://www.fancode.com/skillup-uploads/cms-media/ECS-Sweden,-Stockholm,-2025_match-card.jpg",
-    buttonColor: "red",
-    sportIcon: "🏏"
-  },
-  {
-    id: "131273",
-    tournament: "Rwanda Tri Nations T20 Cup 2025",
-    sport: "cricket",
-    team1: {
-      code: "BAH",
-      name: "Bahrain",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-BAH@2x.png"
-    },
-    team2: {
-      code: "MAL",
-      name: "Malawi",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-MALA@2x.png"
-    },
-    image: "https://www.fancode.com/skillup-uploads/cms-media/Rwanda-Tri-nations-T20-cup-old.png",
-    buttonColor: "red",
-    sportIcon: "🏏"
-  },
-  {
-    id: "132128",
-    tournament: "ISPS Handa Women's Scottish Open",
-    sport: "golf",
-    team1: {
-      code: "IHWS",
-      name: "Tournament",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/gl-flags/FC-LPGA@2x.png"
-    },
-    team2: {
-      code: "LOC",
-      name: "Location",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/gl-flags/FC-LOC@2x.png"
-    },
-    image: "https://www.fancode.com/skillup-uploads/cms-media/ISPS-Handa-Womens-Scottish-Open_match-card.jpg",
-    buttonColor: "red",
-    sportIcon: "⛳"
-  },
-  {
-    id: "132129",
-    tournament: "F3 Belgium 2025",
-    sport: "formula3",
-    team1: {
-      code: "F3",
-      name: "Formula 3",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/gl-flags/FC-F3@2x.png"
-    },
-    team2: {
-      code: "LOC",
-      name: "Belgium",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/gl-flags/FC-LOC@2x.png"
-    },
-    image: "https://www.fancode.com/skillup-uploads/cms-media/F3-Belgium-2025_match-card.jpg",
-    buttonColor: "red",
-    sportIcon: "🏎️"
-  },
-  {
-    id: "131274",
-    tournament: "ICC Women's Championship",
-    sport: "cricket",
-    team1: {
-      code: "AUS-W",
-      name: "Australia Women",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-AUSW@2x.png"
-    },
-    team2: {
-      code: "ENG-W",
-      name: "England Women",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-ENGW@2x.png"
-    },
-    image: "https://www.fancode.com/skillup-uploads/cms-media/ICC-Womens-Championship_match-card.jpg",
+    image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_w_1200,q_50/lsci/db/PICTURES/CMS/381200/381235.jpg",
     buttonColor: "purple",
     sportIcon: "🏏"
   },
   {
-    id: "131275",
-    tournament: "Big Bash League 2025",
+    id: "live004",
+    tournament: "New Zealand vs Zimbabwe T20I 2025",
     sport: "cricket",
     team1: {
-      code: "SYS",
-      name: "Sydney Sixers",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-SYS@2x.png"
+      code: "NZ",
+      name: "New Zealand",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304676.png"
     },
     team2: {
-      code: "MLS",
-      name: "Melbourne Stars",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-MLS@2x.png"
+      code: "ZIM",
+      name: "Zimbabwe",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304706.png"
     },
-    image: "https://www.fancode.com/skillup-uploads/cms-media/Big-Bash-League-2025_match-card.jpg",
+    image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_w_1200,q_50/lsci/db/PICTURES/CMS/381100/381156.jpg",
     buttonColor: "green",
     sportIcon: "🏏"
   },
   {
-    id: "131276",
-    tournament: "UEFA Champions League",
-    sport: "football",
+    id: "live005",
+    tournament: "Pakistan vs Bangladesh T20I 2025",
+    sport: "cricket",
     team1: {
-      code: "BAR",
-      name: "Barcelona",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/fb-flags/FC-BAR@2x.png"
+      code: "PAK",
+      name: "Pakistan",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304680.png"
     },
     team2: {
-      code: "PSG",
-      name: "Paris Saint-Germain",
-      flag: "https://d13ir53smqqeyp.cloudfront.net/flags/fb-flags/FC-PSG@2x.png"
+      code: "BAN",
+      name: "Bangladesh",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304652.png"
     },
-    image: "https://www.fancode.com/skillup-uploads/cms-media/UEFA-Champions-League_match-card.jpg",
+    image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_w_1200,q_50/lsci/db/PICTURES/CMS/381000/381067.jpg",
     buttonColor: "blue",
-    sportIcon: "⚽"
+    sportIcon: "🏏"
+  },
+  {
+    id: "live006",
+    tournament: "County Championship 2025",
+    sport: "cricket",
+    team1: {
+      code: "DUR",
+      name: "Durham",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304659.png"
+    },
+    team2: {
+      code: "SOM",
+      name: "Somerset",
+      flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_square_w_320,q_50/lsci/db/PICTURES/CMS/304600/304690.png"
+    },
+    image: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_w_1200,q_50/lsci/db/PICTURES/CMS/380900/380945.jpg",
+    buttonColor: "red",
+    sportIcon: "🏏"
   }
 ];
