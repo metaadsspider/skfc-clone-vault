@@ -107,9 +107,9 @@
 @layer components {
   .match-card {
     @apply relative overflow-hidden rounded-xl bg-card border border-border;
-    @apply transition-all duration-300 ease-out;
+    @apply transition-all duration-500 ease-out;
     @apply hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/20;
-    @apply hover:border-accent/30;
+    @apply hover:-translate-y-2 hover:border-accent/30;
     @apply animate-fade-in;
   }
 

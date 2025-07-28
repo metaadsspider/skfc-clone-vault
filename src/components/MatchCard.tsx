@@ -56,60 +56,63 @@ export const MatchCard = ({
       style={{ '--stagger': index } as React.CSSProperties}
       onClick={handleCardClick}
     >
-      <div className="relative overflow-hidden">
+      <div className="relative">
         <img 
           src={image} 
           alt={`${team1.name} vs ${team2.name}`}
-          className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
         />
-        
-        {/* Tournament banner */}
-        <div className="absolute top-0 left-0 right-0 bg-accent text-accent-foreground text-center py-2 text-sm font-bold uppercase">
+        <div className="sport-badge">
           {sportIcon} {tournament}
         </div>
         
-        {/* Team section at bottom */}
-        <div className="absolute bottom-16 left-0 right-0 bg-black/90 p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <img 
-                src={team1.flag} 
-                alt={team1.code}
-                className="w-12 h-12 rounded-full border-2 border-white/20"
-                loading="lazy"
-              />
-              <span className="text-white font-bold text-lg">
-                {team1.code}
-              </span>
-            </div>
-            
-            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-accent text-accent-foreground font-bold text-lg">
-              VS
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              <span className="text-white font-bold text-lg">
-                {team2.code}
-              </span>
-              <img 
-                src={team2.flag} 
-                alt={team2.code}
-                className="w-12 h-12 rounded-full border-2 border-white/20"
-                loading="lazy"
-              />
-            </div>
+        {/* Enhanced gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
+        
+        {/* Teams section with enhanced styling */}
+        <div className="absolute bottom-0 left-0 right-0 team-vs">
+          <div className="flex items-center space-x-3 group">
+            <img 
+              src={team1.flag} 
+              alt={team1.code}
+              className="team-logo"
+              loading="lazy"
+            />
+            <span className="text-white font-bold text-lg transition-all duration-300 group-hover:text-accent">
+              {team1.code}
+            </span>
           </div>
+          
+          <div className="vs-divider">VS</div>
+          
+          <div className="flex items-center space-x-3 group">
+            <span className="text-white font-bold text-lg transition-all duration-300 group-hover:text-accent">
+              {team2.code}
+            </span>
+            <img 
+              src={team2.flag} 
+              alt={team2.code}
+              className="team-logo"
+              loading="lazy"
+            />
+          </div>
+        </div>
+
+        {/* Live indicator */}
+        <div className="absolute top-3 right-3 bg-fc-red text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse-slow">
+          🔴 LIVE
         </div>
       </div>
       
-      {/* Watch Live Button */}
-      <Button 
-        onClick={handleWatchLive}
-        className={`w-full py-4 font-bold text-white rounded-none ${getButtonColorClass(buttonColor)} transition-all duration-300 hover:scale-105`}
-      >
-        WATCH LIVE
-      </Button>
+      <div className="p-0">
+        <Button 
+          onClick={handleWatchLive}
+          className={`watch-live-btn rounded-none rounded-b-xl ${getButtonColorClass(buttonColor)}`}
+        >
+          <span className="relative z-10">WATCH LIVE</span>
+        </Button>
+      </div>
     </div>
   );
 };

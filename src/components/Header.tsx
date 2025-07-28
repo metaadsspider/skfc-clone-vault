@@ -13,7 +13,7 @@ export const Header = () => {
   }, []);
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
+    return date.toLocaleTimeString('en-US', { 
       hour12: true,
       hour: '2-digit',
       minute: '2-digit',
@@ -22,35 +22,26 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-background sticky top-0 z-50 backdrop-blur-sm">
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold text-accent">
-              FC LIVE
-            </h1>
-          </div>
-          
-          <div className="flex items-center space-x-4">
-            <div className="header-time text-accent">
-              {formatTime(currentTime)}
-            </div>
-            
-            <Button 
-              size="sm"
-              className="bg-fc-cyan hover:bg-fc-cyan/90 text-white telegram-btn rounded-full px-4 py-2"
-              onClick={() => window.open('https://t.me/sktechsports', '_blank')}
-            >
-              🔔 Join Telegram
-            </Button>
-          </div>
+    <header className="bg-background border-b border-border px-4 py-3 animate-fade-in">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <h1 className="text-2xl font-bold text-accent hover:scale-105 transition-transform duration-300 cursor-pointer">
+            CRICK ON TIME
+          </h1>
         </div>
         
-        {/* Telegram channel alert banner */}
-        <div className="mt-4 text-center">
-          <div className="inline-flex items-center bg-destructive/10 text-destructive px-4 py-2 rounded-full text-sm">
-            🚨 Join our Telegram channel for more updates: @SKtechsports ➡️
+        <div className="flex items-center space-x-4">
+          <div className="header-time">
+            {formatTime(currentTime)}
           </div>
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="telegram-btn bg-fc-cyan text-white border-fc-cyan hover:bg-fc-cyan/90"
+            onClick={() => window.open('https://t.me/@skulltossline', '_blank')}
+          >
+            🔵 Join Telegram
+          </Button>
         </div>
       </div>
     </header>
