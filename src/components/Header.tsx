@@ -26,7 +26,7 @@ export const Header = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl font-bold text-accent hover:scale-105 transition-transform duration-300 cursor-pointer">
-            CRICK ON TIME
+            SKULL CRICK NEWS
           </h1>
         </div>
         
@@ -38,7 +38,7 @@ export const Header = () => {
             variant="outline" 
             size="sm"
             className="telegram-btn bg-fc-cyan text-white border-fc-cyan hover:bg-fc-cyan/90"
-            onClick={() => window.open('https://t.me/@skulltossline', '_blank')}
+            onClick={() => window.open('https://t.me/CricketNewsSkull', '_blank')}
           >
             🔵 Join Telegram
           </Button>

@@ -1,10 +1,12 @@
 import { Header } from "@/components/Header";
 import { MatchCard } from "@/components/MatchCard";
+import { TelegramPopup } from "@/components/TelegramPopup";
 import { matches } from "@/data/matches";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background smooth-scroll">
+      <TelegramPopup />
       <Header />
       
       <main className="max-w-7xl mx-auto px-4 py-8">
@@ -37,7 +39,7 @@ const Index = () => {
         {/* Footer */}
         <footer className="mt-16 text-center text-muted-foreground animate-fade-in">
           <p className="text-sm">
-            © 2025 CRICK ON TIME - Premium Sports Streaming Platform
+            © 2025 SKULL CRICK NEWS - Premium Sports Streaming Platform
           </p>
         </footer>
       </main>
