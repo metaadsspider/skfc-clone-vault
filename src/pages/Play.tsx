@@ -4,16 +4,27 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Header } from "@/components/Header";
 import { VideoPlayer } from "@/components/VideoPlayer";
-import { matches } from "@/data/matches";
+import { FancodeService } from "@/services/fancodeService";
+import { Match } from "@/data/matches";
 
 const Play = () => {
   const [searchParams] = useSearchParams();
   const matchId = searchParams.get("id") || "1";
-  const [currentMatch, setCurrentMatch] = useState<any>(null);
+  const [currentMatch, setCurrentMatch] = useState<Match | null>(null);
+  const [otherMatches, setOtherMatches] = useState<Match[]>([]);
 
   useEffect(() => {
-    const match = matches.find(m => m.id === matchId);
-    setCurrentMatch(match);
+    const fetchMatch = async () => {
+      // Try to get match from FanCode service
+      const match = FancodeService.getMatchById(matchId);
+      setCurrentMatch(match || null);
+      
+      // Fetch other live matches
+      const allMatches = await FancodeService.fetchLiveMatches();
+      setOtherMatches(allMatches.filter(m => m.id !== matchId));
+    };
+
+    fetchMatch();
   }, [matchId]);
 
   if (!currentMatch) {
@@ -101,7 +112,7 @@ const Play = () => {
         <Card className="p-6 mt-8">
           <h3 className="text-xl font-bold mb-4">Other Live Matches</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {matches.filter(m => m.id !== matchId).slice(0, 6).map((match) => (
+            {otherMatches.slice(0, 6).map((match) => (
               <Link key={match.id} to={`/play?id=${match.id}`}>
                 <Card className="p-4 hover:bg-accent/10 transition-colors cursor-pointer">
                   <div className="flex items-center justify-between">
