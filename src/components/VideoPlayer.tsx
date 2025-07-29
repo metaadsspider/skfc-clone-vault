@@ -194,7 +194,37 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
         </div>
 
         {/* Premium Video Player Container */}
-        <div className="relative bg-black rounded-xl overflow-hidden aspect-video border-4 border-primary/20 shadow-2xl">
+        <div className="relative bg-black rounded-xl overflow-hidden aspect-video border-4 border-primary/20 shadow-2xl 
+                        mobile-video-container">
+          <style dangerouslySetInnerHTML={{
+            __html: `
+              .mobile-video-container {
+                aspect-ratio: 16/9;
+              }
+              @media (max-width: 768px) {
+                .mobile-video-container {
+                  aspect-ratio: 16/9 !important;
+                  max-height: 60vh;
+                  width: 100vw;
+                  margin-left: calc(-50vw + 50%);
+                  border-radius: 0;
+                  border: none;
+                }
+              }
+              @media (orientation: portrait) and (max-width: 768px) {
+                .mobile-video-container {
+                  aspect-ratio: 16/9 !important;
+                  height: auto;
+                  max-height: 50vh;
+                }
+              }
+              @media (orientation: landscape) and (max-width: 768px) {
+                .mobile-video-container {
+                  max-height: 85vh;
+                }
+              }
+            `
+          }} />
           {/* Premium Loading Overlay */}
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/90 via-primary/20 to-black/90 z-10 backdrop-blur-sm">
@@ -230,9 +260,16 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
             className="w-full h-full object-cover"
             controls
             playsInline
+            webkit-playsinline="true"
             muted
             autoPlay
+            preload="metadata"
             crossOrigin="anonymous"
+            style={{ 
+              width: '100%', 
+              height: '100%',
+              objectFit: 'contain'
+            }}
             poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23000;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23333;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23grad1)'/%3E%3Ctext x='960' y='540' font-family='Arial,sans-serif' font-size='48' fill='%23fff' text-anchor='middle' opacity='0.8'%3E🏏 Premium Live Stream%3C/text%3E%3C/svg%3E"
           >
             Your browser does not support the video tag.
