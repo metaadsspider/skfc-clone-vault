@@ -166,64 +166,124 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
-      {/* Player Controls */}
-      <Card className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-accent">{matchTitle}</h2>
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-2 px-3 py-1 bg-card rounded-lg border">
-              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
-              <span className="text-sm font-medium">LIVE</span>
+      {/* Premium Player Header */}
+      <Card className="p-6 bg-gradient-to-r from-background via-background to-background border-2 border-primary/20">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-4">
+            <div className="p-2 rounded-full bg-primary/10">
+              <span className="text-2xl">🏏</span>
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                {matchTitle}
+              </h2>
+              <p className="text-sm text-muted-foreground">World Championship of Legends 2025</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 rounded-full border border-red-500/30">
+              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse shadow-lg shadow-red-500/50"></div>
+              <span className="text-sm font-semibold text-red-400">LIVE</span>
+            </div>
+            <div className="text-right">
+              <p className="text-lg font-bold text-primary">Ultra HD</p>
+              <p className="text-xs text-muted-foreground">1080p • 60fps</p>
             </div>
           </div>
         </div>
 
-        {/* Video Player */}
-        <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
+        {/* Premium Video Player Container */}
+        <div className="relative bg-black rounded-xl overflow-hidden aspect-video border-4 border-primary/20 shadow-2xl">
+          {/* Premium Loading Overlay */}
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/90 via-primary/20 to-black/90 z-10 backdrop-blur-sm">
               <div className="text-center">
-                <div className="animate-spin w-8 h-8 border-2 border-accent border-t-transparent rounded-full mx-auto mb-2"></div>
-                <p className="text-white text-sm">Loading stream...</p>
+                <div className="relative">
+                  <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4 shadow-lg shadow-primary/50"></div>
+                  <div className="absolute inset-0 w-12 h-12 border-4 border-accent/30 rounded-full mx-auto animate-pulse"></div>
+                </div>
+                <p className="text-white text-lg font-semibold">Loading Premium Stream...</p>
+                <p className="text-primary text-sm mt-1">Ultra Low Latency Mode</p>
               </div>
             </div>
           )}
 
+          {/* Premium Error Overlay */}
           {error && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
-              <div className="text-center max-w-md p-4">
-                <div className="text-red-400 text-lg mb-2">⚠️</div>
-                <p className="text-red-400 text-sm mb-4">{error}</p>
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/90 via-red-500/20 to-black/90 z-10 backdrop-blur-sm">
+              <div className="text-center max-w-md p-6 bg-black/60 rounded-xl border border-red-500/30">
+                <div className="text-red-400 text-4xl mb-4">⚠️</div>
+                <p className="text-red-400 text-lg font-semibold mb-2">Stream Interrupted</p>
+                <p className="text-white/80 text-sm mb-4">{error}</p>
+                <div className="flex items-center justify-center space-x-2 text-xs text-white/60">
+                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                  <span>Attempting auto-recovery...</span>
+                </div>
               </div>
             </div>
           )}
 
+          {/* Premium Video Element */}
           <video
             ref={videoRef}
-            className="w-full h-full"
+            className="w-full h-full object-cover"
             controls
             playsInline
             muted
             autoPlay
             crossOrigin="anonymous"
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='800' height='450' fill='%23000'/%3E%3Ctext x='400' y='225' font-family='Arial' font-size='24' fill='%23fff' text-anchor='middle'%3ELive Stream%3C/text%3E%3C/svg%3E"
+            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23000;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23333;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23grad1)'/%3E%3Ctext x='960' y='540' font-family='Arial,sans-serif' font-size='48' fill='%23fff' text-anchor='middle' opacity='0.8'%3E🏏 Premium Live Stream%3C/text%3E%3C/svg%3E"
           >
             Your browser does not support the video tag.
           </video>
+
+          {/* Premium Overlay Controls */}
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+            <div className="flex items-center space-x-3 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-white text-sm font-medium">LIVE</span>
+              </div>
+              <div className="w-px h-4 bg-white/30"></div>
+              <span className="text-white/80 text-xs">Ultra HD • Low Latency</span>
+            </div>
+            
+            <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-1 border border-white/20">
+              <span className="text-white/80 text-xs">🎥 NS Player Pro</span>
+            </div>
+          </div>
         </div>
 
-        {/* Stream Info */}
-        <div className="mt-4 text-sm text-muted-foreground">
-          <p>Player: NS Player (Ultra-Low Latency Mode)</p>
-          <p>Stream: FanCode Live Stream</p>
-          <p className="flex items-center">
-            Status: 
-            <span className={`ml-1 w-2 h-2 rounded-full ${!error ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
-            <span className="ml-1">{!error ? 'Live' : 'Error'}</span>
-          </p>
-          <p className="text-xs mt-1 text-muted-foreground/70">
-            Minimal buffer for real-time streaming • Ultra-low latency optimization
-          </p>
+        {/* Premium Stream Stats */}
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Quality</p>
+            <p className="text-lg font-bold text-primary">1080p HD</p>
+          </div>
+          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Latency</p>
+            <p className="text-lg font-bold text-green-500">Ultra Low</p>
+          </div>
+          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Player</p>
+            <p className="text-lg font-bold text-accent">NS Pro</p>
+          </div>
+          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Status</p>
+            <p className={`text-lg font-bold ${!error ? 'text-green-500' : 'text-red-500'}`}>
+              {!error ? 'Live' : 'Error'}
+            </p>
+          </div>
+        </div>
+
+        {/* Premium Features Badge */}
+        <div className="mt-4 flex items-center justify-center">
+          <div className="bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-full px-6 py-2 border border-primary/30">
+            <span className="text-sm font-medium bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              ⚡ Premium Live Streaming • Zero Buffer • Real-time Experience
+            </span>
+          </div>
         </div>
       </Card>
     </div>
