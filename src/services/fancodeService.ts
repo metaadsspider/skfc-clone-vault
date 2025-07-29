@@ -38,7 +38,7 @@ export class FancodeService {
         name: "Australia Champions",
         flag: "https://images.dream11.com/eyJrZXkiOiJmbGFncy9jci1mbGFncy9GQy1BVVNAMngucG5nIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImNvdmVyIiwid2lkdGgiOjMyLCJoZWlnaHQiOjMyfSwid2VicCI6eyJxdWFsaXR5Ijo2MCwibG9zc2xlc3MiOmZhbHNlfX0sIm91dHB1dEZvcm1hdCI6IndlYnAifQ=="
       },
-      image: "https://images.fancode.com/skillup-uploads/cms-media/World-Championship-of-Legends-2025_match-card.jpg",
+      image: "https://www.fancode.com/skillup-uploads/cms-media/129731_5370_AAC_PNC_fc-App.jpg",
       buttonColor: "purple",
       sportIcon: "🏏",
       status: "live",

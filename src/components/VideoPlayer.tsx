@@ -237,22 +237,6 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
           >
             Your browser does not support the video tag.
           </video>
-
-          {/* Premium Overlay Controls */}
-          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-            <div className="flex items-center space-x-3 bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/20">
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-white text-sm font-medium">LIVE</span>
-              </div>
-              <div className="w-px h-4 bg-white/30"></div>
-              <span className="text-white/80 text-xs">Ultra HD • Low Latency</span>
-            </div>
-            
-            <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-1 border border-white/20">
-              <span className="text-white/80 text-xs">🎥 NS Player Pro</span>
-            </div>
-          </div>
         </div>
 
         {/* Premium Stream Stats */}
