@@ -18,8 +18,8 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Live streaming URL
-  const streamUrl = "https://in-mc-fdlive.fancode.com/mumbai/131881_english_hls_47240ta-di_h264/index.m3u8";
+  // Get stream URL from FanCode service
+  const streamUrl = "https://in-mc-fdlive.fancode.com/mumbai/129731_english_hls_98010ta-di_h264/1080p.m3u8";
 
   const initNSPlayer = async () => {
     if (!videoRef.current || !window.Hls) return;
@@ -30,16 +30,21 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
       if (window.Hls.isSupported()) {
         const hls = new window.Hls({
-          // Live streaming optimizations for 5-minute buffer
-          liveSyncDurationCount: 3, // Keep only 3 segments in sync
-          liveMaxLatencyDurationCount: 10, // Max 10 segments latency
-          maxBufferLength: 300, // 5 minutes buffer (300 seconds)
-          maxMaxBufferLength: 300, // Maximum buffer length
-          maxBufferSize: 60 * 1000 * 1000, // 60MB max buffer size
-          maxBufferHole: 0.5, // Max gap to fill
+          // Ultra-low latency optimizations
+          liveSyncDurationCount: 1, // Keep only 1 segment in sync for minimal delay
+          liveMaxLatencyDurationCount: 3, // Max 3 segments latency
+          maxBufferLength: 10, // Very small buffer - 10 seconds only
+          maxMaxBufferLength: 15, // Maximum buffer length
+          maxBufferSize: 5 * 1000 * 1000, // 5MB max buffer size
+          maxBufferHole: 0.1, // Minimal gap tolerance
           lowLatencyMode: true, // Enable low latency for live streams
-          backBufferLength: 30, // Keep only 30 seconds behind current position
+          backBufferLength: 5, // Keep only 5 seconds behind current position
           enableWorker: true, // Use web worker for better performance
+          liveDurationInfinity: true, // Handle infinite live streams
+          manifestLoadingTimeOut: 2000, // Faster manifest loading
+          manifestLoadingMaxRetry: 2, // Quick retry
+          levelLoadingTimeOut: 2000, // Faster level loading
+          fragLoadingTimeOut: 5000, // Fragment loading timeout
           debug: false
         });
 
@@ -52,16 +57,16 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
             const currentTime = video.currentTime;
             const bufferedStart = video.buffered.start(0);
             
-            // Remove buffer older than 5 minutes
-            if (currentTime - bufferedStart > 300) {
+            // Aggressive buffer cleanup for ultra-low latency
+            if (currentTime - bufferedStart > 10) {
               try {
-                // Clear old buffer to prevent lag
+                // Clear old buffer aggressively to prevent any lag
                 const mediaSource = hls.media?.srcObject || hls.media;
                 if (mediaSource && mediaSource.sourceBuffers) {
                   for (let i = 0; i < mediaSource.sourceBuffers.length; i++) {
                     const sourceBuffer = mediaSource.sourceBuffers[i];
                     if (!sourceBuffer.updating) {
-                      const removeEnd = currentTime - 300; // Keep only last 5 minutes
+                      const removeEnd = currentTime - 5; // Keep only last 5 seconds
                       if (removeEnd > bufferedStart) {
                         sourceBuffer.remove(bufferedStart, removeEnd);
                       }
@@ -209,7 +214,7 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
         {/* Stream Info */}
         <div className="mt-4 text-sm text-muted-foreground">
-          <p>Player: NS Player (HLS.js with 5-minute buffer management)</p>
+          <p>Player: NS Player (Ultra-Low Latency Mode)</p>
           <p>Stream: FanCode Live Stream</p>
           <p className="flex items-center">
             Status: 
@@ -217,7 +222,7 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
             <span className="ml-1">{!error ? 'Live' : 'Error'}</span>
           </p>
           <p className="text-xs mt-1 text-muted-foreground/70">
-            Auto-removes old buffer to prevent lag • Optimized for live streaming
+            Minimal buffer for real-time streaming • Ultra-low latency optimization
           </p>
         </div>
       </Card>
