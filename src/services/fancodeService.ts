@@ -42,7 +42,7 @@ export class FancodeService {
       buttonColor: "red",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "/api/stream/mumbai/128760_english_hls_67071ta-di_h264/index.m3u8"
+      streamUrl: "https://in-mc-pdlive.fancode.com/mumbai/128760_english_hls_67071ta-di_h264/index.m3u8"
     },
     {
       id: "team-k-league-vs-newcastle-united",
@@ -62,7 +62,7 @@ export class FancodeService {
       buttonColor: "blue",
       sportIcon: "⚽",
       status: "live",
-      streamUrl: "/api/stream/mumbai/131253_english_hls_65758ta-di_h264/index.m3u8"
+      streamUrl: "https://in-mc-pdlive.fancode.com/mumbai/131253_english_hls_65758ta-di_h264/index.m3u8"
     },
     {
       id: "speen-ghar-tigers-vs-boost-defenders",
@@ -82,7 +82,7 @@ export class FancodeService {
       buttonColor: "purple",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "/api/stream/mumbai/130808_english_hls_72161ta-di_h264/index.m3u8"
+      streamUrl: "https://in-mc-pdlive.fancode.com/mumbai/130808_english_hls_72161ta-di_h264/index.m3u8"
     },
     {
       id: "twickenham-vs-spencer",
@@ -102,7 +102,7 @@ export class FancodeService {
       buttonColor: "green",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "/api/stream/mumbai/132038_english_hls_55648ta-di_h264/index.m3u8"
+      streamUrl: "https://in-mc-pdlive.fancode.com/mumbai/132038_english_hls_55648ta-di_h264/index.m3u"
     },
     {
       id: "india-vs-england-5th-test",
