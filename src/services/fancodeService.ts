@@ -42,7 +42,7 @@ export class FancodeService {
       buttonColor: "red",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "/api/stream/mumbai/128760_english_hls_98010ta-di_h264/1080p.m3u8"
+      streamUrl: "/api/stream/mumbai/128760_english_hls_67071ta-di_h264/index.m3u8"
     },
     {
       id: "team-k-league-vs-newcastle-united",
@@ -62,7 +62,7 @@ export class FancodeService {
       buttonColor: "blue",
       sportIcon: "⚽",
       status: "live",
-      streamUrl: "/api/stream/mumbai/131253_english_hls_98010ta-di_h264/1080p.m3u8"
+      streamUrl: "/api/stream/mumbai/131253_english_hls_65758ta-di_h264/index.m3u8"
     },
     {
       id: "speen-ghar-tigers-vs-boost-defenders",
@@ -82,7 +82,7 @@ export class FancodeService {
       buttonColor: "purple",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "/api/stream/mumbai/130808_english_hls_98010ta-di_h264/1080p.m3u8"
+      streamUrl: "/api/stream/mumbai/130808_english_hls_72161ta-di_h264/index.m3u8"
     },
     {
       id: "twickenham-vs-spencer",
@@ -102,26 +102,26 @@ export class FancodeService {
       buttonColor: "green",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "/api/stream/mumbai/132038_english_hls_98010ta-di_h264/1080p.m3u8"
+      streamUrl: "/api/stream/mumbai/132038_english_hls_55648ta-di_h264/index.m3u8"
     },
     {
-      id: "amo-sharks-vs-mis-e-ainak-knights",
-      tournament: "Shpageeza Cricket League, 2025",
+      id: "india-vs-england-5th-test",
+      tournament: "India vs England 5th Test Match",
       sport: "cricket",
       team1: {
-        code: "AM",
-        name: "Amo Sharks",
-        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-AS@2x.png"
+        code: "IND",
+        name: "India",
+        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-IND@2x.png"
       },
       team2: {
-        code: "MAK",
-        name: "Mis E Ainak Knights",
-        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-MAK@2x.png"
+        code: "ENG",
+        name: "England",
+        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-ENG@2x.png"
       },
-      image: "https://www.fancode.com/skillup-uploads/cms-media/130796_5425_AM_MAK_fc-App_1753867237835.jpg",
+      image: "https://img.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/3627/1753874073627-i",
       buttonColor: "red",
       sportIcon: "🏏",
-      status: "upcoming",
+      status: "live",
       streamUrl: "/api/stream/mumbai/130796_english_hls_98010ta-di_h264/1080p.m3u8"
     }
   ];

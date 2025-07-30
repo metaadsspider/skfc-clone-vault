@@ -18,7 +18,7 @@ export async function onRequest(context: any) {
     // Reconstruct the original FanCode stream URL
     const pathSegments = params.path || [];
     const streamPath = pathSegments.join('/');
-    const streamUrl = `https://in-mc-fdlive.fancode.com/${streamPath}`;
+    const streamUrl = `https://in-mc-pdlive.fancode.com/${streamPath}`;
     
     console.log('Proxying stream URL:', streamUrl);
 
