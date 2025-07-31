@@ -106,7 +106,7 @@ export class FancodeService {
     },
     {
       id: "india-vs-england-5th-test",
-      tournament: "India vs England 5th Test Match",
+      tournament: "India vs England 5th Test - Day 1",
       sport: "cricket",
       team1: {
         code: "IND",
@@ -122,7 +122,7 @@ export class FancodeService {
       buttonColor: "red",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "/api/stream/mumbai/130796_english_hls_98010ta-di_h264/1080p.m3u8"
+      streamUrl: "https://d2e40hrb2so8ko.cloudfront.net/deliveries/ac8e6fa18a79400b9caddaa39e8b764f/index.mpd"
     }
   ];
 
