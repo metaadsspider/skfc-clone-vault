@@ -23,38 +23,53 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   // Fetch stream URL from service
   useEffect(() => {
     const fetchStreamUrl = async () => {
-      const url = await FancodeService.fetchMatchStreamUrl(matchId);
-      if (url) {
-        setStreamUrl(url);
+      try {
+        const url = await FancodeService.fetchMatchStreamUrl(matchId);
+        console.log('Fetched stream URL:', url);
+        if (url) {
+          setStreamUrl(url);
+        } else {
+          setError('Stream URL not found');
+        }
+      } catch (err) {
+        console.error('Error fetching stream URL:', err);
+        setError('Failed to get stream URL');
       }
     };
     fetchStreamUrl();
   }, [matchId]);
 
   const initNSPlayer = async () => {
-    if (!videoRef.current || !window.Hls) return;
+    if (!videoRef.current || !window.Hls || !streamUrl) return;
 
     try {
+      console.log('Initializing HLS player with URL:', streamUrl);
       setIsLoading(true);
       setError(null);
 
       if (window.Hls.isSupported()) {
+        // Destroy existing instance
+        if (hlsRef.current) {
+          hlsRef.current.destroy();
+        }
+
         const hls = new window.Hls({
-          // Ultra-low latency optimizations
-          liveSyncDurationCount: 1, // Keep only 1 segment in sync for minimal delay
-          liveMaxLatencyDurationCount: 3, // Max 3 segments latency
-          maxBufferLength: 10, // Very small buffer - 10 seconds only
-          maxMaxBufferLength: 15, // Maximum buffer length
-          maxBufferSize: 5 * 1000 * 1000, // 5MB max buffer size
-          maxBufferHole: 0.1, // Minimal gap tolerance
-          lowLatencyMode: true, // Enable low latency for live streams
-          backBufferLength: 5, // Keep only 5 seconds behind current position
-          enableWorker: true, // Use web worker for better performance
-          liveDurationInfinity: true, // Handle infinite live streams
-          manifestLoadingTimeOut: 2000, // Faster manifest loading
-          manifestLoadingMaxRetry: 2, // Quick retry
-          levelLoadingTimeOut: 2000, // Faster level loading
-          fragLoadingTimeOut: 5000, // Fragment loading timeout
+          // Optimized settings for better reliability
+          enableWorker: true,
+          lowLatencyMode: false, // Disable for better stability
+          backBufferLength: 90, // Increase for better buffering
+          maxBufferLength: 30, // Standard buffer length
+          maxMaxBufferLength: 600, // Increase max buffer
+          maxBufferSize: 60 * 1000 * 1000, // 60MB buffer
+          maxBufferHole: 0.5, // Increase gap tolerance
+          manifestLoadingTimeOut: 10000, // Increase timeout
+          manifestLoadingMaxRetry: 4, // More retries
+          levelLoadingTimeOut: 10000, // Increase timeout
+          fragLoadingTimeOut: 20000, // Increase fragment timeout
+          xhrSetup: function(xhr, url) {
+            // Add custom headers for better compatibility
+            xhr.setRequestHeader('Cache-Control', 'no-cache');
+          },
           debug: false
         });
 
@@ -155,24 +170,52 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   };
 
   useEffect(() => {
-    // Load HLS.js script for NS Player
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
-    script.onload = () => {
-      initNSPlayer();
+    console.log('VideoPlayer useEffect triggered, streamUrl:', streamUrl);
+    
+    if (!streamUrl) {
+      console.log('No stream URL available yet');
+      return;
+    }
+
+    const loadHls = async () => {
+      if (!window.Hls) {
+        try {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+          script.onload = () => {
+            console.log('HLS.js loaded successfully');
+            if (window.Hls.isSupported()) {
+              initNSPlayer();
+            } else {
+              initNativePlayer();
+            }
+          };
+          script.onerror = () => {
+            console.error('Failed to load HLS.js');
+            setError('Failed to load video player');
+          };
+          document.head.appendChild(script);
+        } catch (error) {
+          console.error('Error loading HLS script:', error);
+          setError('Failed to initialize video player');
+        }
+      } else {
+        if (window.Hls.isSupported()) {
+          initNSPlayer();
+        } else {
+          initNativePlayer();
+        }
+      }
     };
-    script.onerror = () => {
-      // Fallback to native HLS if HLS.js fails to load
-      initNativePlayer();
-    };
-    document.head.appendChild(script);
+
+    loadHls();
 
     return () => {
       if (hlsRef.current) {
         hlsRef.current.destroy();
       }
     };
-  }, []);
+  }, [streamUrl]);
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
