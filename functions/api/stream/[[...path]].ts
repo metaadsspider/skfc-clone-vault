@@ -15,10 +15,17 @@ export async function onRequest(context: any) {
   }
 
   try {
-    // Reconstruct the original FanCode stream URL
+    // Reconstruct the original stream URL
     const pathSegments = params.path || [];
     const streamPath = pathSegments.join('/');
-    const streamUrl = `https://in-mc-pdlive.fancode.com/${streamPath}`;
+    
+    // Handle different stream sources
+    let streamUrl: string;
+    if (pathSegments[0] === 'hotstar') {
+      streamUrl = `https://live12p.hotstar.com/${pathSegments.slice(1).join('/')}`;
+    } else {
+      streamUrl = `https://in-mc-pdlive.fancode.com/${streamPath}`;
+    }
     
     console.log('Proxying stream URL:', streamUrl);
 

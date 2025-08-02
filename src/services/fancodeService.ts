@@ -22,88 +22,8 @@ interface FancodeMatch {
 export class FancodeService {
   private static readonly FANCODE_BASE_URL = 'https://fancode.com';
   
-  // Today's live matches from FanCode
+  // Live match from Hotstar
   private static mockLiveMatches: FancodeMatch[] = [
-    {
-      id: "zimbabwe-vs-new-zealand",
-      tournament: "New Zealand tour of Zimbabwe, 2025",
-      sport: "cricket",
-      team1: {
-        code: "ZIM",
-        name: "Zimbabwe",
-        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-ZIM@2x.png"
-      },
-      team2: {
-        code: "NZ",
-        name: "New Zealand",
-        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-NZC@2x.png"
-      },
-      image: "https://www.fancode.com/skillup-uploads/cms-media/New-Zealand-Tour-of-Zimbabwe-(Tests)Sporty-match-card-.jpg",
-      buttonColor: "red",
-      sportIcon: "🏏",
-      status: "live",
-      streamUrl: "https://in-mc-pdlive.fancode.com/mumbai/128760_english_hls_67071ta-di_h264/index.m3u8"
-    },
-    {
-      id: "team-k-league-vs-newcastle-united",
-      tournament: "Club Friendlies 2025",
-      sport: "football",
-      team1: {
-        code: "TKL",
-        name: "Team K League",
-        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/ft-flags/FC-TKL@2x.png"
-      },
-      team2: {
-        code: "NEW",
-        name: "Newcastle United",
-        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/ft-flags/FC-NEW@2x.png"
-      },
-      image: "https://www.fancode.com/skillup-uploads/cms-media/Team-K-League-vs-Newcastle-United_Sporty.jpg",
-      buttonColor: "blue",
-      sportIcon: "⚽",
-      status: "live",
-      streamUrl: "https://in-mc-pdlive.fancode.com/mumbai/131253_english_hls_65758ta-di_h264/index.m3u8"
-    },
-    {
-      id: "speen-ghar-tigers-vs-boost-defenders",
-      tournament: "Shpageeza Cricket League, 2025",
-      sport: "cricket",
-      team1: {
-        code: "SG",
-        name: "Speen Ghar Tigers",
-        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-ST@2x.png"
-      },
-      team2: {
-        code: "BOS",
-        name: "Boost Defenders",
-        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-BOD@2x.png"
-      },
-      image: "https://www.fancode.com/skillup-uploads/cms-media/130808_5425_SG_BOS_fc-App.jpg",
-      buttonColor: "purple",
-      sportIcon: "🏏",
-      status: "live",
-      streamUrl: "https://in-mc-pdlive.fancode.com/mumbai/130808_english_hls_72161ta-di_h264/index.m3u8"
-    },
-    {
-      id: "twickenham-vs-spencer",
-      tournament: "ECS England, Wimbledon, 2025",
-      sport: "cricket",
-      team1: {
-        code: "TWI",
-        name: "Twickenham",
-        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/DEF-CR8@2x.png"
-      },
-      team2: {
-        code: "SPE",
-        name: "Spencer",
-        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/DEF-CR6@2x.png"
-      },
-      image: "https://www.fancode.com/skillup-uploads/cms-media/ECS-England,-Wimbledon,-2025-old-match-card-op-2.jpg",
-      buttonColor: "green",
-      sportIcon: "🏏",
-      status: "live",
-      streamUrl: "https://in-mc-pdlive.fancode.com/mumbai/132038_english_hls_55648ta-di_h264/index.m3u"
-    },
     {
       id: "india-vs-england-5th-test",
       tournament: "India vs England 5th Test - Day 1",
@@ -122,7 +42,7 @@ export class FancodeService {
       buttonColor: "red",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "https://d2e40hrb2so8ko.cloudfront.net/deliveries/ac8e6fa18a79400b9caddaa39e8b764f/index.mpd"
+      streamUrl: "/api/stream/hotstar/hls/live/2027118/inallow-engvsind5test-2025/hin/1540044677/15mindvrm014e7647051a2a4f13bc1b7f72b763263c02august2025/master_ap_1080_5.m3u8"
     }
   ];
 
