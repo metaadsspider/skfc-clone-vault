@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from "@/components/ui/card";
+import { FancodeService } from '@/services/fancodeService';
 
 declare global {
   interface Window {
@@ -17,9 +18,18 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   const hlsRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [streamUrl, setStreamUrl] = useState<string>("");
 
-  // Get stream URL from FanCode service
-  const streamUrl = "https://in-mc-fdlive.fancode.com/mumbai/129731_english_hls_98010ta-di_h264/1080p.m3u8";
+  // Fetch stream URL from service
+  useEffect(() => {
+    const fetchStreamUrl = async () => {
+      const url = await FancodeService.fetchMatchStreamUrl(matchId);
+      if (url) {
+        setStreamUrl(url);
+      }
+    };
+    fetchStreamUrl();
+  }, [matchId]);
 
   const initNSPlayer = async () => {
     if (!videoRef.current || !window.Hls) return;
