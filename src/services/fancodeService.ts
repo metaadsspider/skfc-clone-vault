@@ -42,7 +42,7 @@ export class FancodeService {
       buttonColor: "red",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "https://live12p.hotstar.com/hls/live/2027118/inallow-engvsind5test-2025/hin/1540044677/15mindvrm014e7647051a2a4f13bc1b7f72b763263c02august2025/master_ap_1080_5.m3u8"
+      streamUrl: "/api/stream/hotstar/hls/live/2027118/inallow-engvsind5test-2025/hin/1540044677/15mindvrm014e7647051a2a4f13bc1b7f72b763263c02august2025/master_ap_1080_5.m3u8"
     }
   ];
 

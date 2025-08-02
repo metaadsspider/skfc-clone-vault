@@ -21,23 +21,36 @@ export async function onRequest(context: any) {
     
     // Handle different stream sources
     let streamUrl: string;
+    let referer: string;
+    let origin: string;
+    
     if (pathSegments[0] === 'hotstar') {
+      // Remove 'hotstar' prefix and reconstruct Hotstar URL
       streamUrl = `https://live12p.hotstar.com/${pathSegments.slice(1).join('/')}`;
+      referer = 'https://www.hotstar.com/';
+      origin = 'https://www.hotstar.com';
     } else {
       streamUrl = `https://in-mc-pdlive.fancode.com/${streamPath}`;
+      referer = 'https://fancode.com/';
+      origin = 'https://fancode.com';
     }
     
     console.log('Proxying stream URL:', streamUrl);
 
-    // Fetch the stream with proper headers
+    // Fetch the stream with proper headers for each service
     const response = await fetch(streamUrl, {
       method: request.method,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Referer': 'https://fancode.com/',
-        'Origin': 'https://fancode.com',
+        'Referer': referer,
+        'Origin': origin,
         'Accept': '*/*',
         'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'cross-site',
       },
     });
 
