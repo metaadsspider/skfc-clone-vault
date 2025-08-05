@@ -336,32 +336,41 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
-      {/* Premium Player Header */}
-      <Card className="p-6 bg-gradient-to-r from-background via-background to-background border-2 border-primary/20">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
-            <div className="p-2 rounded-full bg-primary/10">
-              <span className="text-2xl">🏏</span>
+        {/* Premium Player Header */}
+        <Card className="p-6 bg-gradient-to-r from-background via-background to-background border-2 border-primary/20">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-2 rounded-full bg-primary/10">
+                <span className="text-2xl">🏏</span>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  {matchTitle}
+                </h2>
+                <p className="text-sm text-muted-foreground">World Championship of Legends 2025</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                {matchTitle}
-              </h2>
-              <p className="text-sm text-muted-foreground">World Championship of Legends 2025</p>
+            
+            <div className="flex items-center space-x-4">
+              {streamUrl && streamUrl.includes('.mpd') && (
+                <button
+                  onClick={openInExtension}
+                  className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-full border border-blue-500/30 transition-all duration-300 shadow-lg shadow-blue-500/25"
+                >
+                  <span className="text-lg">🎬</span>
+                  <span className="font-semibold">Extension Player</span>
+                </button>
+              )}
+              <div className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 rounded-full border border-red-500/30">
+                <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse shadow-lg shadow-red-500/50"></div>
+                <span className="text-sm font-semibold text-red-400">LIVE</span>
+              </div>
+              <div className="text-right">
+                <p className="text-lg font-bold text-primary">Ultra HD</p>
+                <p className="text-xs text-muted-foreground">{streamUrl?.includes('.mpd') ? 'DASH' : 'HLS'} • 1080p • 60fps</p>
+              </div>
             </div>
           </div>
-          
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 rounded-full border border-red-500/30">
-              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse shadow-lg shadow-red-500/50"></div>
-              <span className="text-sm font-semibold text-red-400">LIVE</span>
-            </div>
-            <div className="text-right">
-              <p className="text-lg font-bold text-primary">Ultra HD</p>
-              <p className="text-xs text-muted-foreground">1080p • 60fps</p>
-            </div>
-          </div>
-        </div>
 
         {/* Premium Video Player Container */}
         <div className="relative bg-black rounded-xl overflow-hidden aspect-video border-4 border-primary/20 shadow-2xl 
@@ -417,12 +426,18 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
                 <p className="text-red-400 text-lg font-semibold mb-2">Stream Interrupted</p>
                 <p className="text-white/80 text-sm mb-4">{error}</p>
                 {showExtensionOption && (
-                  <button
-                    onClick={openInExtension}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors mb-4"
-                  >
-                    🔗 Open in Extension Player
-                  </button>
+                  <div className="space-y-3">
+                    <button
+                      onClick={openInExtension}
+                      className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/25 flex items-center space-x-2 mx-auto"
+                    >
+                      <span className="text-xl">🎬</span>
+                      <span className="font-semibold">Open Extension Player</span>
+                    </button>
+                    <p className="text-xs text-white/60">
+                      For best MPD/DASH playback experience
+                    </p>
+                  </div>
                 )}
                 <div className="flex items-center justify-center space-x-2 text-xs text-white/60">
                   <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
@@ -465,8 +480,8 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
             <p className="text-lg font-bold text-green-500">Ultra Low</p>
           </div>
           <div className="bg-card/50 rounded-lg p-3 border border-border/50">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">Player</p>
-            <p className="text-lg font-bold text-accent">NS Pro</p>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Format</p>
+            <p className="text-lg font-bold text-accent">{streamUrl?.includes('.mpd') ? 'DASH/MPD' : 'HLS/M3U8'}</p>
           </div>
           <div className="bg-card/50 rounded-lg p-3 border border-border/50">
             <p className="text-xs text-muted-foreground uppercase tracking-wide">Status</p>
@@ -477,19 +492,30 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
         </div>
 
         {/* Premium Features Badge */}
-        <div className="mt-4 flex items-center justify-center space-x-4">
+        <div className="mt-4 flex flex-col items-center space-y-3">
           <div className="bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-full px-6 py-2 border border-primary/30">
             <span className="text-sm font-medium bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               ⚡ Premium Live Streaming • Zero Buffer • Real-time Experience
             </span>
           </div>
-          {streamUrl && (
-            <button
-              onClick={openInExtension}
-              className="bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 px-4 py-2 rounded-lg transition-colors text-sm"
-            >
-              🔗 Extension Player
-            </button>
+          {streamUrl && streamUrl.includes('.mpd') && (
+            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 max-w-md">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="text-2xl">🎬</span>
+                  <div>
+                    <p className="text-sm font-semibold text-blue-400">MPD/DASH Stream Detected</p>
+                    <p className="text-xs text-blue-300/70">Use extension for optimal playback</p>
+                  </div>
+                </div>
+                <button
+                  onClick={openInExtension}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors"
+                >
+                  Launch
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </Card>
