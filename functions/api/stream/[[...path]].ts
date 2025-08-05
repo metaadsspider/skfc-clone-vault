@@ -56,8 +56,16 @@ export async function onRequest(context: any) {
         'Sec-Fetch-Dest': 'empty',
         'Sec-Fetch-Mode': 'cors',
         'Sec-Fetch-Site': 'cross-site',
+        ...(pathSegments[0] === 'bbc' && {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Cache-Control': 'no-cache'
+        })
       },
     });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
 
     // Create new response with CORS headers
     const newResponse = new Response(response.body, {

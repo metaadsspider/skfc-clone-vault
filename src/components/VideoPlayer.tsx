@@ -77,6 +77,15 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
           enabled: true,
           useNetworkInformation: true,
           defaultBandwidthEstimate: 1000000
+        },
+        manifest: {
+          retryParameters: {
+            timeout: 10000,
+            maxAttempts: 4,
+            baseDelay: 1000,
+            backoffFactor: 2,
+            fuzzFactor: 0.5
+          }
         }
       });
 
