@@ -5,6 +5,7 @@ import { FancodeService } from '@/services/fancodeService';
 declare global {
   interface Window {
     Hls: any;
+    shaka: any;
   }
 }
 
@@ -16,6 +17,7 @@ interface VideoPlayerProps {
 export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<any>(null);
+  const shakaRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [streamUrl, setStreamUrl] = useState<string>("");
@@ -39,7 +41,66 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
     fetchStreamUrl();
   }, [matchId]);
 
-  const initNSPlayer = async () => {
+  const initDashPlayer = async () => {
+    if (!videoRef.current || !window.shaka || !streamUrl) return;
+
+    try {
+      console.log('Initializing DASH player with URL:', streamUrl);
+      setIsLoading(true);
+      setError(null);
+
+      // Destroy existing instance
+      if (shakaRef.current) {
+        await shakaRef.current.destroy();
+      }
+
+      const player = new window.shaka.Player(videoRef.current);
+      shakaRef.current = player;
+
+      // Configure player for low latency
+      player.configure({
+        streaming: {
+          lowLatencyMode: true,
+          inaccurateManifestTolerance: 0,
+          rebufferingGoal: 1,
+          bufferingGoal: 3,
+          bufferBehind: 5,
+          retryParameters: {
+            timeout: 10000,
+            maxAttempts: 4,
+            baseDelay: 1000,
+            backoffFactor: 2,
+            fuzzFactor: 0.5
+          }
+        },
+        abr: {
+          enabled: true,
+          useNetworkInformation: true,
+          defaultBandwidthEstimate: 1000000
+        }
+      });
+
+      player.addEventListener('error', (event: any) => {
+        console.error('DASH Player Error:', event.detail);
+        setError('Stream error occurred. Refreshing...');
+        setTimeout(() => initDashPlayer(), 3000);
+      });
+
+      player.addEventListener('buffering', (event: any) => {
+        setIsLoading(event.buffering);
+      });
+
+      await player.load(streamUrl);
+      setIsLoading(false);
+
+    } catch (err: any) {
+      console.error('DASH Player failed:', err);
+      setError(`Failed to load stream: ${err.message}`);
+      setIsLoading(false);
+    }
+  };
+
+  const initHlsPlayer = async () => {
     if (!videoRef.current || !window.Hls || !streamUrl) return;
 
     try {
@@ -121,7 +182,7 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
               default:
                 console.log('Fatal error, cannot recover');
                 setError('Stream error occurred. Refreshing...');
-                setTimeout(() => initNSPlayer(), 3000);
+                setTimeout(() => initHlsPlayer(), 3000);
                 break;
             }
           }
@@ -142,7 +203,7 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
       }
 
     } catch (err: any) {
-      console.error('NS Player failed:', err);
+      console.error('HLS Player failed:', err);
       setError(`Failed to load stream: ${err.message}`);
       setIsLoading(false);
     }
@@ -177,42 +238,81 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
       return;
     }
 
-    const loadHls = async () => {
-      if (!window.Hls) {
-        try {
-          const script = document.createElement('script');
-          script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
-          script.onload = () => {
-            console.log('HLS.js loaded successfully');
-            if (window.Hls.isSupported()) {
-              initNSPlayer();
-            } else {
-              initNativePlayer();
-            }
-          };
-          script.onerror = () => {
-            console.error('Failed to load HLS.js');
-            setError('Failed to load video player');
-          };
-          document.head.appendChild(script);
-        } catch (error) {
-          console.error('Error loading HLS script:', error);
-          setError('Failed to initialize video player');
+    const loadPlayer = async () => {
+      const isDashStream = streamUrl.includes('.mpd');
+      
+      if (isDashStream) {
+        // Load Shaka Player for DASH streams
+        if (!window.shaka) {
+          try {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/shaka-player@latest/dist/shaka-player.compiled.js';
+            script.onload = () => {
+              console.log('Shaka Player loaded successfully');
+              window.shaka.polyfill.installAll();
+              if (window.shaka.Player.isBrowserSupported()) {
+                initDashPlayer();
+              } else {
+                setError('DASH not supported in this browser');
+              }
+            };
+            script.onerror = () => {
+              console.error('Failed to load Shaka Player');
+              setError('Failed to load video player');
+            };
+            document.head.appendChild(script);
+          } catch (error) {
+            console.error('Error loading Shaka Player:', error);
+            setError('Failed to initialize video player');
+          }
+        } else {
+          if (window.shaka.Player.isBrowserSupported()) {
+            initDashPlayer();
+          } else {
+            setError('DASH not supported in this browser');
+          }
         }
       } else {
-        if (window.Hls.isSupported()) {
-          initNSPlayer();
+        // Load HLS.js for HLS streams
+        if (!window.Hls) {
+          try {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+            script.onload = () => {
+              console.log('HLS.js loaded successfully');
+              if (window.Hls.isSupported()) {
+                initHlsPlayer();
+              } else {
+                initNativePlayer();
+              }
+            };
+            script.onerror = () => {
+              console.error('Failed to load HLS.js');
+              setError('Failed to load video player');
+            };
+            document.head.appendChild(script);
+          } catch (error) {
+            console.error('Error loading HLS script:', error);
+            setError('Failed to initialize video player');
+          }
         } else {
-          initNativePlayer();
+          if (window.Hls.isSupported()) {
+            initHlsPlayer();
+          } else {
+            initNativePlayer();
+          }
         }
       }
     };
 
-    loadHls();
+    loadPlayer();
 
     return () => {
       if (hlsRef.current) {
         hlsRef.current.destroy();
+      }
+      if (shakaRef.current) {
+        shakaRef.current.destroy();
       }
     };
   }, [streamUrl]);

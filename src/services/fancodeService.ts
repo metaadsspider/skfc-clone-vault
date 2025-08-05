@@ -22,7 +22,7 @@ interface FancodeMatch {
 export class FancodeService {
   private static readonly FANCODE_BASE_URL = 'https://fancode.com';
   
-  // Live match from Hotstar
+  // Live match from BBC
   private static mockLiveMatches: FancodeMatch[] = [
     {
       id: "india-vs-england-5th-test",
@@ -42,7 +42,7 @@ export class FancodeService {
       buttonColor: "red",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "/api/stream/hotstar/hls/live/2027118/inallow-engvsind5test-2025/hin/1540044677/15mindvrm014e7647051a2a4f13bc1b7f72b763263c02august2025/master_ap_1080_5.m3u8"
+      streamUrl: "/api/stream/bbc/vs-cmaf-push-uk.live.fastly.md.bbci.co.uk/x=4/i=urn:bbc:pips:service:bbc_two_hd/pc_hd_abr_v2.mpd"
     }
   ];
 

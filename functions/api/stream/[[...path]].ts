@@ -29,6 +29,11 @@ export async function onRequest(context: any) {
       streamUrl = `https://live12p.hotstar.com/${pathSegments.slice(1).join('/')}`;
       referer = 'https://www.hotstar.com/';
       origin = 'https://www.hotstar.com';
+    } else if (pathSegments[0] === 'bbc') {
+      // Remove 'bbc' prefix and reconstruct BBC URL
+      streamUrl = `https://${pathSegments.slice(1).join('/')}`;
+      referer = 'https://www.bbc.com/';
+      origin = 'https://www.bbc.com';
     } else {
       streamUrl = `https://in-mc-pdlive.fancode.com/${streamPath}`;
       referer = 'https://fancode.com/';
