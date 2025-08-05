@@ -21,6 +21,7 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [streamUrl, setStreamUrl] = useState<string>("");
+  const [showExtensionOption, setShowExtensionOption] = useState(false);
 
   // Fetch stream URL from service
   useEffect(() => {
@@ -40,6 +41,13 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
     };
     fetchStreamUrl();
   }, [matchId]);
+
+  const openInExtension = () => {
+    // Get the original stream URL without proxy
+    const originalUrl = streamUrl.replace('/api/stream/bbc/', 'https://');
+    const extensionUrl = `chrome-extension://opmeopcambhfimffbomjgemehjkbbmji/pages/player.html#${originalUrl}`;
+    window.open(extensionUrl, '_blank');
+  };
 
   const initDashPlayer = async () => {
     if (!videoRef.current || !window.shaka || !streamUrl) return;
@@ -91,8 +99,8 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
       player.addEventListener('error', (event: any) => {
         console.error('DASH Player Error:', event.detail);
-        setError('Stream error occurred. Refreshing...');
-        setTimeout(() => initDashPlayer(), 3000);
+        setError('Stream error occurred. Try the extension player below.');
+        setShowExtensionOption(true);
       });
 
       player.addEventListener('buffering', (event: any) => {
@@ -190,8 +198,8 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
                 break;
               default:
                 console.log('Fatal error, cannot recover');
-                setError('Stream error occurred. Refreshing...');
-                setTimeout(() => initHlsPlayer(), 3000);
+                setError('Stream error occurred. Try the extension player below.');
+                setShowExtensionOption(true);
                 break;
             }
           }
@@ -408,9 +416,17 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
                 <div className="text-red-400 text-4xl mb-4">⚠️</div>
                 <p className="text-red-400 text-lg font-semibold mb-2">Stream Interrupted</p>
                 <p className="text-white/80 text-sm mb-4">{error}</p>
+                {showExtensionOption && (
+                  <button
+                    onClick={openInExtension}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors mb-4"
+                  >
+                    🔗 Open in Extension Player
+                  </button>
+                )}
                 <div className="flex items-center justify-center space-x-2 text-xs text-white/60">
                   <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                  <span>Attempting auto-recovery...</span>
+                  <span>Try the extension player above</span>
                 </div>
               </div>
             </div>
@@ -461,12 +477,20 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
         </div>
 
         {/* Premium Features Badge */}
-        <div className="mt-4 flex items-center justify-center">
+        <div className="mt-4 flex items-center justify-center space-x-4">
           <div className="bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-full px-6 py-2 border border-primary/30">
             <span className="text-sm font-medium bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               ⚡ Premium Live Streaming • Zero Buffer • Real-time Experience
             </span>
           </div>
+          {streamUrl && (
+            <button
+              onClick={openInExtension}
+              className="bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 px-4 py-2 rounded-lg transition-colors text-sm"
+            >
+              🔗 Extension Player
+            </button>
+          )}
         </div>
       </Card>
     </div>
