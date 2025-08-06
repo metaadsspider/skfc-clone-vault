@@ -22,7 +22,7 @@ interface FancodeMatch {
 export class FancodeService {
   private static readonly FANCODE_BASE_URL = 'https://fancode.com';
   
-  // Live match from BBC
+  // Live matches for Indian audience
   private static mockLiveMatches: FancodeMatch[] = [
     {
       id: "india-vs-england-5th-test",
@@ -42,7 +42,67 @@ export class FancodeService {
       buttonColor: "red",
       sportIcon: "🏏",
       status: "live",
-      streamUrl: "/api/stream/bbc/vs-cmaf-push-uk.live.fastly.md.bbci.co.uk/x=4/i=urn:bbc:pips:service:bbc_two_hd/pc_hd_abr_v2.mpd"
+      streamUrl: "/api/stream/hotstar/in-mc-pdlive/d1/cricket/live/india-vs-england/master.m3u8"
+    },
+    {
+      id: "mumbai-vs-chennai-ipl",
+      tournament: "IPL 2024 - Mumbai Indians vs Chennai Super Kings",
+      sport: "cricket",
+      team1: {
+        code: "MI",
+        name: "Mumbai Indians",
+        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-MI@2x.png"
+      },
+      team2: {
+        code: "CSK",
+        name: "Chennai Super Kings",
+        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-CSK@2x.png"
+      },
+      image: "https://img.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/9876/1753874079876-i",
+      buttonColor: "blue",
+      sportIcon: "🏏",
+      status: "live",
+      streamUrl: "/api/stream/hotstar/in-mc-pdlive/d2/cricket/ipl/mi-vs-csk/master.m3u8"
+    },
+    {
+      id: "india-vs-australia-odi",
+      tournament: "India vs Australia ODI Series - Match 3",
+      sport: "cricket",
+      team1: {
+        code: "IND",
+        name: "India",
+        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-IND@2x.png"
+      },
+      team2: {
+        code: "AUS",
+        name: "Australia",
+        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-AUS@2x.png"
+      },
+      image: "https://img.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/5432/1753874075432-i",
+      buttonColor: "green",
+      sportIcon: "🏏",
+      status: "upcoming",
+      streamUrl: "/api/stream/hotstar/in-mc-pdlive/d3/cricket/odi/ind-vs-aus/master.m3u8"
+    },
+    {
+      id: "kabaddi-india-league",
+      tournament: "Pro Kabaddi League - Patna Pirates vs Bengal Warriors",
+      sport: "kabaddi",
+      team1: {
+        code: "PAT",
+        name: "Patna Pirates",
+        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/kab-flags/FC-PAT@2x.png"
+      },
+      team2: {
+        code: "BEN",
+        name: "Bengal Warriors",
+        flag: "https://d13ir53smqqeyp.cloudfront.net/flags/kab-flags/FC-BEN@2x.png"
+      },
+      image: "https://img.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2468/1753874072468-i",
+      buttonColor: "purple",
+      sportIcon: "🤼",
+      status: "live",
+      streamUrl: "/api/stream/hotstar/in-mc-pdlive/d4/kabaddi/pkl/pat-vs-ben/master.m3u8"
     }
   ];
 
