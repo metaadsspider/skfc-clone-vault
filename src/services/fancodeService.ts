@@ -56,24 +56,24 @@ export class FancodeService {
   private static getFallbackMatches(): FancodeMatch[] {
     return [
       {
-        id: "india-vs-england-5th-test",
-        tournament: "India vs England 5th Test - Day 1",
+        id: "Nabajyoti Club VS City Cricket Club",
+        tournament: "GTC Spring T20 Cup, 2nd Edition, 2025",
         sport: "cricket",
         team1: {
-          code: "IND",
-          name: "India",
-          flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-IND@2x.png"
+          code: "CCC",
+          name: "City Cricket Club",
+          flag: "https://images.dream11.com/eyJrZXkiOiJmbGFncy9jci1mbGFncy9GQy1DQ0xCQDJ4LnBuZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJmaXQiOiJjb3ZlciIsIndpZHRoIjo2NCwiaGVpZ2h0Ijo2NH0sIndlYnAiOnsicXVhbGl0eSI6NjAsImxvc3NsZXNzIjpmYWxzZX19LCJvdXRwdXRGb3JtYXQiOiJ3ZWJwIn0="
         },
         team2: {
-          code: "ENG",
-          name: "England",
-          flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-ENG@2x.png"
+          code: "NBC",
+          name: "Nabajyoti Club",
+          flag: "https://images.dream11.com/eyJrZXkiOiJmbGFncy9jci1mbGFncy9GQy1OQkNAMngucG5nIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImNvdmVyIiwid2lkdGgiOjY0LCJoZWlnaHQiOjY0fSwid2VicCI6eyJxdWFsaXR5Ijo2MCwibG9zc2xlc3MiOmZhbHNlfX0sIm91dHB1dEZvcm1hdCI6IndlYnAifQ=="
         },
-        image: "https://img.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/3627/1753874073627-i",
+        image: "https://images.fancode.com/aig/match/v2/132411_CASACARDS_APP.png",
         buttonColor: "red",
         sportIcon: "🏏",
         status: "live",
-        streamUrl: "/api/stream/hotstar/in-mc-pdlive/d1/cricket/live/india-vs-england/master.m3u8"
+        streamUrl: "https://in-mc-fdlive.fancode.com/mumbai/132411_english_hls_52274ta-di_h264/index.m3u8"
       },
       {
         id: "mumbai-vs-chennai-ipl",
