@@ -82,7 +82,7 @@ export class FancodeService {
         buttonColor: "red",
         sportIcon: "🏏",
         status: "live",
-        streamUrl: "https://sonypartnersdaimenew.akamaized.net/hls/live/2005444/DAI08MENSHUN/master.m3u8"
+        streamUrl: "api/mumbai/133329_english_hls_93256ta-di_h264/index.m3u8"
       },
       {
         id: "London Spirit Women VS Welsh Fire Women",
