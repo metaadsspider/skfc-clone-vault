@@ -16,8 +16,9 @@ export async function onRequest(context: any) {
 
   try {
     // Reconstruct the FanCode API URL
-    const pathSegments = params.path || [];
-    const apiPath = pathSegments.join('/');
+    const pathParam = params?.path;
+    const pathSegments = Array.isArray(pathParam) ? pathParam : (pathParam ? String(pathParam).split('/') : []);
+    const apiPath = pathSegments.filter(Boolean).join('/');
     
     const fancodeUrl = `https://www.fancode.com/api/${apiPath}`;
     

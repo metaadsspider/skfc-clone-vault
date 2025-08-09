@@ -16,8 +16,9 @@ export async function onRequest(context: any) {
 
   try {
     // Reconstruct the original stream URL
-    const pathSegments = params.path || [];
-    const streamPath = pathSegments.join('/');
+    const pathParam = params?.path;
+    const pathSegments = Array.isArray(pathParam) ? pathParam : (pathParam ? String(pathParam).split('/') : []);
+    const streamPath = pathSegments.filter(Boolean).join('/');
     
     // Handle different stream sources
     let streamUrl: string;
