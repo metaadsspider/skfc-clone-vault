@@ -24,18 +24,28 @@ export class FancodeService {
   
   static async fetchLiveMatches(): Promise<FancodeMatch[]> {
     try {
-      // Fetch live matches from FanCode API
-      const response = await fetch(`${this.FANCODE_API_BASE}/live-matches`);
-      
-      if (!response.ok) {
-        console.warn('Failed to fetch from FanCode API, using fallback data');
-        return this.getFallbackMatches();
+      // Prefer external FanCode feed via CORS-safe proxy
+      const response = await fetch(`/api/fancode-external?i=1`);
+
+      if (response.ok) {
+        const data = await response.json();
+        const transformed = this.transformFancodeData(data);
+        if (Array.isArray(transformed) && transformed.length) {
+          return transformed;
+        }
+      } else {
+        console.warn('External FanCode feed failed, status:', response.status);
       }
-      
-      const data = await response.json();
-      
-      // Transform FanCode API response to our format
-      return this.transformFancodeData(data);
+
+      // Fallback to official FanCode API via our proxy
+      const fallbackResp = await fetch(`${this.FANCODE_API_BASE}/live-matches`);
+      if (fallbackResp.ok) {
+        const fallbackData = await fallbackResp.json();
+        return this.transformFancodeData(fallbackData);
+      }
+
+      console.warn('FanCode API proxy failed, using local fallback data');
+      return this.getFallbackMatches();
     } catch (error) {
       console.error('Error fetching matches from FanCode:', error);
       // Return fallback matches for Indian audience
