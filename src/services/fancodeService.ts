@@ -28,10 +28,19 @@ export class FancodeService {
       const response = await fetch(`/api/fancode-external?i=1`);
 
       if (response.ok) {
-        const data = await response.json();
-        const transformed = this.transformFancodeData(data);
-        if (Array.isArray(transformed) && transformed.length) {
-          return transformed;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          try {
+            const data = await response.json();
+            const transformed = this.transformFancodeData(data);
+            if (Array.isArray(transformed) && transformed.length) {
+              return transformed;
+            }
+          } catch (e) {
+            console.warn('External FanCode feed returned invalid JSON');
+          }
+        } else {
+          console.warn('External FanCode feed returned non-JSON response');
         }
       } else {
         console.warn('External FanCode feed failed, status:', response.status);
@@ -73,7 +82,7 @@ export class FancodeService {
         buttonColor: "red",
         sportIcon: "🏏",
         status: "live",
-        streamUrl: "https://in-mc-fdlive.fancode.com/mumbai/132411_english_hls_52274ta-di_h264/index.m3u8"
+        streamUrl: "/api/stream/mumbai/132411_english_hls_52274ta-di_h264/index.m3u8"
       },
       {
         id: "mumbai-vs-chennai-ipl",
@@ -141,7 +150,20 @@ export class FancodeService {
       buttonColor: this.getRandomButtonColor(),
       sportIcon: this.getSportIcon(match.sport),
       status: this.mapMatchStatus(match.status),
-      streamUrl: match.streamUrl ? `/api/stream/fancode/${match.streamUrl}` : undefined
+      streamUrl: (() => {
+        const u = match.streamUrl;
+        if (!u) return undefined;
+        try {
+          const s = String(u);
+          if (s.startsWith('http')) {
+            const urlObj = new URL(s);
+            return `/api/stream/${urlObj.pathname.replace(/^\//, '')}`;
+          }
+          return `/api/stream/${s.replace(/^\//, '')}`;
+        } catch {
+          return undefined;
+        }
+      })()
     }));
   }
 
@@ -181,7 +203,17 @@ export class FancodeService {
       }
       
       const data = await response.json();
-      return data.streamUrl ? `/api/stream/fancode/${data.streamUrl}` : null;
+      const s = String(data.streamUrl || '');
+      if (!s) return null;
+      try {
+        if (s.startsWith('http')) {
+          const urlObj = new URL(s);
+          return `/api/stream/${urlObj.pathname.replace(/^\//, '')}`;
+        }
+        return `/api/stream/${s.replace(/^\//, '')}`;
+      } catch {
+        return null;
+      }
     } catch (error) {
       console.error('Error fetching stream URL:', error);
       const fallbackMatch = this.getFallbackMatches().find(m => m.id === matchId);
