@@ -65,40 +65,40 @@ export class FancodeService {
   private static getFallbackMatches(): FancodeMatch[] {
     return [
       {
-        id: "Nabajyoti Club VS City Cricket Club",
-        tournament: "GTC Spring T20 Cup, 2nd Edition, 2025",
+        id: "Oval Invincibles VS Manchester Originals",
+        tournament: "The Hundred, 2025",
         sport: "cricket",
         team1: {
-          code: "CCC",
-          name: "City Cricket Club",
-          flag: "https://images.dream11.com/eyJrZXkiOiJmbGFncy9jci1mbGFncy9GQy1DQ0xCQDJ4LnBuZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJmaXQiOiJjb3ZlciIsIndpZHRoIjo2NCwiaGVpZ2h0Ijo2NH0sIndlYnAiOnsicXVhbGl0eSI6NjAsImxvc3NsZXNzIjpmYWxzZX19LCJvdXRwdXRGb3JtYXQiOiJ3ZWJwIn0="
+          code: "OVL",
+          name: "Oval Invincibles",
+          flag: "https://img1.hscicdn.com/image/upload/f_auto/lsci/db/PICTURES/CMS/317100/317111.png"
         },
         team2: {
-          code: "NBC",
-          name: "Nabajyoti Club",
-          flag: "https://images.dream11.com/eyJrZXkiOiJmbGFncy9jci1mbGFncy9GQy1OQkNAMngucG5nIiwiZWRpdHMiOnsicmVzaXplIjp7ImZpdCI6ImNvdmVyIiwid2lkdGgiOjY0LCJoZWlnaHQiOjY0fSwid2VicCI6eyJxdWFsaXR5Ijo2MCwibG9zc2xlc3MiOmZhbHNlfX0sIm91dHB1dEZvcm1hdCI6IndlYnAifQ=="
+          code: "MNR",
+          name: "Manchester Originals",
+          flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_w_1200,q_60/lsci/db/PICTURES/CMS/317100/317114.png"
         },
-        image: "https://images.fancode.com/aig/match/v2/132411_CASACARDS_APP.png",
+        image: "https://www.fancode.com/skillup-uploads/cms-media/132226_5505_OVI_MNR_fc-web.jpg",
         buttonColor: "red",
         sportIcon: "🏏",
         status: "live",
-        streamUrl: "/api/stream/mumbai/132411_english_hls_52274ta-di_h264/index.m3u8"
+        streamUrl: "https://sonypartnersdaimenew.akamaized.net/hls/live/2005444/DAI08MENSHUN/master.m3u8"
       },
       {
-        id: "mumbai-vs-chennai-ipl",
-        tournament: "IPL 2024 - Mumbai Indians vs Chennai Super Kings",
+        id: "London Spirit Women VS Welsh Fire Women",
+        tournament: "The Hundred Women, 2025",
         sport: "cricket",
         team1: {
-          code: "MI",
-          name: "Mumbai Indians",
-          flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-MI@2x.png"
+          code: "LNS-W",
+          name: "London Spirit Women",
+          flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_w_1200,q_60/lsci/db/PICTURES/CMS/317100/317119.png"
         },
         team2: {
-          code: "CSK",
-          name: "Chennai Super Kings",
-          flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-CSK@2x.png"
+          code: "WEF-W",
+          name: "Welsh Fire Women",
+          flag: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Welsh_Fire_logo.jpg"
         },
-        image: "https://img.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/9876/1753874079876-i",
+        image: "https://www.fancode.com/skillup-uploads/cms-media/132261_5506_WEF-W_LNS-W_Fc-Web.jpg",
         buttonColor: "blue",
         sportIcon: "🏏",
         status: "live",
