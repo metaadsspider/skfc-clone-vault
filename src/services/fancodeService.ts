@@ -49,8 +49,20 @@ export class FancodeService {
       // Fallback to official FanCode API via our proxy
       const fallbackResp = await fetch(`${this.FANCODE_API_BASE}/live-matches`);
       if (fallbackResp.ok) {
-        const fallbackData = await fallbackResp.json();
-        return this.transformFancodeData(fallbackData);
+        const contentType = fallbackResp.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          try {
+            const fallbackData = await fallbackResp.json();
+            const transformed = this.transformFancodeData(fallbackData);
+            if (Array.isArray(transformed) && transformed.length) {
+              return transformed;
+            }
+          } catch (e) {
+            console.warn('FanCode API proxy returned invalid JSON');
+          }
+        } else {
+          console.warn('FanCode API proxy returned non-JSON response');
+        }
       }
 
       console.warn('FanCode API proxy failed, using local fallback data');
@@ -82,7 +94,7 @@ export class FancodeService {
         buttonColor: "red",
         sportIcon: "🏏",
         status: "live",
-        streamUrl: "/api/mumbai/132763_english_hls_7178ta-di_h264/index.m3u8"
+        streamUrl: "/api/stream/mumbai/132763_english_hls_7178ta-di_h264/index.m3u8"
       },
       {
         id: "London Spirit Women VS Welsh Fire Women",
