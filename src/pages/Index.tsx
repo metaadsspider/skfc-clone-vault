@@ -31,7 +31,7 @@ const Index = () => {
   }, []);
 
   // YouTube highlights - add your video IDs here
-  const highlights: { id: "v=VryvrvQfjNw"; title?: "Three Half Centuries Not Enough To Seal The Win! | Highlights | West Indies v Pakistan | 1st ODI" }[] = [
+  const highlights: { id: string; title?: string }[] = [
     // { id: "M7lc1UVf-VE", title: "Sample Highlight" },
   ];
 
@@ -97,7 +97,7 @@ const Index = () => {
                   <AspectRatio ratio={16 / 9}>
                     <iframe
                       className="w-full h-full rounded-md"
-                      src={https://www.youtube.com/embed/${v.id}?rel=0}
+                      src={https://www.youtube.com/watch?v=VryvrvQfjNw}
                       title={v.title || "Match Highlight"}
                       loading="lazy"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
