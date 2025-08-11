@@ -31,7 +31,7 @@ const Index = () => {
   }, []);
 
   // YouTube highlights - add your video IDs here
-  const highlights: { id: string; title?: string }[] = [
+  const highlights: { id: "v=VryvrvQfjNw"; title?: "Three Half Centuries Not Enough To Seal The Win! | Highlights | West Indies v Pakistan | 1st ODI" }[] = [
     // { id: "M7lc1UVf-VE", title: "Sample Highlight" },
   ];
 
