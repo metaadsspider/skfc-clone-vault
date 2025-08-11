@@ -77,64 +77,64 @@ export class FancodeService {
   private static getFallbackMatches(): FancodeMatch[] {
     return [
       {
-        id: "Oval Invincibles VS Manchester Originals",
-        tournament: "The Hundred, 2025",
+        id: "Gulbarga Mystics VS Mangaluru Dragons",
+        tournament: "Maharaja T20 Trophy, 2025",
         sport: "cricket",
         team1: {
-          code: "OVL",
-          name: "Oval Invincibles",
-          flag: "https://img1.hscicdn.com/image/upload/f_auto/lsci/db/PICTURES/CMS/317100/317111.png"
+          code: "GMY",
+          name: "Gulbarga Mystics",
+          flag: "https://pbs.twimg.com/profile_images/1552595996219408385/YQzPKFjQ_400x400.jpg"
         },
         team2: {
-          code: "MNR",
-          name: "Manchester Originals",
-          flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_w_1200,q_60/lsci/db/PICTURES/CMS/317100/317114.png"
+          code: "MD",
+          name: "Mangaluru Dragons",
+          flag: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmeqoGxwDzYUtusnrRKLTMvyjj4Ah8vzNixA&s"
         },
-        image: "https://www.fancode.com/skillup-uploads/cms-media/132226_5505_OVI_MNR_fc-web.jpg",
+        image: "https://www.fancode.com/skillup-uploads/cms-media/132785_5530_GMY_MD_fc-Web.jpg",
         buttonColor: "red",
         sportIcon: "🏏",
-        status: "live",
+        status: "Upcoming",
         streamUrl: "/api/stream/mumbai/132763_english_hls_7178ta-di_h264/index.m3u8"
       },
       {
-        id: "London Spirit Women VS Welsh Fire Women",
-        tournament: "The Hundred Women, 2025",
+        id: "Kalyani Bengaluru Blasters VS Mysore Warriors",
+        tournament: "Maharaja T20 Trophy, 2025",
         sport: "cricket",
         team1: {
-          code: "LNS-W",
-          name: "London Spirit Women",
-          flag: "https://img1.hscicdn.com/image/upload/f_auto,t_ds_w_1200,q_60/lsci/db/PICTURES/CMS/317100/317119.png"
+          code: "BB",
+          name: "Kalyani Bengaluru Blasters",
+          flag: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB2ux3G0gGimrv_-CyIxI7vGsZMXfLZRMb-w&s"
         },
         team2: {
-          code: "WEF-W",
-          name: "Welsh Fire Women",
-          flag: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Welsh_Fire_logo.jpg"
+          code: "MW",
+          name: "Mysore Warriors",
+          flag: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrWtyJr9G17RymOfo2nfX47DhOGXz5m5tHOw&s"
         },
-        image: "https://www.fancode.com/skillup-uploads/cms-media/132261_5506_WEF-W_LNS-W_Fc-Web.jpg",
+        image: "https://www.fancode.com/skillup-uploads/cms-media/132786_5530_BB_MW_fc-Web.jpg",
         buttonColor: "blue",
         sportIcon: "🏏",
-        status: "live",
+        status: "Upcoming",
         streamUrl: "/api/stream/hotstar/in-mc-pdlive/d2/cricket/ipl/mi-vs-csk/master.m3u8"
       },
       {
-        id: "kabaddi-india-league",
-        tournament: "Pro Kabaddi League - Patna Pirates vs Bengal Warriors",
-        sport: "kabaddi",
+        id: "NA",
+        tournament: "NA",
+        sport: "Cricket",
         team1: {
-          code: "PAT",
-          name: "Patna Pirates",
-          flag: "https://d13ir53smqqeyp.cloudfront.net/flags/kab-flags/FC-PAT@2x.png"
+          code: "NA",
+          name: "NA",
+          flag: "NA"
         },
         team2: {
-          code: "BEN",
-          name: "Bengal Warriors",
-          flag: "https://d13ir53smqqeyp.cloudfront.net/flags/kab-flags/FC-BEN@2x.png"
+          code: "NA",
+          name: "NA",
+          flag: "NA"
         },
-        image: "https://img.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2468/1753874072468-i",
+        image: "NA",
         buttonColor: "purple",
         sportIcon: "🤼",
-        status: "live",
-        streamUrl: "/api/stream/hotstar/in-mc-pdlive/d4/kabaddi/pkl/pat-vs-ben/master.m3u8"
+        status: "Upcoming",
+        streamUrl: "NA"
       }
     ];
   }
