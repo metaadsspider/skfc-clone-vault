@@ -33,6 +33,8 @@ const Index = () => {
   // YouTube highlights - add your video IDs and optional titles here
   const highlights: { id: string; title?: string }[] = [
     { id: "VryvrvQfjNw", title: "Three Half Centuries Not Enough To Seal The Win! | Highlights | West Indies v Pakistan | 1st ODI" },
+    { id: "mINmI2Tgelg", title: "Ireland v ​Pakistan Women 3rd T20I, 202​5 | Match Highlights" },
+    { id: "oyW8MUM39cQ", title: "Australia v South Africa 2025-26 | First T20I" },
     // { id: "AnotherID", title: "Another Highlight" },
   ];
 
