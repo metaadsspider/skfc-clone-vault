@@ -6,6 +6,13 @@ import { FancodeService } from "@/services/fancodeService";
 import { Match } from "@/data/matches";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 
+// Helper to extract YouTube video ID from URL or ID input
+function extractYoutubeID(input: string) {
+  const urlPattern = /(?:youtu\.be\/|youtube\.com\/.*v=)([^&\n?#]+)/;
+  const match = input.match(urlPattern);
+  return match ? match[1] : input;
+}
+
 const Index = () => {
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -17,29 +24,40 @@ const Index = () => {
         const liveMatches = await FancodeService.fetchLiveMatches();
         setMatches(liveMatches);
       } catch (error) {
-        console.error('Error fetching matches:', error);
+        console.error("Error fetching matches:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchMatches();
-    
-    // Refresh matches every 30 seconds
     const interval = setInterval(fetchMatches, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // YouTube highlights - add your video IDs here
-  const highlights: { id: string; title?: string }[] = [
-    // { id: "M7lc1UVf-VE", title: "Sample Highlight" },
+  // Add your full YouTube URLs (or just video IDs) here:
+  const highlightsInput: { raw: string; title?: string }[] = [
+  { 
+    raw: "https://youtu.be/VryvrvQfjNw?si=U35NbarYAkADX553", 
+    title: "Three Half Centuries Not Enough To Seal The Win! | Highlights | West Indies v Pakistan | 1st ODI" 
+  },
+];
+
+    // Example with just ID:
+    // { raw: "M7lc1UVf-VE", title: "Another Highlight" },
   ];
+
+  // Convert raw input into structured { id, title }
+  const highlights = highlightsInput.map((v) => ({
+    id: extractYoutubeID(v.raw),
+    title: v.title,
+  }));
 
   return (
     <div className="min-h-screen bg-background smooth-scroll">
       <TelegramPopup />
       <Header />
-      
+
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6 text-center animate-fade-in">
           <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-accent to-fc-cyan bg-clip-text text-transparent">
@@ -50,6 +68,7 @@ const Index = () => {
           </p>
         </div>
 
+        {/* Live Matches Section */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, index) => (
@@ -79,14 +98,20 @@ const Index = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No live matches available at the moment.</p>
-            <p className="text-sm text-muted-foreground mt-2">Check back soon for live sports streaming!</p>
+            <p className="text-muted-foreground text-lg">
+              No live matches available at the moment.
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Check back soon for live sports streaming!
+            </p>
           </div>
         )}
 
         {/* Highlights Section */}
         <section aria-labelledby="highlights-heading" className="mt-16 animate-fade-in">
-          <h2 id="highlights-heading" className="text-2xl font-bold mb-4">Match Highlights</h2>
+          <h2 id="highlights-heading" className="text-2xl font-bold mb-4">
+            Match Highlights
+          </h2>
           {highlights.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {highlights.map((v) => (
@@ -116,7 +141,9 @@ const Index = () => {
           ) : (
             <div className="text-center py-8 border border-dashed border-border rounded-lg text-muted-foreground">
               <p>No highlights yet.</p>
-              <p className="text-xs mt-2">Add YouTube video IDs in the "highlights" array on the home page.</p>
+              <p className="text-xs mt-2">
+                Add YouTube URLs or video IDs in the "highlightsInput" array above.
+              </p>
             </div>
           )}
         </section>
