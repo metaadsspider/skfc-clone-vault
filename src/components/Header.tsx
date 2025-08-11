@@ -26,7 +26,7 @@ export const Header = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl font-bold text-accent hover:scale-105 transition-transform duration-300 cursor-pointer">
-            SKULL CRICK NEWS
+            Crick On Time
           </h1>
         </div>
         
