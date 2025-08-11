@@ -17,30 +17,32 @@ const Index = () => {
         const liveMatches = await FancodeService.fetchLiveMatches();
         setMatches(liveMatches);
       } catch (error) {
-        console.error('Error fetching matches:', error);
+        console.error("Error fetching matches:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchMatches();
-    
+
     // Refresh matches every 30 seconds
     const interval = setInterval(fetchMatches, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // YouTube highlights - add your video IDs here
+  // YouTube highlights - add your video IDs and optional titles here
   const highlights: { id: string; title?: string }[] = [
-    // { id: "M7lc1UVf-VE", title: "Sample Highlight" },
+    { id: "VryvrvQfjNw", title: "Three Half Centuries Not Enough To Seal The Win! | Highlights | West Indies v Pakistan | 1st ODI" },
+    // { id: "AnotherID", title: "Another Highlight" },
   ];
 
   return (
     <div className="min-h-screen bg-background smooth-scroll">
       <TelegramPopup />
       <Header />
-      
+
       <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* Live Matches Header */}
         <div className="mb-6 text-center animate-fade-in">
           <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-accent to-fc-cyan bg-clip-text text-transparent">
             Live Sports Streaming
@@ -50,10 +52,14 @@ const Index = () => {
           </p>
         </div>
 
+        {/* Live Matches Section */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, index) => (
-              <div key={index} className="bg-card rounded-lg p-4 animate-pulse">
+              <div
+                key={index}
+                className="bg-card rounded-lg p-4 animate-pulse"
+              >
                 <div className="h-32 bg-muted rounded mb-4"></div>
                 <div className="h-4 bg-muted rounded mb-2"></div>
                 <div className="h-4 bg-muted rounded w-3/4"></div>
@@ -79,14 +85,26 @@ const Index = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No live matches available at the moment.</p>
-            <p className="text-sm text-muted-foreground mt-2">Check back soon for live sports streaming!</p>
+            <p className="text-muted-foreground text-lg">
+              No live matches available at the moment.
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Check back soon for live sports streaming!
+            </p>
           </div>
         )}
 
         {/* Highlights Section */}
-        <section aria-labelledby="highlights-heading" className="mt-16 animate-fade-in">
-          <h2 id="highlights-heading" className="text-2xl font-bold mb-4">Match Highlights</h2>
+        <section
+          aria-labelledby="highlights-heading"
+          className="mt-16 animate-fade-in"
+        >
+          <h2
+            id="highlights-heading"
+            className="text-2xl font-bold mb-4"
+          >
+            Match Highlights
+          </h2>
           {highlights.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {highlights.map((v) => (
@@ -97,7 +115,7 @@ const Index = () => {
                   <AspectRatio ratio={16 / 9}>
                     <iframe
                       className="w-full h-full rounded-md"
-                      src={https://www.youtube.com/watch?v=VryvrvQfjNw}
+                      src={`https://www.youtube.com/embed/${v.id}`}
                       title={v.title || "Match Highlight"}
                       loading="lazy"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -116,7 +134,9 @@ const Index = () => {
           ) : (
             <div className="text-center py-8 border border-dashed border-border rounded-lg text-muted-foreground">
               <p>No highlights yet.</p>
-              <p className="text-xs mt-2">Add YouTube video IDs in the "highlights" array on the home page.</p>
+              <p className="text-xs mt-2">
+                Add YouTube video IDs in the "highlights" array on the home page.
+              </p>
             </div>
           )}
         </section>
