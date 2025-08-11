@@ -4,6 +4,7 @@ import { MatchCard } from "@/components/MatchCard";
 import { TelegramPopup } from "@/components/TelegramPopup";
 import { FancodeService } from "@/services/fancodeService";
 import { Match } from "@/data/matches";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 const Index = () => {
   const [matches, setMatches] = useState<Match[]>([]);
@@ -28,6 +29,11 @@ const Index = () => {
     const interval = setInterval(fetchMatches, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  // YouTube highlights - add your video IDs here
+  const highlights: { id: string; title?: string }[] = [
+    // { id: "M7lc1UVf-VE", title: "Sample Highlight" },
+  ];
 
   return (
     <div className="min-h-screen bg-background smooth-scroll">
@@ -77,6 +83,43 @@ const Index = () => {
             <p className="text-sm text-muted-foreground mt-2">Check back soon for live sports streaming!</p>
           </div>
         )}
+
+        {/* Highlights Section */}
+        <section aria-labelledby="highlights-heading" className="mt-16 animate-fade-in">
+          <h2 id="highlights-heading" className="text-2xl font-bold mb-4">Match Highlights</h2>
+          {highlights.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {highlights.map((v) => (
+                <article
+                  key={v.id}
+                  className="bg-card rounded-lg shadow-sm border border-border overflow-hidden"
+                >
+                  <AspectRatio ratio={16 / 9}>
+                    <iframe
+                      className="w-full h-full rounded-md"
+                      src={`https://www.youtube.com/embed/${v.id}?rel=0`}
+                      title={v.title || "Match Highlight"}
+                      loading="lazy"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    />
+                  </AspectRatio>
+                  {v.title ? (
+                    <div className="p-3">
+                      <h3 className="text-sm font-medium">{v.title}</h3>
+                    </div>
+                  ) : null}
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 border border-dashed border-border rounded-lg text-muted-foreground">
+              <p>No highlights yet.</p>
+              <p className="text-xs mt-2">Add YouTube video IDs in the "highlights" array on the home page.</p>
+            </div>
+          )}
+        </section>
 
         {/* Footer */}
         <footer className="mt-16 text-center text-muted-foreground animate-fade-in">
