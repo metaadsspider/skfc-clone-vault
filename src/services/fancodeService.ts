@@ -93,8 +93,8 @@ export class FancodeService {
         image: "https://www.fancode.com/skillup-uploads/cms-media/132785_5530_GMY_MD_fc-Web.jpg",
         buttonColor: "red",
         sportIcon: "🏏",
-        status: "Upcoming",
-        streamUrl: "/api/stream/mumbai/132763_english_hls_7178ta-di_h264/index.m3u8"
+        status: "live",
+        streamUrl: "/api/stream/mumbai/132785_english_hls_16220ta-di_h264/index.m3u8"
       },
       {
         id: "Kalyani Bengaluru Blasters VS Mysore Warriors",
@@ -113,7 +113,7 @@ export class FancodeService {
         image: "https://www.fancode.com/skillup-uploads/cms-media/132786_5530_BB_MW_fc-Web.jpg",
         buttonColor: "blue",
         sportIcon: "🏏",
-        status: "Upcoming",
+        status: "upcoming",
         streamUrl: "/api/stream/hotstar/in-mc-pdlive/d2/cricket/ipl/mi-vs-csk/master.m3u8"
       },
       {
@@ -133,7 +133,7 @@ export class FancodeService {
         image: "NA",
         buttonColor: "purple",
         sportIcon: "🤼",
-        status: "Upcoming",
+        status: "upcoming",
         streamUrl: "NA"
       }
     ];
