@@ -16,34 +16,27 @@ interface MatchCardProps {
   image: string;
   buttonColor: 'red' | 'purple' | 'green' | 'blue';
   sportIcon: string;
-  // Prop for the M3U8 link
-  m3u8Url?: string | null;
 }
 
-export const MatchCard = ({
-  id,
-  tournament,
-  sport,
-  team1,
-  team2,
-  image,
+export const MatchCard = ({ 
+  id, 
+  tournament, 
+  sport, 
+  team1, 
+  team2, 
+  image, 
   buttonColor,
   sportIcon,
-  m3u8Url, // Now accepting the m3u8Url prop
-  index = 0
+  index = 0 
 }: MatchCardProps & { index?: number }) => {
-  // Check if the m3u8Url is exactly "index.m3u8"
-  const isLive = m3u8Url === 'index.m3u8';
-
   const handleWatchLive = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Only navigate if the match is live.
-    if (isLive) {
-      window.location.href = `/play?id=${id}`;
-    }
+    // Navigate to internal play page
+    window.location.href = `/play?id=${id}`;
   };
 
   const handleCardClick = () => {
+    // Navigate to internal play page
     window.location.href = `/play?id=${id}`;
   };
 
@@ -57,18 +50,15 @@ export const MatchCard = ({
     }
   };
 
-  // Define a disabled button style for "Upcoming" matches.
-  const disabledButtonClass = 'bg-gray-700 text-gray-400 cursor-not-allowed';
-
   return (
-    <div
+    <div 
       className="match-card group cursor-pointer card-stagger"
       style={{ '--stagger': index } as React.CSSProperties}
       onClick={handleCardClick}
     >
       <div className="relative">
-        <img
-          src={image}
+        <img 
+          src={image} 
           alt={`${team1.name} vs ${team2.name}`}
           className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
@@ -83,8 +73,8 @@ export const MatchCard = ({
         {/* Teams section with enhanced styling */}
         <div className="absolute bottom-0 left-0 right-0 team-vs">
           <div className="flex items-center space-x-3 group">
-            <img
-              src={team1.flag}
+            <img 
+              src={team1.flag} 
               alt={team1.code}
               className="team-logo"
               loading="lazy"
@@ -100,8 +90,8 @@ export const MatchCard = ({
             <span className="text-white font-bold text-lg transition-all duration-300 group-hover:text-accent">
               {team2.code}
             </span>
-            <img
-              src={team2.flag}
+            <img 
+              src={team2.flag} 
               alt={team2.code}
               className="team-logo"
               loading="lazy"
@@ -109,24 +99,18 @@ export const MatchCard = ({
           </div>
         </div>
 
-        {/* Conditionally render the "LIVE" indicator */}
-        {isLive && (
-          <div className="absolute top-3 right-3 bg-fc-red text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse-slow">
-            🔴 LIVE
-          </div>
-        )}
+        {/* Live indicator */}
+        <div className="absolute top-3 right-3 bg-fc-red text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse-slow">
+          🔴 LIVE
+        </div>
       </div>
       
       <div className="p-0">
-        {/* Conditionally render the button based on live status */}
-        <Button
+        <Button 
           onClick={handleWatchLive}
-          disabled={!isLive}
-          className={`watch-live-btn rounded-none rounded-b-xl ${isLive ? getButtonColorClass(buttonColor) : disabledButtonClass}`}
+          className={`watch-live-btn rounded-none rounded-b-xl ${getButtonColorClass(buttonColor)}`}
         >
-          <span className="relative z-10">
-            {isLive ? 'WATCH LIVE' : 'UPCOMING'}
-          </span>
+          <span className="relative z-10">WATCH LIVE</span>
         </Button>
       </div>
     </div>
