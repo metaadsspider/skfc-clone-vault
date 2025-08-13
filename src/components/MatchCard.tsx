@@ -18,6 +18,8 @@ interface MatchCardProps {
   sportIcon: string;
   // New prop for the M3U8 link
   m3u8Url?: string | null;
+  // New prop for the live time
+  liveTime?: string | null;
 }
 
 export const MatchCard = ({
@@ -29,11 +31,12 @@ export const MatchCard = ({
   image,
   buttonColor,
   sportIcon,
-  m3u8Url, // Now accepting the m3u8Url prop
+  m3u8Url,
+  liveTime, // Now accepting the liveTime prop
   index = 0
 }: MatchCardProps & { index?: number }) => {
-  // Check if the stream is live by verifying if the m3u8Url exists and is not empty.
-  const isLive = m3u8Url && m3u8Url.trim() !== '';
+  // Check if the m3u8Url exists AND if the current time is past the liveTime.
+  const isLive = m3u8Url && m3u8Url.trim() !== '' && liveTime && new Date(liveTime) <= new Date();
 
   const handleWatchLive = (e: React.MouseEvent) => {
     e.preventDefault();
