@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from "@/components/ui/card";
-import { FancodeService } from '@/services/fancodeService';
 
 declare global {
   interface Window {
@@ -336,189 +335,84 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
-        {/* Premium Player Header */}
-        <Card className="p-6 bg-gradient-to-r from-background via-background to-background border-2 border-primary/20">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-2 rounded-full bg-primary/10">
-                <span className="text-2xl">🏏</span>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  {matchTitle}
-                </h2>
-                <p className="text-sm text-muted-foreground">World Championship of Legends 2025</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              {streamUrl && streamUrl.includes('.mpd') && (
-                <button
-                  onClick={openInExtension}
-                  className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-full border border-blue-500/30 transition-all duration-300 shadow-lg shadow-blue-500/25"
-                >
-                  <span className="text-lg">🎬</span>
-                  <span className="font-semibold">Extension Player</span>
-                </button>
-              )}
-              <div className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 rounded-full border border-red-500/30">
-                <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse shadow-lg shadow-red-500/50"></div>
-                <span className="text-sm font-semibold text-red-400">LIVE</span>
-              </div>
-              <div className="text-right">
-                <p className="text-lg font-bold text-primary">Ultra HD</p>
-                <p className="text-xs text-muted-foreground">{streamUrl?.includes('.mpd') ? 'DASH' : 'HLS'} • 1080p • 60fps</p>
-              </div>
-            </div>
-          </div>
-
-        {/* Premium Video Player Container */}
-        <div className="relative bg-black rounded-xl overflow-hidden aspect-video border-4 border-primary/20 shadow-2xl 
-                        mobile-video-container">
-          <style dangerouslySetInnerHTML={{
-            __html: `
+      
+      {/* Premium Video Player Container */}
+      <div className="relative bg-black rounded-xl overflow-hidden aspect-video border-4 border-primary/20 shadow-2xl mobile-video-container">
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            .mobile-video-container {
+              aspect-ratio: 16/9;
+            }
+            @media (max-width: 768px) {
               .mobile-video-container {
-                aspect-ratio: 16/9;
+                aspect-ratio: 16/9 !important;
+                max-height: 60vh;
+                width: 100vw;
+                margin-left: calc(-50vw + 50%);
+                border-radius: 0;
+                border: none;
               }
-              @media (max-width: 768px) {
-                .mobile-video-container {
-                  aspect-ratio: 16/9 !important;
-                  max-height: 60vh;
-                  width: 100vw;
-                  margin-left: calc(-50vw + 50%);
-                  border-radius: 0;
-                  border: none;
-                }
+            }
+            @media (orientation: portrait) and (max-width: 768px) {
+              .mobile-video-container {
+                aspect-ratio: 16/9 !important;
+                height: auto;
+                max-height: 50vh;
               }
-              @media (orientation: portrait) and (max-width: 768px) {
-                .mobile-video-container {
-                  aspect-ratio: 16/9 !important;
-                  height: auto;
-                  max-height: 50vh;
-                }
+            }
+            @media (orientation: landscape) and (max-width: 768px) {
+              .mobile-video-container {
+                max-height: 85vh;
               }
-              @media (orientation: landscape) and (max-width: 768px) {
-                .mobile-video-container {
-                  max-height: 85vh;
-                }
-              }
-            `
-          }} />
-          {/* Premium Loading Overlay */}
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/90 via-primary/20 to-black/90 z-10 backdrop-blur-sm">
-              <div className="text-center">
-                <div className="relative">
-                  <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4 shadow-lg shadow-primary/50"></div>
-                  <div className="absolute inset-0 w-12 h-12 border-4 border-accent/30 rounded-full mx-auto animate-pulse"></div>
-                </div>
-                <p className="text-white text-lg font-semibold">Loading Premium Stream...</p>
-                <p className="text-primary text-sm mt-1">Ultra Low Latency Mode</p>
+            }
+          `
+        }} />
+        {/* Premium Loading Overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/90 via-primary/20 to-black/90 z-10 backdrop-blur-sm">
+            <div className="text-center">
+              <div className="relative">
+                <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4 shadow-lg shadow-primary/50"></div>
+                <div className="absolute inset-0 w-12 h-12 border-4 border-accent/30 rounded-full mx-auto animate-pulse"></div>
               </div>
+              <p className="text-white text-lg font-semibold">Loading Premium Stream...</p>
+              <p className="text-primary text-sm mt-1">Ultra Low Latency Mode</p>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Premium Error Overlay */}
-          {error && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/90 via-red-500/20 to-black/90 z-10 backdrop-blur-sm">
-              <div className="text-center max-w-md p-6 bg-black/60 rounded-xl border border-red-500/30">
-                <div className="text-red-400 text-4xl mb-4">⚠️</div>
-                <p className="text-red-400 text-lg font-semibold mb-2">Stream Interrupted</p>
-                <p className="text-white/80 text-sm mb-4">{error}</p>
-                {showExtensionOption && (
-                  <div className="space-y-3">
-                    <button
-                      onClick={openInExtension}
-                      className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/25 flex items-center space-x-2 mx-auto"
-                    >
-                      <span className="text-xl">🎬</span>
-                      <span className="font-semibold">Open Extension Player</span>
-                    </button>
-                    <p className="text-xs text-white/60">
-                      For best MPD/DASH playback experience
-                    </p>
-                  </div>
-                )}
-                <div className="flex items-center justify-center space-x-2 text-xs text-white/60">
-                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                  <span>Try the extension player above</span>
-                </div>
-              </div>
+        {/* Premium Error Overlay */}
+        {error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/90 via-red-500/20 to-black/90 z-10 backdrop-blur-sm">
+            <div className="text-center max-w-md p-6 bg-black/60 rounded-xl border border-red-500/30">
+              <div className="text-red-400 text-4xl mb-4">⚠️</div>
+              <p className="text-red-400 text-lg font-semibold mb-2">Stream Interrupted</p>
+              <p className="text-white/80 text-sm mb-4">{error}</p>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Premium Video Element */}
-          <video
-            ref={videoRef}
-            className="w-full h-full object-cover"
-            controls
-            playsInline
-            webkit-playsinline="true"
-            muted
-            autoPlay
-            preload="metadata"
-            crossOrigin="anonymous"
-            style={{ 
-              width: '100%', 
-              height: '100%',
-              objectFit: 'contain'
-            }}
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23000;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23333;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23grad1)'/%3E%3Ctext x='960' y='540' font-family='Arial,sans-serif' font-size='48' fill='%23fff' text-anchor='middle' opacity='0.8'%3E🏏 Premium Live Stream%3C/text%3E%3C/svg%3E"
-          >
-            Your browser does not support the video tag.
-          </video>
-        </div>
-
-        {/* Premium Stream Stats */}
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">Quality</p>
-            <p className="text-lg font-bold text-primary">1080p HD</p>
-          </div>
-          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">Latency</p>
-            <p className="text-lg font-bold text-green-500">Ultra Low</p>
-          </div>
-          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">Format</p>
-            <p className="text-lg font-bold text-accent">{streamUrl?.includes('.mpd') ? 'DASH/MPD' : 'HLS/M3U8'}</p>
-          </div>
-          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">Status</p>
-            <p className={`text-lg font-bold ${!error ? 'text-green-500' : 'text-red-500'}`}>
-              {!error ? 'Live' : 'Error'}
-            </p>
-          </div>
-        </div>
-
-        {/* Premium Features Badge */}
-        <div className="mt-4 flex flex-col items-center space-y-3">
-          <div className="bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-full px-6 py-2 border border-primary/30">
-            <span className="text-sm font-medium bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              ⚡ Premium Live Streaming • Zero Buffer • Real-time Experience
-            </span>
-          </div>
-          {streamUrl && streamUrl.includes('.mpd') && (
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 max-w-md">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl">🎬</span>
-                  <div>
-                    <p className="text-sm font-semibold text-blue-400">MPD/DASH Stream Detected</p>
-                    <p className="text-xs text-blue-300/70">Use extension for optimal playback</p>
-                  </div>
-                </div>
-                <button
-                  onClick={openInExtension}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors"
-                >
-                  Launch
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </Card>
+        {/* Premium Video Element */}
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover"
+          controls
+          playsInline
+          webkit-playsinline="true"
+          muted
+          autoPlay
+          preload="metadata"
+          crossOrigin="anonymous"
+          style={{ 
+            width: '100%', 
+            height: '100%',
+            objectFit: 'contain'
+          }}
+          poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23000;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23333;stop-opacity:1' /%3E%3C/linearGradient%3E%3Crect width='1920' height='1080' fill='url(%23grad1)'/%3E%3Ctext x='960' y='540' font-family='Arial,sans-serif' font-size='48' fill='%23fff' text-anchor='middle' opacity='0.8'%3E🏏 Premium Live Stream%3C/text%3E%3C/svg%3E"
+        >
+          Your browser does not support the video tag.
+        </video>
+      </div>
     </div>
   );
 };
