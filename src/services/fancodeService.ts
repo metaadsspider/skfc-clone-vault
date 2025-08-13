@@ -21,80 +21,10 @@ interface FancodeMatch {
 
 export class FancodeService {
   private static readonly FANCODE_API_BASE = '/api/fancode';
-  private static readonly REFRESH_INTERVAL_MS = 30000; // 30 seconds
-
-  // A list of listeners to notify when new data is available
-  private static listeners: ((matches: FancodeMatch[]) => void)[] = [];
-  // A variable to hold the interval ID so we can clear it later
-  private static intervalId: number | null = null;
-  // Cache the last fetched data to serve new listeners immediately
-  private static cachedMatches: FancodeMatch[] = [];
-
-  /**
-   * Subscribes a listener to receive match data updates every 30 seconds.
-   * @param listener The function to call with the updated match list.
-   * @returns A function to unsubscribe the listener.
-   */
-  static subscribe(listener: (matches: FancodeMatch[]) => void): () => void {
-    // Add the listener
-    this.listeners.push(listener);
-
-    // Immediately call the listener with cached data if available
-    if (this.cachedMatches.length > 0) {
-      listener(this.cachedMatches);
-    }
-
-    // Start the interval if it's not already running
-    if (this.intervalId === null) {
-      this.startFetching();
-    }
-
-    // Return an unsubscribe function
-    return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
-      // If no more listeners, stop the fetching interval
-      if (this.listeners.length === 0 && this.intervalId !== null) {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-        console.log('Stopped fetching live matches due to no active listeners.');
-      }
-    };
-  }
-
-  /**
-   * Starts the automatic fetching process.
-   * This is called internally when the first listener is subscribed.
-   */
-  private static startFetching() {
-    console.log('Starting automatic fetching of live matches every 30 seconds.');
-    // Fetch data immediately
-    this.fetchAndNotify();
-    // Set up the interval for subsequent fetches
-    this.intervalId = window.setInterval(this.fetchAndNotify.bind(this), this.REFRESH_INTERVAL_MS);
-  }
-
-  /**
-   * Fetches the data and notifies all active listeners.
-   */
-  private static async fetchAndNotify() {
-    try {
-      const matches = await this.fetchLiveMatches();
-      // Cache the new data
-      this.cachedMatches = matches;
-      // Notify all listeners
-      this.listeners.forEach(listener => listener(matches));
-    } catch (error) {
-      console.error('Error during periodic fetch:', error);
-      // Optionally notify listeners of an error state or provide the last known data
-    }
-  }
-
-  /**
-   * Fetches live matches from the API with fallback logic.
-   * @returns A promise that resolves to an array of FancodeMatch objects.
-   */
+  
   static async fetchLiveMatches(): Promise<FancodeMatch[]> {
     try {
+      // Prefer external FanCode feed via CORS-safe proxy
       const response = await fetch(`/api/fancode-external?i=1`);
 
       if (response.ok) {
@@ -104,7 +34,6 @@ export class FancodeService {
             const data = await response.json();
             const transformed = this.transformFancodeData(data);
             if (Array.isArray(transformed) && transformed.length) {
-              console.log('Successfully fetched matches from external feed.');
               return transformed;
             }
           } catch (e) {
@@ -117,6 +46,7 @@ export class FancodeService {
         console.warn('External FanCode feed failed, status:', response.status);
       }
 
+      // Fallback to official FanCode API via our proxy
       const fallbackResp = await fetch(`${this.FANCODE_API_BASE}/live-matches`);
       if (fallbackResp.ok) {
         const contentType = fallbackResp.headers.get('content-type') || '';
@@ -125,7 +55,6 @@ export class FancodeService {
             const fallbackData = await fallbackResp.json();
             const transformed = this.transformFancodeData(fallbackData);
             if (Array.isArray(transformed) && transformed.length) {
-              console.log('Successfully fetched matches from FanCode API proxy.');
               return transformed;
             }
           } catch (e) {
@@ -136,10 +65,11 @@ export class FancodeService {
         }
       }
 
-      console.warn('All API feeds failed, using local fallback data');
+      console.warn('FanCode API proxy failed, using local fallback data');
       return this.getFallbackMatches();
     } catch (error) {
-      console.error('Error fetching matches:', error);
+      console.error('Error fetching matches from FanCode:', error);
+      // Return fallback matches for Indian audience
       return this.getFallbackMatches();
     }
   }
