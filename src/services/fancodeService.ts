@@ -17,14 +17,26 @@ interface FancodeMatch {
   sportIcon: string;
   status: 'live' | 'upcoming' | 'completed';
   streamUrl?: string;
+  startTime?: string; // ⬅ added for countdown
 }
 
 export class FancodeService {
   private static readonly FANCODE_API_BASE = '/api/fancode';
-  
+  private static readonly CUSTOM_JSON_URL = 'https://raw.githubusercontent.com/drmlive/fancode-live-events/refs/heads/main/fancode.json'; // ⬅ your JSON
+
   static async fetchLiveMatches(): Promise<FancodeMatch[]> {
     try {
-      // Prefer external FanCode feed via CORS-safe proxy
+      // 🔥 1. First try your custom GitHub JSON
+      const customResp = await fetch(this.CUSTOM_JSON_URL);
+      if (customResp.ok) {
+        const customData = await customResp.json();
+        if (Array.isArray(customData)) {
+          const transformed = this.transformCustomJson(customData);
+          if (transformed.length) return transformed;
+        }
+      }
+
+      // 🔥 2. Then try external FanCode feed
       const response = await fetch(`/api/fancode-external?i=1`);
 
       if (response.ok) {
@@ -39,14 +51,10 @@ export class FancodeService {
           } catch (e) {
             console.warn('External FanCode feed returned invalid JSON');
           }
-        } else {
-          console.warn('External FanCode feed returned non-JSON response');
         }
-      } else {
-        console.warn('External FanCode feed failed, status:', response.status);
       }
 
-      // Fallback to official FanCode API via our proxy
+      // 🔥 3. Fallback to official FanCode proxy
       const fallbackResp = await fetch(`${this.FANCODE_API_BASE}/live-matches`);
       if (fallbackResp.ok) {
         const contentType = fallbackResp.headers.get('content-type') || '';
@@ -60,18 +68,40 @@ export class FancodeService {
           } catch (e) {
             console.warn('FanCode API proxy returned invalid JSON');
           }
-        } else {
-          console.warn('FanCode API proxy returned non-JSON response');
         }
       }
 
-      console.warn('FanCode API proxy failed, using local fallback data');
+      // 🔥 4. Final fallback: static data
       return this.getFallbackMatches();
     } catch (error) {
       console.error('Error fetching matches from FanCode:', error);
-      // Return fallback matches for Indian audience
       return this.getFallbackMatches();
     }
+  }
+
+  // ⬅ NEW: Transform your GitHub JSON format to FancodeMatch[]
+  private static transformCustomJson(data: any[]): FancodeMatch[] {
+    return data.map((match: any) => ({
+      id: String(match.match_id || match.id || `match-${Date.now()}`),
+      tournament: match.event_name || match.tournament || "Unknown Tournament",
+      sport: match.event_category?.toLowerCase() || "cricket",
+      team1: {
+        code: match.team_1?.substring(0, 3).toUpperCase() || "T1",
+        name: match.team_1 || "Team 1",
+        flag: "" // no flag in your JSON
+      },
+      team2: {
+        code: match.team_2?.substring(0, 3).toUpperCase() || "T2",
+        name: match.team_2 || "Team 2",
+        flag: ""
+      },
+      image: match.src || "",
+      buttonColor: this.getRandomButtonColor(),
+      sportIcon: this.getSportIcon(match.event_category),
+      status: this.mapMatchStatus(match.status),
+      streamUrl: match.adfree_url || match.dai_url || undefined,
+      startTime: match.startTime // ⬅ used for countdown
+    }));
   }
 
   private static getFallbackMatches(): FancodeMatch[] {
@@ -115,26 +145,6 @@ export class FancodeService {
         sportIcon: "🏏",
         status: "upcoming",
         streamUrl: "/api/stream/hotstar/in-mc-pdlive/d2/cricket/ipl/mi-vs-csk/master.m3u8"
-      },
-      {
-        id: "NA",
-        tournament: "NA",
-        sport: "Cricket",
-        team1: {
-          code: "NA",
-          name: "NA",
-          flag: "NA"
-        },
-        team2: {
-          code: "NA",
-          name: "NA",
-          flag: "NA"
-        },
-        image: "NA",
-        buttonColor: "purple",
-        sportIcon: "🤼",
-        status: "upcoming",
-        streamUrl: "NA"
       }
     ];
   }
@@ -192,6 +202,7 @@ export class FancodeService {
       basketball: '🏀',
       tennis: '🎾',
       hockey: '🏑',
+      motogp: '🏍️'
     };
     return sportIcons[sport?.toLowerCase()] || '🏏';
   }
