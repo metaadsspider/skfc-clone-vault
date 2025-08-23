@@ -26,7 +26,30 @@ private static async fetchLiveMatches(): Promise<FancodeMatch[]> {
     );
     if (githubRes.ok) {
       const githubMatches = await githubRes.json();
-      return githubMatches;
+
+      // 🔄 Map GitHub JSON → FancodeMatch format
+      return githubMatches.map((m: any) => {
+        return {
+          id: m.id || `${m.team1?.code}_vs_${m.team2?.code}`,
+          tournament: m.tournament || "Unknown Tournament",
+          sport: m.sport || "cricket",
+          team1: {
+            code: m.team1?.code || "T1",
+            name: m.team1?.name || "Team 1",
+            flag: m.team1?.flag || "https://via.placeholder.com/40"
+          },
+          team2: {
+            code: m.team2?.code || "T2",
+            name: m.team2?.name || "Team 2",
+            flag: m.team2?.flag || "https://via.placeholder.com/40"
+          },
+          image: m.image || "https://via.placeholder.com/600x300",
+          buttonColor: (m.buttonColor as "red" | "purple" | "green" | "blue") || "red",
+          sportIcon: m.sportIcon || "🏏",
+          status: (m.status as "live" | "upcoming" | "completed") || "upcoming",
+          streamUrl: m.streamUrl || ""
+        } as FancodeMatch;
+      });
     }
   } catch (err) {
     console.warn("GitHub JSON fetch failed", err);
