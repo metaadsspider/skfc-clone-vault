@@ -1,33 +1,43 @@
-import type { Match } from "./match";
+import { matches as fallbackMatches, Match } from "./matches";
 
-// Fetch matches dynamically from FanCode JSON
 export async function fetchMatches(): Promise<Match[]> {
   try {
-    const response = await fetch("https://raw.githubusercontent.com/drmlive/fancode-live-events/refs/heads/main/fancode.json");
+    const response = await fetch(
+      "https://raw.githubusercontent.com/drmlive/fancode-live-events/refs/heads/main/fancode.json"
+    );
+
+    if (!response.ok) {
+      console.warn("Remote fetch failed, using fallback data");
+      return fallbackMatches;
+    }
+
     const data = await response.json();
 
-    return data.map((m: any) => ({
-      id: m.match_id,
-      tournament: m.event_category,
-      sport: "cricket",
+    // Map JSON to Match[]
+    const mapped: Match[] = data.map((m: any) => ({
+      id: m.id,
+      tournament: m.tournament,
+      sport: m.sport,
       team1: {
-        code: m.team_code1,
-        name: m.team_1,
-        flag: m.team_img1,
+        code: m.team1.code,
+        name: m.team1.name,
+        flag: m.team1.flag,
       },
       team2: {
-        code: m.team_code2,
-        name: m.team_2,
-        flag: m.team_img2,
+        code: m.team2.code,
+        name: m.team2.name,
+        flag: m.team2.flag,
       },
-      image: m.src,
-      buttonColor: "red", // or map dynamically if JSON provides
-      sportIcon: "🏏",
-      status: m.status === "Live" ? "live" : "upcoming",
-      streamUrl: m.adfree_url,
+      image: m.image,
+      buttonColor: m.buttonColor || "blue",
+      sportIcon: m.sportIcon || "🏏",
+      status: m.status || "upcoming",
+      streamUrl: m.streamUrl,
     }));
+
+    return mapped;
   } catch (err) {
-    console.error("Error fetching matches:", err);
-    return [];
+    console.error("Error fetching remote JSON:", err);
+    return fallbackMatches; // fallback to matches.ts
   }
 }
