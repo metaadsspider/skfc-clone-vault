@@ -142,7 +142,7 @@ export class FancodeService {
       buttonColor: this.getRandomButtonColor(),
       sportIcon: this.getSportIcon(match.event_category),
       status: this.mapGithubStatus(match.status),
-      streamUrl: match.adfree_url ? `/api/stream/${match.adfree_url.replace(/^https?:\/\//, '')}` : undefined
+      streamUrl: match.adfree_url || undefined
     }));
   }
 
@@ -226,7 +226,7 @@ export class FancodeService {
   static async getMatchById(matchId: string): Promise<FancodeMatch | undefined> {
     // First try to fetch live matches from API
     const liveMatches = await this.fetchLiveMatches();
-    const match = liveMatches.find(match => match.id === matchId);
+    const match = liveMatches.find(match => match.id === matchId || match.id === parseInt(matchId).toString());
     
     if (match) {
       return match;
