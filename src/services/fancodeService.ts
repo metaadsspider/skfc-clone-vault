@@ -197,29 +197,26 @@ export class FancodeService {
 
   static async fetchMatchStreamUrl(matchId: string): Promise<string | null> {
     try {
-      const response = await fetch(`${this.FANCODE_API_BASE}/match/${matchId}/stream`);
+      // First get the match data which contains the stream URL
+      const match = await this.getMatchById(matchId);
       
-      if (!response.ok) {
-        const fallbackMatch = this.getFallbackMatches().find(m => m.id === matchId);
-        return fallbackMatch?.streamUrl || null;
-      }
-      
-      const data = await response.json();
-      const s = String(data.streamUrl || '');
-      if (!s) return null;
-      try {
-        if (s.startsWith('http')) {
-          const urlObj = new URL(s);
-          return `/api/stream/${urlObj.pathname.replace(/^\//, '')}`;
+      if (match && match.streamUrl) {
+        // If it's already a proxied URL, return it directly
+        if (match.streamUrl.startsWith('/api/stream/')) {
+          return match.streamUrl;
         }
-        return `/api/stream/${s.replace(/^\//, '')}`;
-      } catch {
-        return null;
+        
+        // If it's a direct URL, proxy it through our API
+        if (match.streamUrl.startsWith('http')) {
+          const urlObj = new URL(match.streamUrl);
+          return `/api/stream/${urlObj.host}${urlObj.pathname}`;
+        }
       }
+      
+      return null;
     } catch (error) {
       console.error('Error fetching stream URL:', error);
-      const fallbackMatch = this.getFallbackMatches().find(m => m.id === matchId);
-      return fallbackMatch?.streamUrl || null;
+      return null;
     }
   }
 
