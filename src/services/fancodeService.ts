@@ -24,52 +24,32 @@ export class FancodeService {
   
   static async fetchLiveMatches(): Promise<FancodeMatch[]> {
     try {
-      // Prefer external FanCode feed via CORS-safe proxy
-      const response = await fetch(`/api/fancode-external?i=1`);
+      // Fetch from GitHub JSON feed
+      const response = await fetch('https://raw.githubusercontent.com/drmlive/fancode-live-events/refs/heads/main/fancode.json');
 
       if (response.ok) {
         const contentType = response.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
+        if (contentType.includes('application/json') || contentType.includes('text/plain')) {
           try {
             const data = await response.json();
-            const transformed = this.transformFancodeData(data);
+            const transformed = this.transformGithubData(data);
             if (Array.isArray(transformed) && transformed.length) {
               return transformed;
             }
           } catch (e) {
-            console.warn('External FanCode feed returned invalid JSON');
+            console.warn('GitHub JSON feed returned invalid data');
           }
         } else {
-          console.warn('External FanCode feed returned non-JSON response');
+          console.warn('GitHub JSON feed returned unexpected content type');
         }
       } else {
-        console.warn('External FanCode feed failed, status:', response.status);
+        console.warn('GitHub JSON feed failed, status:', response.status);
       }
 
-      // Fallback to official FanCode API via our proxy
-      const fallbackResp = await fetch(`${this.FANCODE_API_BASE}/live-matches`);
-      if (fallbackResp.ok) {
-        const contentType = fallbackResp.headers.get('content-type') || '';
-        if (contentType.includes('application/json')) {
-          try {
-            const fallbackData = await fallbackResp.json();
-            const transformed = this.transformFancodeData(fallbackData);
-            if (Array.isArray(transformed) && transformed.length) {
-              return transformed;
-            }
-          } catch (e) {
-            console.warn('FanCode API proxy returned invalid JSON');
-          }
-        } else {
-          console.warn('FanCode API proxy returned non-JSON response');
-        }
-      }
-
-      console.warn('FanCode API proxy failed, using local fallback data');
+      console.warn('GitHub JSON feed failed, using local fallback data');
       return this.getFallbackMatches();
     } catch (error) {
-      console.error('Error fetching matches from FanCode:', error);
-      // Return fallback matches for Indian audience
+      console.error('Error fetching matches from GitHub:', error);
       return this.getFallbackMatches();
     }
   }
@@ -139,44 +119,54 @@ export class FancodeService {
     ];
   }
 
-  private static transformFancodeData(data: any): FancodeMatch[] {
+  private static transformGithubData(data: any): FancodeMatch[] {
     if (!data || !Array.isArray(data.matches)) {
       return this.getFallbackMatches();
     }
 
     return data.matches.map((match: any) => ({
-      id: match.id || `match-${Date.now()}`,
-      tournament: match.tournament?.name || match.series?.name || 'Live Match',
-      sport: match.sport?.toLowerCase() || 'cricket',
+      id: match.match_id?.toString() || `match-${Date.now()}`,
+      tournament: match.event_name || 'Live Match',
+      sport: match.event_category?.toLowerCase() || 'cricket',
       team1: {
-        code: match.team1?.code || match.team1?.shortName || 'T1',
-        name: match.team1?.name || 'Team 1',
-        flag: match.team1?.logo || match.team1?.flag || ''
+        code: match.team_1?.substring(0, 3).toUpperCase() || 'T1',
+        name: match.team_1 || 'Team 1',
+        flag: this.getTeamFlag(match.team_1)
       },
       team2: {
-        code: match.team2?.code || match.team2?.shortName || 'T2',
-        name: match.team2?.name || 'Team 2',
-        flag: match.team2?.logo || match.team2?.flag || ''
+        code: match.team_2?.substring(0, 3).toUpperCase() || 'T2',
+        name: match.team_2 || 'Team 2',
+        flag: this.getTeamFlag(match.team_2)
       },
-      image: match.image || match.banner || '',
+      image: match.src || '',
       buttonColor: this.getRandomButtonColor(),
-      sportIcon: this.getSportIcon(match.sport),
-      status: this.mapMatchStatus(match.status),
-      streamUrl: (() => {
-        const u = match.streamUrl;
-        if (!u) return undefined;
-        try {
-          const s = String(u);
-          if (s.startsWith('http')) {
-            const urlObj = new URL(s);
-            return `/api/stream/${urlObj.pathname.replace(/^\//, '')}`;
-          }
-          return `/api/stream/${s.replace(/^\//, '')}`;
-        } catch {
-          return undefined;
-        }
-      })()
+      sportIcon: this.getSportIcon(match.event_category),
+      status: this.mapGithubStatus(match.status),
+      streamUrl: match.adfree_url ? `/api/stream/${match.adfree_url.replace(/^https?:\/\//, '')}` : undefined
     }));
+  }
+
+  private static getTeamFlag(teamName: string): string {
+    // Basic team flag mapping - can be expanded
+    const flagMap: { [key: string]: string } = {
+      'india': 'https://flagcdn.com/w40/in.png',
+      'bangladesh': 'https://flagcdn.com/w40/bd.png',
+      'netherlands': 'https://flagcdn.com/w40/nl.png',
+      'ir iran': 'https://flagcdn.com/w40/ir.png',
+      'iran': 'https://flagcdn.com/w40/ir.png'
+    };
+    
+    const key = teamName?.toLowerCase() || '';
+    return flagMap[key] || 'https://flagcdn.com/w40/xx.png';
+  }
+
+  private static mapGithubStatus(status: string): 'live' | 'upcoming' | 'completed' {
+    if (!status) return 'upcoming';
+    
+    const lowerStatus = status.toLowerCase();
+    if (lowerStatus.includes('live')) return 'live';
+    if (lowerStatus.includes('completed') || lowerStatus.includes('finished')) return 'completed';
+    return 'upcoming';
   }
 
   private static getRandomButtonColor(): 'red' | 'purple' | 'green' | 'blue' {
