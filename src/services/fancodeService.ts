@@ -223,7 +223,16 @@ export class FancodeService {
     }
   }
 
-  static getMatchById(matchId: string): FancodeMatch | undefined {
+  static async getMatchById(matchId: string): Promise<FancodeMatch | undefined> {
+    // First try to fetch live matches from API
+    const liveMatches = await this.fetchLiveMatches();
+    const match = liveMatches.find(match => match.id === matchId);
+    
+    if (match) {
+      return match;
+    }
+    
+    // Fallback to local matches if not found in live data
     const fallbackMatches = this.getFallbackMatches();
     return fallbackMatches.find(match => match.id === matchId);
   }

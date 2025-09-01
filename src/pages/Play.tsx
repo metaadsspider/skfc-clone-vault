@@ -15,8 +15,8 @@ const Play = () => {
 
   useEffect(() => {
     const fetchMatch = async () => {
-      // Try to get match from FanCode service
-      const match = FancodeService.getMatchById(matchId);
+      // Try to get match from FanCode service (now async)
+      const match = await FancodeService.getMatchById(matchId);
       setCurrentMatch(match || null);
       
       // Fetch other live matches
