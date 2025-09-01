@@ -35,7 +35,13 @@ export async function onRequest(context: any) {
       streamUrl = `https://${pathSegments.slice(1).join('/')}`;
       referer = 'https://www.bbc.com/';
       origin = 'https://www.bbc.com';
+    } else if (pathSegments[0] === 'fancode' && pathSegments[1] === 'fdlive') {
+      // Handle fdlive fancode URLs: fancode/fdlive/mumbai/...
+      streamUrl = `https://in-mc-fdlive.fancode.com/${pathSegments.slice(2).join('/')}`;
+      referer = 'https://fancode.com/';
+      origin = 'https://fancode.com';
     } else {
+      // Default to pdlive for backward compatibility
       streamUrl = `https://in-mc-pdlive.fancode.com/${streamPath}`;
       referer = 'https://fancode.com/';
       origin = 'https://fancode.com';
