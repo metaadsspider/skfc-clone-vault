@@ -473,14 +473,30 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
               aspect-ratio: unset;
               border-radius: 0;
               max-width: none;
+              background: black;
             }
             .video-container:fullscreen video {
               width: 100% !important;
               height: 100% !important;
             }
-            /* Ensure controls are visible in fullscreen */
-            .video-container:fullscreen .absolute {
+            /* Ensure controls work properly in fullscreen */
+            .video-container:fullscreen > div[class*="absolute"] {
               position: fixed !important;
+              top: 0 !important;
+              left: 0 !important;
+              right: 0 !important;
+              bottom: 0 !important;
+              width: 100vw !important;
+              height: 100vh !important;
+              z-index: 999999 !important;
+            }
+            /* Override any conflicting styles in fullscreen */
+            .video-container:fullscreen .bg-gradient-to-t {
+              position: fixed !important;
+              bottom: 0 !important;
+              left: 0 !important;
+              right: 0 !important;
+              width: 100vw !important;
               z-index: 999999 !important;
             }
             @media (max-width: 768px) {
