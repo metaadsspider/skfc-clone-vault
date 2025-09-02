@@ -30,6 +30,7 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   const [isMuted, setIsMuted] = useState(false);
   const [qualityLevels, setQualityLevels] = useState<Array<{level: number, height: number, bitrate: number}>>([]);
   const [currentQuality, setCurrentQuality] = useState(-1);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Video control handlers
   const handlePlayPause = () => {
@@ -62,11 +63,12 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   };
 
   const handleFullscreen = () => {
-    if (videoRef.current) {
+    const container = videoRef.current?.parentElement;
+    if (container) {
       if (document.fullscreenElement) {
         document.exitFullscreen();
       } else {
-        videoRef.current.requestFullscreen();
+        container.requestFullscreen();
       }
     }
   };
@@ -98,6 +100,25 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
       video.removeEventListener('volumechange', handleVolumeChangeEvent);
+    };
+  }, []);
+
+  // Handle fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
     };
   }, []);
 
@@ -479,26 +500,6 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
               width: 100% !important;
               height: 100% !important;
             }
-            /* Ensure controls work properly in fullscreen */
-            .video-container:fullscreen > div[class*="absolute"] {
-              position: fixed !important;
-              top: 0 !important;
-              left: 0 !important;
-              right: 0 !important;
-              bottom: 0 !important;
-              width: 100vw !important;
-              height: 100vh !important;
-              z-index: 999999 !important;
-            }
-            /* Override any conflicting styles in fullscreen */
-            .video-container:fullscreen .bg-gradient-to-t {
-              position: fixed !important;
-              bottom: 0 !important;
-              left: 0 !important;
-              right: 0 !important;
-              width: 100vw !important;
-              z-index: 999999 !important;
-            }
             @media (max-width: 768px) {
               .video-container {
                 border-radius: 0;
@@ -552,19 +553,21 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
         {/* Custom Netflix-style Controls */}
         {!isLoading && !error && (
-          <CustomVideoControls
-            videoRef={videoRef}
-            isPlaying={isPlaying}
-            onPlayPause={handlePlayPause}
-            volume={volume}
-            onVolumeChange={handleVolumeChange}
-            isMuted={isMuted}
-            onMuteToggle={handleMuteToggle}
-            onFullscreen={handleFullscreen}
-            qualityLevels={qualityLevels}
-            currentQuality={currentQuality}
-            onQualityChange={handleQualityChange}
-          />
+          <div className={isFullscreen ? 'fixed inset-0 z-[999999]' : 'absolute inset-0 z-20'}>
+            <CustomVideoControls
+              videoRef={videoRef}
+              isPlaying={isPlaying}
+              onPlayPause={handlePlayPause}
+              volume={volume}
+              onVolumeChange={handleVolumeChange}
+              isMuted={isMuted}
+              onMuteToggle={handleMuteToggle}
+              onFullscreen={handleFullscreen}
+              qualityLevels={qualityLevels}
+              currentQuality={currentQuality}
+              onQualityChange={handleQualityChange}
+            />
+          </div>
         )}
       </div>
     </div>
