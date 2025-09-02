@@ -13,9 +13,6 @@ interface CustomVideoControlsProps {
   videoRef: React.RefObject<HTMLVideoElement>;
   isPlaying: boolean;
   onPlayPause: () => void;
-  currentTime: number;
-  duration: number;
-  onSeek: (time: number) => void;
   volume: number;
   onVolumeChange: (volume: number) => void;
   isMuted: boolean;
@@ -30,9 +27,6 @@ export const CustomVideoControls = ({
   videoRef,
   isPlaying,
   onPlayPause,
-  currentTime,
-  duration,
-  onSeek,
   volume,
   onVolumeChange,
   isMuted,
@@ -43,20 +37,8 @@ export const CustomVideoControls = ({
   onQualityChange
 }: CustomVideoControlsProps) => {
   const [showControls, setShowControls] = useState(true);
-  const [isDragging, setIsDragging] = useState(false);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const hideControlsTimeoutRef = useRef<NodeJS.Timeout>();
-
-  const formatTime = (time: number) => {
-    const hours = Math.floor(time / 3600);
-    const minutes = Math.floor((time % 3600) / 60);
-    const seconds = Math.floor(time % 60);
-    
-    if (hours > 0) {
-      return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
 
   const handleMouseMove = () => {
     setShowControls(true);
@@ -64,14 +46,14 @@ export const CustomVideoControls = ({
       clearTimeout(hideControlsTimeoutRef.current);
     }
     hideControlsTimeoutRef.current = setTimeout(() => {
-      if (!isDragging && isPlaying) {
+      if (isPlaying) {
         setShowControls(false);
       }
     }, 3000);
   };
 
   const handleMouseLeave = () => {
-    if (!isDragging && isPlaying) {
+    if (isPlaying) {
       hideControlsTimeoutRef.current = setTimeout(() => {
         setShowControls(false);
       }, 1000);
@@ -85,8 +67,6 @@ export const CustomVideoControls = ({
       }
     };
   }, []);
-
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   const getQualityLabel = (level: any) => {
     if (level.height) {
@@ -116,28 +96,6 @@ export const CustomVideoControls = ({
       {/* Controls overlay */}
       <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 transition-opacity duration-300 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'}`}>
         
-        {/* Progress bar */}
-        <div className="mb-4">
-          <div className="relative">
-            <div className="h-1 bg-white/30 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-red-600 transition-all duration-150"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={duration}
-              value={currentTime}
-              onChange={(e) => onSeek(Number(e.target.value))}
-              onMouseDown={() => setIsDragging(true)}
-              onMouseUp={() => setIsDragging(false)}
-              className="absolute inset-0 w-full h-4 opacity-0 cursor-pointer"
-            />
-          </div>
-        </div>
-
         {/* Control buttons */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -177,11 +135,6 @@ export const CustomVideoControls = ({
                   />
                 </div>
               )}
-            </div>
-
-            {/* Time */}
-            <div className="text-white text-sm font-medium">
-              {formatTime(currentTime)} / {formatTime(duration)}
             </div>
           </div>
 

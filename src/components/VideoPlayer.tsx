@@ -26,8 +26,6 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   
   // Video control states
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
   const [qualityLevels, setQualityLevels] = useState<Array<{level: number, height: number, bitrate: number}>>([]);
@@ -41,13 +39,6 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
       } else {
         videoRef.current.play();
       }
-    }
-  };
-
-  const handleSeek = (time: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time;
-      setCurrentTime(time);
     }
   };
 
@@ -92,8 +83,6 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
     const video = videoRef.current;
     if (!video) return;
 
-    const handleTimeUpdate = () => setCurrentTime(video.currentTime);
-    const handleDurationChange = () => setDuration(video.duration);
     const handlePlay = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
     const handleVolumeChangeEvent = () => {
@@ -101,15 +90,11 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
       setIsMuted(video.muted);
     };
 
-    video.addEventListener('timeupdate', handleTimeUpdate);
-    video.addEventListener('durationchange', handleDurationChange);
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
     video.addEventListener('volumechange', handleVolumeChangeEvent);
 
     return () => {
-      video.removeEventListener('timeupdate', handleTimeUpdate);
-      video.removeEventListener('durationchange', handleDurationChange);
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
       video.removeEventListener('volumechange', handleVolumeChangeEvent);
@@ -481,6 +466,23 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
             .video-container video::-webkit-media-controls-time-remaining-display {
               display: none !important;
             }
+            /* Fullscreen styles */
+            .video-container:fullscreen {
+              width: 100vw !important;
+              height: 100vh !important;
+              aspect-ratio: unset;
+              border-radius: 0;
+              max-width: none;
+            }
+            .video-container:fullscreen video {
+              width: 100% !important;
+              height: 100% !important;
+            }
+            /* Ensure controls are visible in fullscreen */
+            .video-container:fullscreen .absolute {
+              position: fixed !important;
+              z-index: 999999 !important;
+            }
             @media (max-width: 768px) {
               .video-container {
                 border-radius: 0;
@@ -538,9 +540,6 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
             videoRef={videoRef}
             isPlaying={isPlaying}
             onPlayPause={handlePlayPause}
-            currentTime={currentTime}
-            duration={duration}
-            onSeek={handleSeek}
             volume={volume}
             onVolumeChange={handleVolumeChange}
             isMuted={isMuted}
