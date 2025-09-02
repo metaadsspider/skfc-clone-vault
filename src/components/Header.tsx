@@ -38,7 +38,7 @@ export const Header = () => {
             variant="outline" 
             size="sm"
             className="telegram-btn bg-fc-cyan text-white border-fc-cyan hover:bg-fc-cyan/90"
-            onClick={() => window.open('https://t.me/CricketNewsSkull', '_blank')}
+            onClick={() => window.open('https://t.me/CricketNewsOnTime', '_blank')}
           >
             🔵 Join Telegram
           </Button>
