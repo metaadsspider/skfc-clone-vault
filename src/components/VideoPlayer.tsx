@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { FancodeService } from '@/services/fancodeService';
+import { CustomVideoControls } from './CustomVideoControls';
 
 declare global {
   interface Window {
@@ -22,6 +23,98 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   const [error, setError] = useState<string | null>(null);
   const [streamUrl, setStreamUrl] = useState<string>("");
   const [showExtensionOption, setShowExtensionOption] = useState(false);
+  
+  // Video control states
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [qualityLevels, setQualityLevels] = useState<Array<{level: number, height: number, bitrate: number}>>([]);
+  const [currentQuality, setCurrentQuality] = useState(-1);
+
+  // Video control handlers
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+    }
+  };
+
+  const handleSeek = (time: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
+  };
+
+  const handleVolumeChange = (newVolume: number) => {
+    if (videoRef.current) {
+      videoRef.current.volume = newVolume;
+      setVolume(newVolume);
+      if (newVolume > 0 && isMuted) {
+        setIsMuted(false);
+        videoRef.current.muted = false;
+      }
+    }
+  };
+
+  const handleMuteToggle = () => {
+    if (videoRef.current) {
+      const newMuted = !isMuted;
+      setIsMuted(newMuted);
+      videoRef.current.muted = newMuted;
+    }
+  };
+
+  const handleFullscreen = () => {
+    if (videoRef.current) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        videoRef.current.requestFullscreen();
+      }
+    }
+  };
+
+  const handleQualityChange = (level: number) => {
+    setCurrentQuality(level);
+    if (hlsRef.current) {
+      hlsRef.current.currentLevel = level;
+    }
+  };
+
+  // Video event handlers
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleTimeUpdate = () => setCurrentTime(video.currentTime);
+    const handleDurationChange = () => setDuration(video.duration);
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleVolumeChangeEvent = () => {
+      setVolume(video.volume);
+      setIsMuted(video.muted);
+    };
+
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('durationchange', handleDurationChange);
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+    video.addEventListener('volumechange', handleVolumeChangeEvent);
+
+    return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('durationchange', handleDurationChange);
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+      video.removeEventListener('volumechange', handleVolumeChangeEvent);
+    };
+  }, []);
 
   // Fetch stream URL from service
   useEffect(() => {
@@ -207,6 +300,16 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
         hls.on(window.Hls.Events.MANIFEST_LOADED, () => {
           setIsLoading(false);
+          // Set quality levels
+          const levels = hls.levels.map((level: any, index: number) => ({
+            level: index,
+            height: level.height,
+            bitrate: level.bitrate
+          }));
+          // Add auto quality option
+          levels.unshift({ level: -1, height: 0, bitrate: 0 });
+          setQualityLevels(levels);
+          setCurrentQuality(-1); // Auto quality by default
         });
 
         hls.loadSource(streamUrl);
@@ -412,14 +515,12 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
         <video
           ref={videoRef}
           className="video-container w-full h-full"
-          controls
           playsInline
           webkit-playsinline="true"
           muted
           autoPlay
           preload="metadata"
           crossOrigin="anonymous"
-          controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
           disablePictureInPicture
           onContextMenu={(e) => e.preventDefault()}
           style={{ 
@@ -430,6 +531,26 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
         >
           Your browser does not support the video tag.
         </video>
+
+        {/* Custom Netflix-style Controls */}
+        {!isLoading && !error && (
+          <CustomVideoControls
+            videoRef={videoRef}
+            isPlaying={isPlaying}
+            onPlayPause={handlePlayPause}
+            currentTime={currentTime}
+            duration={duration}
+            onSeek={handleSeek}
+            volume={volume}
+            onVolumeChange={handleVolumeChange}
+            isMuted={isMuted}
+            onMuteToggle={handleMuteToggle}
+            onFullscreen={handleFullscreen}
+            qualityLevels={qualityLevels}
+            currentQuality={currentQuality}
+            onQualityChange={handleQualityChange}
+          />
+        )}
       </div>
     </div>
   );
