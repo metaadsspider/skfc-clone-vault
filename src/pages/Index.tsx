@@ -81,6 +81,7 @@ const Index = () => {
                 image={match.image}
                 buttonColor={match.buttonColor}
                 sportIcon={match.sportIcon}
+                streamUrl={match.streamUrl}
                 index={index}
               />
             ))}
