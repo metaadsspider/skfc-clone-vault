@@ -78,7 +78,13 @@ export const MatchCard = ({
         
         {/* Teams section with enhanced styling */}
         <div className="absolute bottom-0 left-0 right-0 team-vs">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center space-x-3 group">
+            <img 
+              src={team1.flag} 
+              alt={team1.code}
+              className="team-logo"
+              loading="lazy"
+            />
             <span className="text-white font-bold text-lg transition-all duration-300 group-hover:text-accent">
               {team1.code}
             </span>
@@ -86,10 +92,16 @@ export const MatchCard = ({
           
           <div className="vs-divider">VS</div>
           
-          <div className="flex items-center justify-center">
+          <div className="flex items-center space-x-3 group">
             <span className="text-white font-bold text-lg transition-all duration-300 group-hover:text-accent">
               {team2.code}
             </span>
+            <img 
+              src={team2.flag} 
+              alt={team2.code}
+              className="team-logo"
+              loading="lazy"
+            />
           </div>
         </div>
 
