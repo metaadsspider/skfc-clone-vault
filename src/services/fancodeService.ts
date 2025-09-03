@@ -147,17 +147,9 @@ export class FancodeService {
   }
 
   private static getTeamFlag(teamName: string): string {
-    // Basic team flag mapping - can be expanded
-    const flagMap: { [key: string]: string } = {
-      'india': 'https://flagcdn.com/w40/in.png',
-      'bangladesh': 'https://flagcdn.com/w40/bd.png',
-      'netherlands': 'https://flagcdn.com/w40/nl.png',
-      'ir iran': 'https://flagcdn.com/w40/ir.png',
-      'iran': 'https://flagcdn.com/w40/ir.png'
-    };
-    
-    const key = teamName?.toLowerCase() || '';
-    return flagMap[key] || 'https://flagcdn.com/w40/xx.png';
+    // Import the centralized team logo mapping
+    const { getTeamLogo } = require('../data/team-logos');
+    return getTeamLogo(teamName);
   }
 
   private static mapGithubStatus(status: string): 'live' | 'upcoming' | 'completed' {
