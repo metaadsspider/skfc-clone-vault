@@ -25,7 +25,7 @@ export class FancodeService {
   static async fetchLiveMatches(): Promise<FancodeMatch[]> {
     try {
       // Fetch from GitHub JSON feed
-      const response = await fetch('https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json');
+      const response = await fetch('https://raw.githubusercontent.com/drmlive/fancode-live-events/refs/heads/main/fancode.json');
 
       if (response.ok) {
         const contentType = response.headers.get('content-type') || '';
@@ -124,32 +124,26 @@ export class FancodeService {
       return this.getFallbackMatches();
     }
 
-    return data.matches.map((match: any) => {
-      // Extract team data from teams array
-      const team1 = match.teams?.[0];
-      const team2 = match.teams?.[1];
-      
-      return {
-        id: match.match_id?.toString() || `match-${Date.now()}`,
-        tournament: match.tournament || 'Live Match',
-        sport: match.category?.toLowerCase() || 'cricket',
-        team1: {
-          code: team1?.shortName || 'T1',
-          name: team1?.name || 'Team 1',
-          flag: team1?.flag?.src || this.getTeamFlag(team1?.name)
-        },
-        team2: {
-          code: team2?.shortName || 'T2', 
-          name: team2?.name || 'Team 2',
-          flag: team2?.flag?.src || this.getTeamFlag(team2?.name)
-        },
-        image: match.image || '',
-        buttonColor: this.getRandomButtonColor(),
-        sportIcon: this.getSportIcon(match.category),
-        status: this.mapGithubStatus(match.status),
-        streamUrl: match.adfree_stream || match.dai_stream || match.STREAMING_CDN?.Primary_Playback_URL || undefined
-      };
-    });
+    return data.matches.map((match: any) => ({
+      id: match.match_id?.toString() || `match-${Date.now()}`,
+      tournament: match.event_name || 'Live Match',
+      sport: match.event_category?.toLowerCase() || 'cricket',
+      team1: {
+        code: match.team_1?.substring(0, 3).toUpperCase() || 'T1',
+        name: match.team_1 || 'Team 1',
+        flag: this.getTeamFlag(match.team_1)
+      },
+      team2: {
+        code: match.team_2?.substring(0, 3).toUpperCase() || 'T2',
+        name: match.team_2 || 'Team 2',
+        flag: this.getTeamFlag(match.team_2)
+      },
+      image: match.src || '',
+      buttonColor: this.getRandomButtonColor(),
+      sportIcon: this.getSportIcon(match.event_category),
+      status: this.mapGithubStatus(match.status),
+      streamUrl: match.adfree_url || match.dai_url || undefined
+    }));
   }
 
   private static getTeamFlag(teamName: string): string {

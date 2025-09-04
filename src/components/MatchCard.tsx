@@ -66,7 +66,7 @@ export const MatchCard = ({
         <img 
           src={image} 
           alt={`${team1.name} vs ${team2.name}`}
-          className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
         />
         <div className="sport-badge">
