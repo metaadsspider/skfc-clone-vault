@@ -219,8 +219,9 @@ export class FancodeService {
           if (urlObj.hostname.includes('fancode.com')) {
             return `/api/stream/fancode${urlObj.pathname}`;
           }
-          // Handle other hosts
-          return `/api/stream/${urlObj.host}${urlObj.pathname}`;
+          // Handle other hosts - construct proper proxy URL
+          const pathAndQuery = urlObj.pathname + (urlObj.search || '');
+          return `/api/stream/${urlObj.hostname}${pathAndQuery}`;
         }
       }
       
