@@ -213,13 +213,13 @@ export class FancodeService {
           const urlObj = new URL(match.streamUrl);
           // Handle fdlive fancode URLs specially
           if (urlObj.hostname === 'in-mc-fdlive.fancode.com') {
-            return `/api/stream/fancode/fdlive${urlObj.pathname}`;
+            return `/api/stream/fancode/fdlive${urlObj.pathname}${urlObj.search || ''}`;
           }
           // Handle other fancode URLs
           if (urlObj.hostname.includes('fancode.com')) {
-            return `/api/stream/fancode${urlObj.pathname}`;
+            return `/api/stream/fancode${urlObj.pathname}${urlObj.search || ''}`;
           }
-          // Handle other hosts - construct proper proxy URL
+          // Handle other hosts (Sony, Akamai, etc.) - construct proper proxy URL
           const pathAndQuery = urlObj.pathname + (urlObj.search || '');
           return `/api/stream/${urlObj.hostname}${pathAndQuery}`;
         }

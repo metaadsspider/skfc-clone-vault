@@ -40,6 +40,33 @@ export async function onRequest(context: any) {
       streamUrl = `https://in-mc-fdlive.fancode.com/${pathSegments.slice(2).join('/')}`;
       referer = 'https://fancode.com/';
       origin = 'https://fancode.com';
+    } else if (pathSegments[0] === 'fancode') {
+      // Handle regular fancode URLs: fancode/mumbai/...
+      streamUrl = `https://in-mc-pdlive.fancode.com/${pathSegments.slice(1).join('/')}`;
+      referer = 'https://fancode.com/';
+      origin = 'https://fancode.com';
+    } else if (pathSegments[0]?.includes('.')) {
+      // Handle direct hostname URLs (like Sony, Akamai, etc.)
+      const hostname = pathSegments[0];
+      const remainingPath = pathSegments.slice(1).join('/');
+      
+      // Get query parameters from original request
+      const url = new URL(request.url);
+      const queryString = url.search;
+      
+      streamUrl = `https://${hostname}/${remainingPath}${queryString}`;
+      
+      // Set appropriate referer based on domain
+      if (hostname.includes('sony') || hostname.includes('akamaized')) {
+        referer = 'https://www.sonyliv.com/';
+        origin = 'https://www.sonyliv.com';
+      } else if (hostname.includes('fancode')) {
+        referer = 'https://fancode.com/';
+        origin = 'https://fancode.com';
+      } else {
+        referer = 'https://www.google.com/';
+        origin = 'https://www.google.com';
+      }
     } else {
       // Default to pdlive for backward compatibility
       streamUrl = `https://in-mc-pdlive.fancode.com/${streamPath}`;
