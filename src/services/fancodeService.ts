@@ -1,3 +1,5 @@
+import { getTeamLogo } from '../data/team-logos';
+
 interface FancodeMatch {
   id: string;
   tournament: string;
@@ -157,8 +159,6 @@ export class FancodeService {
   }
 
   private static getTeamFlag(teamName: string): string {
-    // Import the centralized team logo mapping
-    const { getTeamLogo } = require('../data/team-logos');
     return getTeamLogo(teamName);
   }
 
