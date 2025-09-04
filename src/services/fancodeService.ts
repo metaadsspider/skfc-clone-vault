@@ -32,11 +32,21 @@ export class FancodeService {
         if (contentType.includes('application/json') || contentType.includes('text/plain')) {
           try {
             const data = await response.json();
+            console.log('Fetched data:', data);
+            console.log('Matches array:', data.matches);
+            console.log('Matches count:', data.matches?.length);
+            
             const transformed = this.transformGithubData(data);
-            if (Array.isArray(transformed) && transformed.length) {
+            console.log('Transformed matches:', transformed);
+            console.log('Transformed count:', transformed.length);
+            
+            if (Array.isArray(transformed) && transformed.length > 0) {
               return transformed;
+            } else {
+              console.warn('No valid matches found in transformed data');
             }
           } catch (e) {
+            console.error('Error parsing JSON or transforming data:', e);
             console.warn('GitHub JSON feed returned invalid data');
           }
         } else {
