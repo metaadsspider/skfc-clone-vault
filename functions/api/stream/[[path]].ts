@@ -45,6 +45,15 @@ export async function onRequest(context: any) {
       streamUrl = `https://in-mc-pdlive.fancode.com/${pathSegments.slice(1).join('/')}`;
       referer = 'https://fancode.com/';
       origin = 'https://fancode.com';
+    } else if (pathSegments[0] === 'dai.google.com') {
+      // Handle Google DAI URLs specifically
+      const remainingPath = pathSegments.slice(1).join('/');
+      const url = new URL(request.url);
+      const queryString = url.search;
+      
+      streamUrl = `https://dai.google.com/${remainingPath}${queryString}`;
+      referer = 'https://fancode.com/';
+      origin = 'https://fancode.com';
     } else if (pathSegments[0]?.includes('.')) {
       // Handle direct hostname URLs (like Sony, Akamai, etc.)
       const hostname = pathSegments[0];
@@ -76,25 +85,38 @@ export async function onRequest(context: any) {
     
     console.log('Proxying stream URL:', streamUrl);
 
+    // Set up headers based on the stream type
+    const baseHeaders: Record<string, string> = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+      'Referer': referer,
+      'Origin': origin,
+      'Accept': '*/*',
+      'Accept-Language': 'en-US,en;q=0.9',
+      'Connection': 'keep-alive',
+      'Sec-Fetch-Dest': 'empty',
+      'Sec-Fetch-Mode': 'cors',
+      'Sec-Fetch-Site': 'cross-site',
+    };
+
+    // Special handling for different stream types
+    if (pathSegments[0] === 'dai.google.com') {
+      // Google DAI specific headers
+      baseHeaders['Accept-Encoding'] = 'identity';
+      baseHeaders['Cache-Control'] = 'no-cache';
+      baseHeaders['Pragma'] = 'no-cache';
+    } else if (pathSegments[0] === 'bbc') {
+      // BBC specific headers
+      baseHeaders['X-Requested-With'] = 'XMLHttpRequest';
+      baseHeaders['Cache-Control'] = 'no-cache';
+      baseHeaders['Accept-Encoding'] = 'gzip, deflate, br';
+    } else {
+      baseHeaders['Accept-Encoding'] = 'gzip, deflate, br';
+    }
+
     // Fetch the stream with proper headers for each service
     const response = await fetch(streamUrl, {
       method: request.method,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        'Referer': referer,
-        'Origin': origin,
-        'Accept': '*/*',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'cross-site',
-        ...(pathSegments[0] === 'bbc' && {
-          'X-Requested-With': 'XMLHttpRequest',
-          'Cache-Control': 'no-cache'
-        })
-      },
+      headers: baseHeaders,
     });
 
     if (!response.ok) {
