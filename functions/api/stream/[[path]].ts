@@ -25,6 +25,9 @@ export async function onRequest(context: any) {
     let referer: string;
     let origin: string;
     
+    console.log('Received path segments:', pathSegments);
+    console.log('Stream path:', streamPath);
+    
     if (pathSegments[0] === 'hotstar') {
       // Remove 'hotstar' prefix and reconstruct Hotstar URL
       streamUrl = `https://live12p.hotstar.com/${pathSegments.slice(1).join('/')}`;
