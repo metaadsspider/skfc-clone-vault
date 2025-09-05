@@ -103,10 +103,14 @@ export async function onRequest(context: any) {
 
     // Special handling for different stream types
     if (pathSegments[0] === 'dai.google.com') {
-      // Google DAI specific headers
-      baseHeaders['Accept-Encoding'] = 'identity';
+      // Google DAI specific headers - more permissive approach
+      baseHeaders['Accept-Encoding'] = 'gzip, deflate';
       baseHeaders['Cache-Control'] = 'no-cache';
       baseHeaders['Pragma'] = 'no-cache';
+      baseHeaders['DNT'] = '1';
+      // Use a more generic referer for DAI
+      baseHeaders['Referer'] = 'https://www.google.com/';
+      baseHeaders['Origin'] = 'https://www.google.com';
     } else if (pathSegments[0] === 'bbc') {
       // BBC specific headers
       baseHeaders['X-Requested-With'] = 'XMLHttpRequest';

@@ -140,6 +140,14 @@ export class FancodeService {
       const team1 = match.teams?.[0];
       const team2 = match.teams?.[1];
       
+      // Prioritize adfree streams over DAI streams for better compatibility
+      let streamUrl = match.adfree_stream || match.STREAMING_CDN?.fancode_cdn || match.STREAMING_CDN?.Primary_Playback_URL;
+      
+      // Only use DAI as fallback if no other streams available
+      if (!streamUrl) {
+        streamUrl = match.dai_stream || match.STREAMING_CDN?.dai_google_cdn;
+      }
+      
       return {
         id: match.match_id?.toString() || `match-${Date.now()}`,
         tournament: match.tournament || 'Live Match',
@@ -158,7 +166,7 @@ export class FancodeService {
         buttonColor: this.getRandomButtonColor(),
         sportIcon: this.getSportIcon(match.category),
         status: this.mapGithubStatus(match.status),
-        streamUrl: match.adfree_stream || match.dai_stream || match.STREAMING_CDN?.Primary_Playback_URL || undefined
+        streamUrl: streamUrl || undefined
       };
     });
   }
