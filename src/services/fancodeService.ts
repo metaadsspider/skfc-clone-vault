@@ -69,6 +69,26 @@ export class FancodeService {
   private static getFallbackMatches(): FancodeMatch[] {
     return [
       {
+        id: "136725",
+        tournament: "Vitality Blast T20, 2025",
+        sport: "cricket",
+        team1: {
+          code: "HAM",
+          name: "Hampshire",
+          flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-HAMP@2x.png"
+        },
+        team2: {
+          code: "DUR",
+          name: "Durham",
+          flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-DURC@2x.png"
+        },
+        image: "https://www.fancode.com/skillup-uploads/cms-media/Durham_vs_Hampshire_old_match_card.jpg",
+        buttonColor: "blue",
+        sportIcon: "🏏",
+        status: "live",
+        streamUrl: "https://sonydaimenew.akamaized.net/hls/live/2022320/DAI16VB25/hdntl=exp=1757179927~acl=%2f*~id=d484272a-fa1b-42ac-b939-4dd904ee5487~data=hdntl,2022320,DAI16VB25,none~hmac=81561625df8a434c82f3bab7e92dec08c0ac0df0017ce5ec7e07c0d80dc4f85e/master_2000.m3u8?aka_me_session_id=AAAAAAAAAAAXcLxoAAAAAOowTkxQtj+T9FmqIJsnpIudAdC2wJlvlHhA+I%2fT04i+nq2EXinLyQFSkIYpBxk4aCz+6sr+DGf0&aka_media_format_type=hls&originpath=/linear/hls/pb/event/2wNKn5gLSaqxNWiqsz7-vQ/stream/07410240-a5fc-4e78-9728-3f1288aae1e7:SIN/variant/fa166247343a075b40f3e502af4dd961/bandwidth/2310816.m3u8"
+      },
+      {
         id: "Gulbarga Mystics VS Mangaluru Dragons",
         tournament: "Maharaja T20 Trophy, 2025",
         sport: "cricket",
@@ -87,26 +107,6 @@ export class FancodeService {
         sportIcon: "🏏",
         status: "live",
         streamUrl: "/api/stream/mumbai/132810_english_hls_da5a863a4485513ta-di_h264/index.m3u8"
-      },
-      {
-        id: "Kalyani Bengaluru Blasters VS Mysore Warriors",
-        tournament: "Maharaja T20 Trophy, 2025",
-        sport: "cricket",
-        team1: {
-          code: "BB",
-          name: "Kalyani Bengaluru Blasters",
-          flag: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB2ux3G0gGimrv_-CyIxI7vGsZMXfLZRMb-w&s"
-        },
-        team2: {
-          code: "MW",
-          name: "Mysore Warriors",
-          flag: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrWtyJr9G17RymOfo2nfX47DhOGXz5m5tHOw&s"
-        },
-        image: "https://www.fancode.com/skillup-uploads/cms-media/132786_5530_BB_MW_fc-Web.jpg",
-        buttonColor: "blue",
-        sportIcon: "🏏",
-        status: "upcoming",
-        streamUrl: "/api/stream/hotstar/in-mc-pdlive/d2/cricket/ipl/mi-vs-csk/master.m3u8"
       },
       {
         id: "NA",

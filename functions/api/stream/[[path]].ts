@@ -75,6 +75,9 @@ export async function onRequest(context: any) {
       } else if (hostname.includes('fancode')) {
         referer = 'https://fancode.com/';
         origin = 'https://fancode.com';
+      } else if (hostname.includes('google') || hostname.includes('dai')) {
+        referer = 'https://www.google.com/';
+        origin = 'https://www.google.com';
       } else {
         referer = 'https://www.google.com/';
         origin = 'https://www.google.com';
@@ -111,6 +114,13 @@ export async function onRequest(context: any) {
       // Use a more generic referer for DAI
       baseHeaders['Referer'] = 'https://www.google.com/';
       baseHeaders['Origin'] = 'https://www.google.com';
+    } else if (pathSegments[0]?.includes('sony') || pathSegments[0]?.includes('akamaized')) {
+      // Sony/Akamai specific headers
+      baseHeaders['Accept-Encoding'] = 'gzip, deflate';
+      baseHeaders['Cache-Control'] = 'no-cache';
+      baseHeaders['X-Forwarded-For'] = '8.8.8.8';
+      baseHeaders['Referer'] = 'https://www.sonyliv.com/';
+      baseHeaders['Origin'] = 'https://www.sonyliv.com';
     } else if (pathSegments[0] === 'bbc') {
       // BBC specific headers
       baseHeaders['X-Requested-With'] = 'XMLHttpRequest';
