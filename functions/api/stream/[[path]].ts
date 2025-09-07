@@ -55,8 +55,8 @@ export async function onRequest(context: any) {
       const queryString = url.search;
       
       streamUrl = `https://dai.google.com/${remainingPath}${queryString}`;
-      referer = 'https://www.fancode.com/';
-      origin = 'https://www.fancode.com';
+      referer = 'https://fancode.com/';
+      origin = 'https://fancode.com';
     } else if (pathSegments[0]?.includes('.')) {
       // Handle direct hostname URLs (like Sony, Akamai, etc.)
       const hostname = pathSegments[0];
@@ -90,8 +90,6 @@ export async function onRequest(context: any) {
     }
     
     console.log('Proxying stream URL:', streamUrl);
-    console.log('Using referer:', referer);
-    console.log('Using origin:', origin);
 
     // Set up headers based on the stream type
     const baseHeaders: Record<string, string> = {
@@ -108,14 +106,14 @@ export async function onRequest(context: any) {
 
     // Special handling for different stream types
     if (pathSegments[0] === 'dai.google.com') {
-      // Google DAI specific headers - use fancode as referer
+      // Google DAI specific headers - more permissive approach
       baseHeaders['Accept-Encoding'] = 'gzip, deflate';
       baseHeaders['Cache-Control'] = 'no-cache';
       baseHeaders['Pragma'] = 'no-cache';
       baseHeaders['DNT'] = '1';
-      // Keep fancode referer for DAI streams
-      baseHeaders['Referer'] = 'https://www.fancode.com/';
-      baseHeaders['Origin'] = 'https://www.fancode.com';
+      // Use a more generic referer for DAI
+      baseHeaders['Referer'] = 'https://www.google.com/';
+      baseHeaders['Origin'] = 'https://www.google.com';
     } else if (pathSegments[0]?.includes('sony') || pathSegments[0]?.includes('akamaized')) {
       // Sony/Akamai specific headers
       baseHeaders['Accept-Encoding'] = 'gzip, deflate';
@@ -138,10 +136,7 @@ export async function onRequest(context: any) {
       headers: baseHeaders,
     });
 
-    console.log('Response status:', response.status, response.statusText);
-
     if (!response.ok) {
-      console.error(`Stream fetch failed: HTTP ${response.status}: ${response.statusText}`);
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
