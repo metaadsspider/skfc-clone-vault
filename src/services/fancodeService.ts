@@ -224,9 +224,9 @@ export class FancodeService {
         // If it's a direct URL, proxy it through our API
         if (match.streamUrl.startsWith('http')) {
           const urlObj = new URL(match.streamUrl);
-          // Handle Google DAI URLs specially
+          // Handle Google DAI URLs specially - use direct URL
           if (urlObj.hostname === 'dai.google.com') {
-            return `/api/stream/dai.google.com${urlObj.pathname}${urlObj.search || ''}`;
+            return match.streamUrl;
           }
           // Handle fdlive fancode URLs specially
           if (urlObj.hostname === 'in-mc-fdlive.fancode.com') {
