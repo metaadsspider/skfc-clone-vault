@@ -139,14 +139,33 @@ export async function onRequest(context: any) {
     });
 
     console.log('Response status:', response.status, response.statusText);
+    console.log('Response headers:', [...response.headers.entries()]);
 
     if (!response.ok) {
+      const errorText = await response.text();
       console.error(`Stream fetch failed: HTTP ${response.status}: ${response.statusText}`);
+      console.error('Error response body:', errorText);
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    // Create new response with CORS headers
-    const newResponse = new Response(response.body, {
+    // For debugging, let's check the response content type and first few characters
+    const responseClone = response.clone();
+    const contentType = response.headers.get('content-type');
+    console.log('Content-Type:', contentType);
+    
+    // Read first 500 characters of response to debug
+    const text = await responseClone.text();
+    console.log('Response preview (first 500 chars):', text.substring(0, 500));
+    
+    // Check if it's a valid M3U8 (should start with #EXTM3U)
+    if (!text.startsWith('#EXTM3U')) {
+      console.error('Invalid M3U8 response - does not start with #EXTM3U');
+      console.error('Full response:', text);
+      throw new Error('Invalid M3U8 playlist format');
+    }
+
+    // Create new response with CORS headers using the text we already read
+    const newResponse = new Response(text, {
       status: response.status,
       statusText: response.statusText,
     });
