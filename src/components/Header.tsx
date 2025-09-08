@@ -49,6 +49,14 @@ export const Header = () => {
             <Button
               variant="ghost"
               size="sm"
+              className={location.pathname === '/scoreboard' ? 'text-accent font-medium' : 'text-muted-foreground hover:text-foreground'}
+              onClick={() => navigate('/scoreboard')}
+            >
+              Scoreboard
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               className={location.pathname === '/highlights' ? 'text-accent font-medium' : 'text-muted-foreground hover:text-foreground'}
               onClick={() => navigate('/highlights')}
             >
