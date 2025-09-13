@@ -4,6 +4,8 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 const Highlights = () => {
   // YouTube highlights - add your video IDs and optional titles here
   const highlights: { id: string; title?: string }[] = [
+    { id: "Aqb4XQ-_BfM", title: "Match 4 | Pakistan vs Oman | Match Highlights | DP World Asia Cup 2025" },
+    { id: "bN-g1VlEtBA", title: "Match 3 | Bangladesh vs Hong Kong, China | Match Highlights | DP World Asia Cup 2025" },
     { id: "xGtEE0qLuXA", title: "Match 2 | India vs United Arab Emirates | Match Highlights | DP World Asia Cup 2025" },
     { id: "5v1NmqyWPGc", title: "Match 1 | Afghanistan vs Hong Kong | Match Highlights | DP World Asia Cup 2025" },
     // { id: "AnotherID", title: "Another Highlight" },
