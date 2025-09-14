@@ -27,7 +27,7 @@ export class FancodeService {
   static async fetchLiveMatches(): Promise<FancodeMatch[]> {
     try {
       // Fetch from GitHub JSON feed with rich match data
-      const response = await fetch('https://raw.githubusercontent.com/drmlive/fancode-live-events/refs/heads/main/fancode.json');
+      const response = await fetch('https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json');
 
       if (response.ok) {
         const contentType = response.headers.get('content-type') || '';
