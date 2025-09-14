@@ -1,3 +1,5 @@
+import { getTeamLogo } from '../data/team-logos';
+
 interface FancodeMatch {
   id: string;
   tournament: string;
@@ -24,19 +26,29 @@ export class FancodeService {
   
   static async fetchLiveMatches(): Promise<FancodeMatch[]> {
     try {
-      // Fetch from GitHub JSON feed
-      const response = await fetch('https://raw.githubusercontent.com/drmlive/fancode-live-events/refs/heads/main/fancode.json');
+      // Fetch from GitHub JSON feed with rich match data
+      const response = await fetch('https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json');
 
       if (response.ok) {
         const contentType = response.headers.get('content-type') || '';
         if (contentType.includes('application/json') || contentType.includes('text/plain')) {
           try {
             const data = await response.json();
+            console.log('Fetched data:', data);
+            console.log('Matches array:', data.matches);
+            console.log('Matches count:', data.matches?.length);
+            
             const transformed = this.transformGithubData(data);
-            if (Array.isArray(transformed) && transformed.length) {
+            console.log('Transformed matches:', transformed);
+            console.log('Transformed count:', transformed.length);
+            
+            if (Array.isArray(transformed) && transformed.length > 0) {
               return transformed;
+            } else {
+              console.warn('No valid matches found in transformed data');
             }
           } catch (e) {
+            console.error('Error parsing JSON or transforming data:', e);
             console.warn('GitHub JSON feed returned invalid data');
           }
         } else {
@@ -57,6 +69,26 @@ export class FancodeService {
   private static getFallbackMatches(): FancodeMatch[] {
     return [
       {
+        id: "136725",
+        tournament: "Vitality Blast T20, 2025",
+        sport: "cricket",
+        team1: {
+          code: "HAM",
+          name: "Hampshire",
+          flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-HAMP@2x.png"
+        },
+        team2: {
+          code: "DUR",
+          name: "Durham",
+          flag: "https://d13ir53smqqeyp.cloudfront.net/flags/cr-flags/FC-DURC@2x.png"
+        },
+        image: "https://www.fancode.com/skillup-uploads/cms-media/Durham_vs_Hampshire_old_match_card.jpg",
+        buttonColor: "blue",
+        sportIcon: "🏏",
+        status: "live",
+        streamUrl: "https://sonydaimenew.akamaized.net/hls/live/2022320/DAI16VB25/hdntl=exp=1757179927~acl=%2f*~id=d484272a-fa1b-42ac-b939-4dd904ee5487~data=hdntl,2022320,DAI16VB25,none~hmac=81561625df8a434c82f3bab7e92dec08c0ac0df0017ce5ec7e07c0d80dc4f85e/master_2000.m3u8?aka_me_session_id=AAAAAAAAAAAXcLxoAAAAAOowTkxQtj+T9FmqIJsnpIudAdC2wJlvlHhA+I%2fT04i+nq2EXinLyQFSkIYpBxk4aCz+6sr+DGf0&aka_media_format_type=hls&originpath=/linear/hls/pb/event/2wNKn5gLSaqxNWiqsz7-vQ/stream/07410240-a5fc-4e78-9728-3f1288aae1e7:SIN/variant/fa166247343a075b40f3e502af4dd961/bandwidth/2310816.m3u8"
+      },
+      {
         id: "Gulbarga Mystics VS Mangaluru Dragons",
         tournament: "Maharaja T20 Trophy, 2025",
         sport: "cricket",
@@ -75,26 +107,6 @@ export class FancodeService {
         sportIcon: "🏏",
         status: "live",
         streamUrl: "/api/stream/mumbai/132810_english_hls_da5a863a4485513ta-di_h264/index.m3u8"
-      },
-      {
-        id: "Kalyani Bengaluru Blasters VS Mysore Warriors",
-        tournament: "Maharaja T20 Trophy, 2025",
-        sport: "cricket",
-        team1: {
-          code: "BB",
-          name: "Kalyani Bengaluru Blasters",
-          flag: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB2ux3G0gGimrv_-CyIxI7vGsZMXfLZRMb-w&s"
-        },
-        team2: {
-          code: "MW",
-          name: "Mysore Warriors",
-          flag: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrWtyJr9G17RymOfo2nfX47DhOGXz5m5tHOw&s"
-        },
-        image: "https://www.fancode.com/skillup-uploads/cms-media/132786_5530_BB_MW_fc-Web.jpg",
-        buttonColor: "blue",
-        sportIcon: "🏏",
-        status: "upcoming",
-        streamUrl: "/api/stream/hotstar/in-mc-pdlive/d2/cricket/ipl/mi-vs-csk/master.m3u8"
       },
       {
         id: "NA",
@@ -124,40 +136,43 @@ export class FancodeService {
       return this.getFallbackMatches();
     }
 
-    return data.matches.map((match: any) => ({
-      id: match.match_id?.toString() || `match-${Date.now()}`,
-      tournament: match.event_name || 'Live Match',
-      sport: match.event_category?.toLowerCase() || 'cricket',
-      team1: {
-        code: match.team_1?.substring(0, 3).toUpperCase() || 'T1',
-        name: match.team_1 || 'Team 1',
-        flag: this.getTeamFlag(match.team_1)
-      },
-      team2: {
-        code: match.team_2?.substring(0, 3).toUpperCase() || 'T2',
-        name: match.team_2 || 'Team 2',
-        flag: this.getTeamFlag(match.team_2)
-      },
-      image: match.src || '',
-      buttonColor: this.getRandomButtonColor(),
-      sportIcon: this.getSportIcon(match.event_category),
-      status: this.mapGithubStatus(match.status),
-      streamUrl: match.adfree_url || undefined
-    }));
+    return data.matches.map((match: any) => {
+      const team1 = match.teams?.[0];
+      const team2 = match.teams?.[1];
+      
+      // Prioritize adfree streams over DAI streams for better compatibility
+      let streamUrl = match.adfree_stream || match.STREAMING_CDN?.fancode_cdn || match.STREAMING_CDN?.Primary_Playback_URL;
+      
+      // Only use DAI as fallback if no other streams available
+      if (!streamUrl) {
+        streamUrl = match.dai_stream || match.STREAMING_CDN?.dai_google_cdn;
+      }
+      
+      return {
+        id: match.match_id?.toString() || `match-${Date.now()}`,
+        tournament: match.tournament || 'Live Match',
+        sport: match.category?.toLowerCase() || 'cricket',
+        team1: {
+          code: team1?.shortName || team1?.name?.substring(0, 3).toUpperCase() || 'T1',
+          name: team1?.name || 'Team 1',
+          flag: team1?.flag?.src || this.getTeamFlag(team1?.name)
+        },
+        team2: {
+          code: team2?.shortName || team2?.name?.substring(0, 3).toUpperCase() || 'T2',
+          name: team2?.name || 'Team 2',
+          flag: team2?.flag?.src || this.getTeamFlag(team2?.name)
+        },
+        image: match.image_cdn?.APP || match.image_cdn?.PLAYBACK || match.image || '',
+        buttonColor: this.getRandomButtonColor(),
+        sportIcon: this.getSportIcon(match.category),
+        status: this.mapGithubStatus(match.status),
+        streamUrl: streamUrl || undefined
+      };
+    });
   }
 
   private static getTeamFlag(teamName: string): string {
-    // Basic team flag mapping - can be expanded
-    const flagMap: { [key: string]: string } = {
-      'india': 'https://flagcdn.com/w40/in.png',
-      'bangladesh': 'https://flagcdn.com/w40/bd.png',
-      'netherlands': 'https://flagcdn.com/w40/nl.png',
-      'ir iran': 'https://flagcdn.com/w40/ir.png',
-      'iran': 'https://flagcdn.com/w40/ir.png'
-    };
-    
-    const key = teamName?.toLowerCase() || '';
-    return flagMap[key] || 'https://flagcdn.com/w40/xx.png';
+    return getTeamLogo(teamName);
   }
 
   private static mapGithubStatus(status: string): 'live' | 'upcoming' | 'completed' {
@@ -197,29 +212,40 @@ export class FancodeService {
 
   static async fetchMatchStreamUrl(matchId: string): Promise<string | null> {
     try {
-      const response = await fetch(`${this.FANCODE_API_BASE}/match/${matchId}/stream`);
+      // First get the match data which contains the stream URL
+      const match = await this.getMatchById(matchId);
       
-      if (!response.ok) {
-        const fallbackMatch = this.getFallbackMatches().find(m => m.id === matchId);
-        return fallbackMatch?.streamUrl || null;
-      }
-      
-      const data = await response.json();
-      const s = String(data.streamUrl || '');
-      if (!s) return null;
-      try {
-        if (s.startsWith('http')) {
-          const urlObj = new URL(s);
-          return `/api/stream/${urlObj.pathname.replace(/^\//, '')}`;
+      if (match && match.streamUrl) {
+        // If it's already a proxied URL, return it directly
+        if (match.streamUrl.startsWith('/api/stream/')) {
+          return match.streamUrl;
         }
-        return `/api/stream/${s.replace(/^\//, '')}`;
-      } catch {
-        return null;
+        
+        // If it's a direct URL, proxy it through our API
+        if (match.streamUrl.startsWith('http')) {
+          const urlObj = new URL(match.streamUrl);
+          // Handle Google DAI URLs specially
+          if (urlObj.hostname === 'dai.google.com') {
+            return `/api/stream/dai.google.com${urlObj.pathname}${urlObj.search || ''}`;
+          }
+          // Handle fdlive fancode URLs specially
+          if (urlObj.hostname === 'in-mc-fdlive.fancode.com') {
+            return `/api/stream/fancode/fdlive${urlObj.pathname}${urlObj.search || ''}`;
+          }
+          // Handle other fancode URLs
+          if (urlObj.hostname.includes('fancode.com')) {
+            return `/api/stream/fancode${urlObj.pathname}${urlObj.search || ''}`;
+          }
+          // Handle other hosts (Sony, Akamai, etc.) - construct proper proxy URL
+          const pathAndQuery = urlObj.pathname + (urlObj.search || '');
+          return `/api/stream/${urlObj.hostname}${pathAndQuery}`;
+        }
       }
+      
+      return null;
     } catch (error) {
       console.error('Error fetching stream URL:', error);
-      const fallbackMatch = this.getFallbackMatches().find(m => m.id === matchId);
-      return fallbackMatch?.streamUrl || null;
+      return null;
     }
   }
 

@@ -16,6 +16,7 @@ interface MatchCardProps {
   image: string;
   buttonColor: 'red' | 'purple' | 'green' | 'blue';
   sportIcon: string;
+  streamUrl?: string;
 }
 
 export const MatchCard = ({ 
@@ -27,15 +28,20 @@ export const MatchCard = ({
   image, 
   buttonColor,
   sportIcon,
+  streamUrl,
   index = 0 
 }: MatchCardProps & { index?: number }) => {
+  const isStreamAvailable = streamUrl && streamUrl.includes('.m3u8');
+
   const handleWatchLive = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (!isStreamAvailable) return;
     // Navigate to internal play page
     window.location.href = `/play?id=${id}`;
   };
 
   const handleCardClick = () => {
+    if (!isStreamAvailable) return;
     // Navigate to internal play page
     window.location.href = `/play?id=${id}`;
   };
@@ -52,7 +58,7 @@ export const MatchCard = ({
 
   return (
     <div 
-      className="match-card group cursor-pointer card-stagger"
+      className={`match-card group card-stagger ${isStreamAvailable ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'}`}
       style={{ '--stagger': index } as React.CSSProperties}
       onClick={handleCardClick}
     >
@@ -60,7 +66,7 @@ export const MatchCard = ({
         <img 
           src={image} 
           alt={`${team1.name} vs ${team2.name}`}
-          className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-110"
+          className="w-full h-64 md:h-80 object-cover transition-transform duration-700 group-hover:scale-110"
           loading="lazy"
         />
         <div className="sport-badge">
@@ -108,9 +114,16 @@ export const MatchCard = ({
       <div className="p-0">
         <Button 
           onClick={handleWatchLive}
-          className={`watch-live-btn rounded-none rounded-b-xl ${getButtonColorClass(buttonColor)}`}
+          disabled={!isStreamAvailable}
+          className={`watch-live-btn rounded-none rounded-b-xl ${
+            isStreamAvailable 
+              ? getButtonColorClass(buttonColor)
+              : 'bg-gray-500 hover:bg-gray-500 cursor-not-allowed'
+          }`}
         >
-          <span className="relative z-10">WATCH LIVE</span>
+          <span className="relative z-10">
+            {isStreamAvailable ? 'WATCH LIVE' : 'STREAM UNAVAILABLE'}
+          </span>
         </Button>
       </div>
     </div>

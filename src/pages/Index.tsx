@@ -81,6 +81,7 @@ const Index = () => {
                 image={match.image}
                 buttonColor={match.buttonColor}
                 sportIcon={match.sportIcon}
+                streamUrl={match.streamUrl}
                 index={index}
               />
             ))}
@@ -96,52 +97,6 @@ const Index = () => {
           </div>
         )}
 
-        {/* Highlights Section */}
-        <section
-          aria-labelledby="highlights-heading"
-          className="mt-16 animate-fade-in"
-        >
-          <h2
-            id="highlights-heading"
-            className="text-2xl font-bold mb-4"
-          >
-            Match Highlights
-          </h2>
-          {highlights.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {highlights.map((v) => (
-                <article
-                  key={v.id}
-                  className="bg-card rounded-lg shadow-sm border border-border overflow-hidden"
-                >
-                  <AspectRatio ratio={16 / 9}>
-                    <iframe
-                      className="w-full h-full rounded-md"
-                      src={`https://www.youtube.com/embed/${v.id}`}
-                      title={v.title || "Match Highlight"}
-                      loading="lazy"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                    />
-                  </AspectRatio>
-                  {v.title ? (
-                    <div className="p-3">
-                      <h3 className="text-sm font-medium">{v.title}</h3>
-                    </div>
-                  ) : null}
-                </article>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 border border-dashed border-border rounded-lg text-muted-foreground">
-              <p>No highlights yet.</p>
-              <p className="text-xs mt-2">
-                Add YouTube video IDs in the "highlights" array on the home page.
-              </p>
-            </div>
-          )}
-        </section>
 
         {/* Footer */}
         <footer className="mt-16 text-center text-muted-foreground animate-fade-in">

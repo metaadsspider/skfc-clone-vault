@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { FancodeService } from '@/services/fancodeService';
+import { CustomVideoControls } from './CustomVideoControls';
 
 declare global {
   interface Window {
@@ -22,6 +23,104 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   const [error, setError] = useState<string | null>(null);
   const [streamUrl, setStreamUrl] = useState<string>("");
   const [showExtensionOption, setShowExtensionOption] = useState(false);
+  
+  // Video control states
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [qualityLevels, setQualityLevels] = useState<Array<{level: number, height: number, bitrate: number}>>([]);
+  const [currentQuality, setCurrentQuality] = useState(-1);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Video control handlers
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+    }
+  };
+
+  const handleVolumeChange = (newVolume: number) => {
+    if (videoRef.current) {
+      videoRef.current.volume = newVolume;
+      setVolume(newVolume);
+      if (newVolume > 0 && isMuted) {
+        setIsMuted(false);
+        videoRef.current.muted = false;
+      }
+    }
+  };
+
+  const handleMuteToggle = () => {
+    if (videoRef.current) {
+      const newMuted = !isMuted;
+      setIsMuted(newMuted);
+      videoRef.current.muted = newMuted;
+    }
+  };
+
+  const handleFullscreen = () => {
+    const container = videoRef.current?.parentElement;
+    if (container) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        container.requestFullscreen();
+      }
+    }
+  };
+
+  const handleQualityChange = (level: number) => {
+    setCurrentQuality(level);
+    if (hlsRef.current) {
+      hlsRef.current.currentLevel = level;
+    }
+  };
+
+  // Video event handlers
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleVolumeChangeEvent = () => {
+      setVolume(video.volume);
+      setIsMuted(video.muted);
+    };
+
+    video.addEventListener('play', handlePlay);
+    video.addEventListener('pause', handlePause);
+    video.addEventListener('volumechange', handleVolumeChangeEvent);
+
+    return () => {
+      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('pause', handlePause);
+      video.removeEventListener('volumechange', handleVolumeChangeEvent);
+    };
+  }, []);
+
+  // Handle fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
+  }, []);
 
   // Fetch stream URL from service
   useEffect(() => {
@@ -207,6 +306,16 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
 
         hls.on(window.Hls.Events.MANIFEST_LOADED, () => {
           setIsLoading(false);
+          // Set quality levels
+          const levels = hls.levels.map((level: any, index: number) => ({
+            level: index,
+            height: level.height,
+            bitrate: level.bitrate
+          }));
+          // Add auto quality option
+          levels.unshift({ level: -1, height: 0, bitrate: 0 });
+          setQualityLevels(levels);
+          setCurrentQuality(-1); // Auto quality by default
         });
 
         hls.loadSource(streamUrl);
@@ -334,191 +443,133 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
     };
   }, [streamUrl]);
 
+  // Block right-click and inspect element
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => e.preventDefault();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+      if (e.key === 'F12' || 
+          (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J')) ||
+          (e.ctrlKey && e.key === 'U')) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
-        {/* Premium Player Header */}
-        <Card className="p-6 bg-gradient-to-r from-background via-background to-background border-2 border-primary/20">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-2 rounded-full bg-primary/10">
-                <span className="text-2xl">🏏</span>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  {matchTitle}
-                </h2>
-                <p className="text-sm text-muted-foreground">World Championship of Legends 2025</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              {streamUrl && streamUrl.includes('.mpd') && (
-                <button
-                  onClick={openInExtension}
-                  className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-4 py-2 rounded-full border border-blue-500/30 transition-all duration-300 shadow-lg shadow-blue-500/25"
-                >
-                  <span className="text-lg">🎬</span>
-                  <span className="font-semibold">Extension Player</span>
-                </button>
-              )}
-              <div className="flex items-center space-x-2 px-4 py-2 bg-red-500/20 rounded-full border border-red-500/30">
-                <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse shadow-lg shadow-red-500/50"></div>
-                <span className="text-sm font-semibold text-red-400">LIVE</span>
-              </div>
-              <div className="text-right">
-                <p className="text-lg font-bold text-primary">Ultra HD</p>
-                <p className="text-xs text-muted-foreground">{streamUrl?.includes('.mpd') ? 'DASH' : 'HLS'} • 1080p • 60fps</p>
-              </div>
-            </div>
-          </div>
-
-        {/* Premium Video Player Container */}
-        <div className="relative bg-black rounded-xl overflow-hidden aspect-video border-4 border-primary/20 shadow-2xl 
-                        mobile-video-container">
-          <style dangerouslySetInnerHTML={{
-            __html: `
-              .mobile-video-container {
-                aspect-ratio: 16/9;
+    <div className="w-full max-w-6xl mx-auto">
+      {/* Simple Video Player Container */}
+      <div className="relative bg-black rounded-lg overflow-hidden aspect-video shadow-lg">
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            .video-container {
+              aspect-ratio: 16/9;
+              position: relative;
+            }
+            .video-container video {
+              width: 100%;
+              height: 100%;
+              object-fit: contain;
+            }
+            .video-container video::-webkit-media-controls-timeline {
+              display: none !important;
+            }
+            .video-container video::-webkit-media-controls-current-time-display,
+            .video-container video::-webkit-media-controls-time-remaining-display {
+              display: none !important;
+            }
+            /* Fullscreen styles */
+            .video-container:fullscreen {
+              width: 100vw !important;
+              height: 100vh !important;
+              aspect-ratio: unset;
+              border-radius: 0;
+              max-width: none;
+              background: black;
+            }
+            .video-container:fullscreen video {
+              width: 100% !important;
+              height: 100% !important;
+            }
+            @media (max-width: 768px) {
+              .video-container {
+                border-radius: 0;
+                width: 100vw;
+                margin-left: calc(-50vw + 50%);
               }
-              @media (max-width: 768px) {
-                .mobile-video-container {
-                  aspect-ratio: 16/9 !important;
-                  max-height: 60vh;
-                  width: 100vw;
-                  margin-left: calc(-50vw + 50%);
-                  border-radius: 0;
-                  border: none;
-                }
-              }
-              @media (orientation: portrait) and (max-width: 768px) {
-                .mobile-video-container {
-                  aspect-ratio: 16/9 !important;
-                  height: auto;
-                  max-height: 50vh;
-                }
-              }
-              @media (orientation: landscape) and (max-width: 768px) {
-                .mobile-video-container {
-                  max-height: 85vh;
-                }
-              }
-            `
-          }} />
-          {/* Premium Loading Overlay */}
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/90 via-primary/20 to-black/90 z-10 backdrop-blur-sm">
-              <div className="text-center">
-                <div className="relative">
-                  <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4 shadow-lg shadow-primary/50"></div>
-                  <div className="absolute inset-0 w-12 h-12 border-4 border-accent/30 rounded-full mx-auto animate-pulse"></div>
-                </div>
-                <p className="text-white text-lg font-semibold">Loading Premium Stream...</p>
-                <p className="text-primary text-sm mt-1">Ultra Low Latency Mode</p>
-              </div>
+            }
+          `
+        }} />
+        
+        {/* Loading Overlay */}
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
+            <div className="text-center">
+              <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-2"></div>
+              <p className="text-white text-sm">Loading...</p>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Premium Error Overlay */}
-          {error && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/90 via-red-500/20 to-black/90 z-10 backdrop-blur-sm">
-              <div className="text-center max-w-md p-6 bg-black/60 rounded-xl border border-red-500/30">
-                <div className="text-red-400 text-4xl mb-4">⚠️</div>
-                <p className="text-red-400 text-lg font-semibold mb-2">Stream Interrupted</p>
-                <p className="text-white/80 text-sm mb-4">{error}</p>
-                {showExtensionOption && (
-                  <div className="space-y-3">
-                    <button
-                      onClick={openInExtension}
-                      className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-lg transition-all duration-300 shadow-lg shadow-blue-500/25 flex items-center space-x-2 mx-auto"
-                    >
-                      <span className="text-xl">🎬</span>
-                      <span className="font-semibold">Open Extension Player</span>
-                    </button>
-                    <p className="text-xs text-white/60">
-                      For best MPD/DASH playback experience
-                    </p>
-                  </div>
-                )}
-                <div className="flex items-center justify-center space-x-2 text-xs text-white/60">
-                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                  <span>Try the extension player above</span>
-                </div>
-              </div>
+        {/* Error Overlay */}
+        {error && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
+            <div className="text-center p-4">
+              <p className="text-red-400 text-sm mb-2">Stream Error</p>
+              <p className="text-white/60 text-xs">{error}</p>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Premium Video Element */}
-          <video
-            ref={videoRef}
-            className="w-full h-full object-cover"
-            controls
-            playsInline
-            webkit-playsinline="true"
-            muted
-            autoPlay
-            preload="metadata"
-            crossOrigin="anonymous"
-            style={{ 
-              width: '100%', 
-              height: '100%',
-              objectFit: 'contain'
-            }}
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='1080' viewBox='0 0 1920 1080'%3E%3Cdefs%3E%3ClinearGradient id='grad1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23000;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23333;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1920' height='1080' fill='url(%23grad1)'/%3E%3Ctext x='960' y='540' font-family='Arial,sans-serif' font-size='48' fill='%23fff' text-anchor='middle' opacity='0.8'%3E🏏 Premium Live Stream%3C/text%3E%3C/svg%3E"
-          >
-            Your browser does not support the video tag.
-          </video>
-        </div>
+        {/* Video Element */}
+        <video
+          ref={videoRef}
+          className="video-container w-full h-full"
+          playsInline
+          webkit-playsinline="true"
+          muted
+          autoPlay
+          preload="metadata"
+          crossOrigin="anonymous"
+          disablePictureInPicture
+          onContextMenu={(e) => e.preventDefault()}
+          style={{ 
+            width: '100%', 
+            height: '100%',
+            objectFit: 'contain'
+          }}
+        >
+          Your browser does not support the video tag.
+        </video>
 
-        {/* Premium Stream Stats */}
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">Quality</p>
-            <p className="text-lg font-bold text-primary">1080p HD</p>
+        {/* Custom Netflix-style Controls */}
+        {!isLoading && !error && (
+          <div className={isFullscreen ? 'fixed inset-0 z-[999999]' : 'absolute inset-0 z-20'}>
+            <CustomVideoControls
+              videoRef={videoRef}
+              isPlaying={isPlaying}
+              onPlayPause={handlePlayPause}
+              volume={volume}
+              onVolumeChange={handleVolumeChange}
+              isMuted={isMuted}
+              onMuteToggle={handleMuteToggle}
+              onFullscreen={handleFullscreen}
+              qualityLevels={qualityLevels}
+              currentQuality={currentQuality}
+              onQualityChange={handleQualityChange}
+            />
           </div>
-          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">Latency</p>
-            <p className="text-lg font-bold text-green-500">Ultra Low</p>
-          </div>
-          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">Format</p>
-            <p className="text-lg font-bold text-accent">{streamUrl?.includes('.mpd') ? 'DASH/MPD' : 'HLS/M3U8'}</p>
-          </div>
-          <div className="bg-card/50 rounded-lg p-3 border border-border/50">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">Status</p>
-            <p className={`text-lg font-bold ${!error ? 'text-green-500' : 'text-red-500'}`}>
-              {!error ? 'Live' : 'Error'}
-            </p>
-          </div>
-        </div>
-
-        {/* Premium Features Badge */}
-        <div className="mt-4 flex flex-col items-center space-y-3">
-          <div className="bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-full px-6 py-2 border border-primary/30">
-            <span className="text-sm font-medium bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              ⚡ Premium Live Streaming • Zero Buffer • Real-time Experience
-            </span>
-          </div>
-          {streamUrl && streamUrl.includes('.mpd') && (
-            <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 max-w-md">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl">🎬</span>
-                  <div>
-                    <p className="text-sm font-semibold text-blue-400">MPD/DASH Stream Detected</p>
-                    <p className="text-xs text-blue-300/70">Use extension for optimal playback</p>
-                  </div>
-                </div>
-                <button
-                  onClick={openInExtension}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors"
-                >
-                  Launch
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </Card>
+        )}
+      </div>
     </div>
   );
 };
