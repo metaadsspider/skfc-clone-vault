@@ -74,7 +74,7 @@ export const MatchCard = ({
         </div>
         
         {/* Enhanced gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-95 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-transparent opacity-70 group-hover:opacity-90 transition-all duration-300" />
         
         {/* Teams section with enhanced styling */}
         <div className="absolute bottom-0 left-0 right-0 team-vs">
@@ -106,8 +106,10 @@ export const MatchCard = ({
         </div>
 
         {/* Live indicator */}
-        <div className="absolute top-3 right-3 bg-fc-red text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse-slow">
-          🔴 LIVE
+        <div className="absolute top-3 right-3 bg-fc-red text-white px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg animate-pulse-slow">
+          <span className="w-2 h-2 bg-white rounded-full animate-ping absolute"></span>
+          <span className="w-2 h-2 bg-white rounded-full relative"></span>
+          <span>LIVE</span>
         </div>
       </div>
       

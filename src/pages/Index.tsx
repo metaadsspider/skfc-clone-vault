@@ -45,31 +45,31 @@ const Index = () => {
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Live Matches Header */}
-        <div className="mb-6 text-center animate-fade-in">
-          <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-accent to-fc-cyan bg-clip-text text-transparent">
+        <div className="mb-8 text-center animate-fade-in">
+          <h2 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-accent via-fc-cyan to-accent bg-clip-text text-transparent animate-glow">
             Live Sports Streaming
           </h2>
-          <p className="text-muted-foreground">
-            Watch your favorite sports live in HD quality
+          <p className="text-muted-foreground text-base md:text-lg">
+            Watch your favorite sports live in premium HD quality
           </p>
         </div>
 
         {/* Live Matches Section */}
         {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {[...Array(6)].map((_, index) => (
               <div
                 key={index}
-                className="bg-card rounded-lg p-4 animate-pulse"
+                className="bg-card rounded-2xl p-4 animate-pulse shadow-lg"
               >
-                <div className="h-32 bg-muted rounded mb-4"></div>
-                <div className="h-4 bg-muted rounded mb-2"></div>
-                <div className="h-4 bg-muted rounded w-3/4"></div>
+                <div className="h-40 md:h-48 bg-muted rounded-xl mb-4"></div>
+                <div className="h-5 bg-muted rounded-lg mb-3"></div>
+                <div className="h-5 bg-muted rounded-lg w-3/4"></div>
               </div>
             ))}
           </div>
         ) : matches.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {matches.map((match, index) => (
               <MatchCard
                 key={match.id}
@@ -87,11 +87,14 @@ const Index = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">
+          <div className="text-center py-16 md:py-20">
+            <div className="w-20 h-20 mx-auto mb-6 bg-muted/20 rounded-full flex items-center justify-center">
+              <span className="text-4xl">🏏</span>
+            </div>
+            <p className="text-muted-foreground text-lg md:text-xl font-medium mb-2">
               No live matches available at the moment.
             </p>
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-sm md:text-base text-muted-foreground">
               Check back soon for live sports streaming!
             </p>
           </div>
@@ -99,9 +102,12 @@ const Index = () => {
 
 
         {/* Footer */}
-        <footer className="mt-16 text-center text-muted-foreground animate-fade-in">
-          <p className="text-sm">
+        <footer className="mt-20 pt-8 border-t border-border/30 text-center text-muted-foreground animate-fade-in">
+          <p className="text-sm md:text-base font-medium mb-2">
             © 2025 Crick On Time - Premium Sports Streaming Platform
+          </p>
+          <p className="text-xs text-muted-foreground/60">
+            Experience sports like never before
           </p>
         </footer>
       </main>

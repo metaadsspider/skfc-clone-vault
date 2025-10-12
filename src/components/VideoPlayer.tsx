@@ -466,19 +466,21 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   }, []);
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
-      {/* Simple Video Player Container */}
-      <div className="relative bg-black rounded-lg overflow-hidden aspect-video shadow-lg">
+    <div className="w-full">
+      {/* Premium Video Player Container */}
+      <Card className="relative bg-black border-accent/20 shadow-2xl overflow-hidden">
         <style dangerouslySetInnerHTML={{
           __html: `
             .video-container {
               aspect-ratio: 16/9;
               position: relative;
+              width: 100%;
             }
             .video-container video {
               width: 100%;
               height: 100%;
               object-fit: contain;
+              background: black;
             }
             .video-container video::-webkit-media-controls-timeline {
               display: none !important;
@@ -487,8 +489,11 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
             .video-container video::-webkit-media-controls-time-remaining-display {
               display: none !important;
             }
-            /* Fullscreen styles */
-            .video-container:fullscreen {
+            /* Fullscreen styles - optimized for all devices */
+            .video-container:fullscreen,
+            .video-container:-webkit-full-screen,
+            .video-container:-moz-full-screen,
+            .video-container:-ms-fullscreen {
               width: 100vw !important;
               height: 100vh !important;
               aspect-ratio: unset;
@@ -496,41 +501,63 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
               max-width: none;
               background: black;
             }
-            .video-container:fullscreen video {
+            .video-container:fullscreen video,
+            .video-container:-webkit-full-screen video,
+            .video-container:-moz-full-screen video,
+            .video-container:-ms-fullscreen video {
               width: 100% !important;
               height: 100% !important;
+              object-fit: contain;
             }
-            @media (max-width: 768px) {
+            /* Responsive design for all devices */
+            @media (max-width: 640px) {
               .video-container {
                 border-radius: 0;
                 width: 100vw;
                 margin-left: calc(-50vw + 50%);
               }
             }
+            @media (min-width: 641px) and (max-width: 1024px) {
+              .video-container {
+                border-radius: 0.5rem;
+              }
+            }
+            @media (min-width: 1025px) {
+              .video-container {
+                border-radius: 0.75rem;
+              }
+            }
           `
         }} />
         
-        {/* Loading Overlay */}
+        {/* Loading Overlay - Premium */}
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black via-black/95 to-black/90 z-10 backdrop-blur-sm">
             <div className="text-center">
-              <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-2"></div>
-              <p className="text-white text-sm">Loading...</p>
+              <div className="relative w-16 h-16 mx-auto mb-4">
+                <div className="absolute inset-0 border-4 border-accent/30 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-transparent border-t-accent rounded-full animate-spin"></div>
+              </div>
+              <p className="text-white text-base font-medium">Loading Stream...</p>
+              <p className="text-white/50 text-xs mt-1">Please wait</p>
             </div>
           </div>
         )}
 
-        {/* Error Overlay */}
+        {/* Error Overlay - Premium */}
         {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
-            <div className="text-center p-4">
-              <p className="text-red-400 text-sm mb-2">Stream Error</p>
-              <p className="text-white/60 text-xs">{error}</p>
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black via-destructive/10 to-black z-10 backdrop-blur-sm">
+            <div className="text-center p-6 bg-black/60 backdrop-blur-md rounded-2xl border border-destructive/30 max-w-md mx-4">
+              <div className="w-12 h-12 mx-auto mb-3 bg-destructive/20 rounded-full flex items-center justify-center">
+                <span className="text-2xl">⚠️</span>
+              </div>
+              <p className="text-destructive text-base font-semibold mb-2">Stream Error</p>
+              <p className="text-white/60 text-sm">{error}</p>
             </div>
           </div>
         )}
 
-        {/* Video Element */}
+        {/* Video Element - Optimized for all devices */}
         <video
           ref={videoRef}
           className="video-container w-full h-full"
@@ -545,13 +572,15 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
           style={{ 
             width: '100%', 
             height: '100%',
-            objectFit: 'contain'
+            objectFit: 'contain',
+            maxWidth: '100%',
+            display: 'block'
           }}
         >
           Your browser does not support the video tag.
         </video>
 
-        {/* Custom Netflix-style Controls */}
+        {/* Custom Premium Controls */}
         {!isLoading && !error && (
           <div className={isFullscreen ? 'fixed inset-0 z-[999999]' : 'absolute inset-0 z-20'}>
             <CustomVideoControls
@@ -569,7 +598,7 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
             />
           </div>
         )}
-      </div>
+      </Card>
     </div>
   );
 };

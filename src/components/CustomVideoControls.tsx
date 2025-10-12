@@ -94,19 +94,19 @@ export const CustomVideoControls = ({
       </div>
 
       {/* Controls overlay */}
-      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 transition-opacity duration-300 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-4 md:p-6 backdrop-blur-sm transition-opacity duration-300 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'}`}>
         
         {/* Control buttons */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-between gap-2 md:gap-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             {/* Play/Pause */}
             <Button
               variant="ghost"
               size="sm"
               onClick={onPlayPause}
-              className="text-white hover:bg-white/20 p-2"
+              className="text-white hover:bg-white/20 hover:scale-110 transition-all duration-200 p-1.5 md:p-2 rounded-full"
             >
-              {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+              {isPlaying ? <Pause className="w-5 h-5 md:w-6 md:h-6" /> : <Play className="w-5 h-5 md:w-6 md:h-6" />}
             </Button>
 
             {/* Volume */}
@@ -119,13 +119,13 @@ export const CustomVideoControls = ({
                 variant="ghost"
                 size="sm"
                 onClick={onMuteToggle}
-                className="text-white hover:bg-white/20 p-2"
+                className="text-white hover:bg-white/20 hover:scale-110 transition-all duration-200 p-1.5 md:p-2 rounded-full"
               >
-                {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                {isMuted || volume === 0 ? <VolumeX className="w-4 h-4 md:w-5 md:h-5" /> : <Volume2 className="w-4 h-4 md:w-5 md:h-5" />}
               </Button>
               
               {showVolumeSlider && (
-                <div className="w-20">
+                <div className="hidden md:block w-16 lg:w-20">
                   <Slider
                     value={[isMuted ? 0 : volume * 100]}
                     onValueChange={([value]) => onVolumeChange(value / 100)}
@@ -138,29 +138,30 @@ export const CustomVideoControls = ({
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             {/* Quality selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="text-white hover:bg-white/20 p-2"
+                  className="text-white hover:bg-white/20 hover:scale-110 transition-all duration-200 p-1.5 md:p-2 rounded-full"
                 >
-                  <Settings className="w-5 h-5" />
+                  <Settings className="w-4 h-4 md:w-5 md:h-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-black/90 border-white/20">
-                <div className="px-2 py-1 text-xs font-semibold text-white/70">Quality</div>
+              <DropdownMenuContent align="end" className="bg-black/95 backdrop-blur-md border-white/20 shadow-xl">
+                <div className="px-3 py-2 text-xs font-semibold text-white/70 border-b border-white/10">Quality Settings</div>
                 {qualityLevels.map((level, index) => (
                   <DropdownMenuItem
                     key={index}
                     onClick={() => onQualityChange(level.level)}
-                    className={`text-white hover:bg-white/20 cursor-pointer ${
-                      currentQuality === level.level ? 'bg-red-600/50' : ''
+                    className={`text-white hover:bg-white/20 cursor-pointer transition-colors px-3 py-2 ${
+                      currentQuality === level.level ? 'bg-fc-green/50 font-semibold' : ''
                     }`}
                   >
                     {getQualityLabel(level)}
+                    {currentQuality === level.level && <span className="ml-2">✓</span>}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -171,9 +172,9 @@ export const CustomVideoControls = ({
               variant="ghost"
               size="sm"
               onClick={onFullscreen}
-              className="text-white hover:bg-white/20 p-2"
+              className="text-white hover:bg-white/20 hover:scale-110 transition-all duration-200 p-1.5 md:p-2 rounded-full"
             >
-              <Maximize className="w-5 h-5" />
+              <Maximize className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           </div>
         </div>
