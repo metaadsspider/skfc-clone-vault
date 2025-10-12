@@ -466,9 +466,9 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   }, []);
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
-      {/* Simple Video Player Container */}
-      <div className="relative bg-black rounded-lg overflow-hidden aspect-video shadow-lg">
+    <div className="w-full max-w-7xl mx-auto px-4">
+      {/* Premium SonyLIV-style Video Player Container */}
+      <div className="relative bg-gradient-to-br from-black via-gray-900 to-black rounded-xl overflow-hidden aspect-video shadow-2xl border border-white/10">
         <style dangerouslySetInnerHTML={{
           __html: `
             .video-container {
@@ -480,52 +480,85 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
               height: 100%;
               object-fit: contain;
             }
-            .video-container video::-webkit-media-controls-timeline {
+            .video-container video::-webkit-media-controls {
               display: none !important;
             }
-            .video-container video::-webkit-media-controls-current-time-display,
-            .video-container video::-webkit-media-controls-time-remaining-display {
+            .video-container video::-webkit-media-controls-enclosure {
               display: none !important;
             }
-            /* Fullscreen styles */
+            /* Premium fullscreen styles */
             .video-container:fullscreen {
               width: 100vw !important;
               height: 100vh !important;
               aspect-ratio: unset;
               border-radius: 0;
               max-width: none;
-              background: black;
+              background: #000;
             }
             .video-container:fullscreen video {
               width: 100% !important;
               height: 100% !important;
             }
+            /* Responsive mobile styles */
             @media (max-width: 768px) {
               .video-container {
-                border-radius: 0;
-                width: 100vw;
-                margin-left: calc(-50vw + 50%);
+                border-radius: 0.5rem;
               }
+            }
+            /* Premium loading animation */
+            @keyframes shimmer {
+              0% { background-position: -1000px 0; }
+              100% { background-position: 1000px 0; }
+            }
+            .loading-shimmer {
+              background: linear-gradient(90deg, 
+                rgba(255,255,255,0.05) 0%, 
+                rgba(255,255,255,0.1) 50%, 
+                rgba(255,255,255,0.05) 100%);
+              background-size: 1000px 100%;
+              animation: shimmer 2s infinite;
             }
           `
         }} />
         
-        {/* Loading Overlay */}
+        {/* Premium Loading Overlay */}
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
-            <div className="text-center">
-              <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-2"></div>
-              <p className="text-white text-sm">Loading...</p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-black/95 via-gray-900/95 to-black/95 backdrop-blur-sm z-10">
+            <div className="text-center space-y-4">
+              {/* SonyLIV-style circular loader */}
+              <div className="relative w-16 h-16 mx-auto">
+                <div className="absolute inset-0 border-4 border-white/20 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-transparent border-t-blue-500 border-r-blue-400 rounded-full animate-spin"></div>
+              </div>
+              <div className="space-y-2">
+                <p className="text-white text-base font-medium">Loading Stream</p>
+                <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden mx-auto">
+                  <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 loading-shimmer"></div>
+                </div>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Error Overlay */}
+        {/* Premium Error Overlay */}
         {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-10">
-            <div className="text-center p-4">
-              <p className="text-red-400 text-sm mb-2">Stream Error</p>
-              <p className="text-white/60 text-xs">{error}</p>
+          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-black/95 via-gray-900/95 to-black/95 backdrop-blur-sm z-10">
+            <div className="text-center p-8 max-w-md">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-500/10 border-2 border-red-500/30 flex items-center justify-center">
+                <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <p className="text-red-400 text-lg font-semibold mb-2">Playback Error</p>
+              <p className="text-white/70 text-sm leading-relaxed">{error}</p>
+              {showExtensionOption && (
+                <button 
+                  onClick={openInExtension}
+                  className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                >
+                  Open in Extension Player
+                </button>
+              )}
             </div>
           </div>
         )}

@@ -231,7 +231,7 @@ const Scoreboard = () => {
       <footer className="bg-card border-t border-border py-8 mt-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-muted-foreground">
-            © 2025 Crick On Time. Real-time cricket scores and updates.
+            © 2025 onee cric. Real-time cricket scores and updates.
           </p>
         </div>
       </footer>

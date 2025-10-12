@@ -70,7 +70,7 @@ const Highlights = () => {
         {/* Footer */}
         <footer className="mt-16 text-center text-muted-foreground animate-fade-in">
           <p className="text-sm">
-            © 2025 Crick On Time - Premium Sports Streaming Platform
+            © 2025 onee cric - Premium Sports Streaming Platform
           </p>
         </footer>
       </main>

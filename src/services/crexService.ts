@@ -42,30 +42,128 @@ export class CrexService {
 
   static async fetchScoreboard(): Promise<ScoreboardMatch[]> {
     try {
-      const response = await fetch(`${this.BASE_URL}/scoreboard`);
+      // Fetch from JSON file similar to fancode service
+      const response = await fetch('https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json');
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
       const data = await response.json();
-      return data.matches || this.getFallbackScoreboard();
+      return this.transformScoreboardData(data) || this.getFallbackScoreboard();
     } catch (error) {
       console.error('Error fetching scoreboard:', error);
       return this.getFallbackScoreboard();
     }
   }
 
+  private static transformScoreboardData(data: any): ScoreboardMatch[] {
+    if (!data || !Array.isArray(data.matches)) {
+      return this.getFallbackScoreboard();
+    }
+
+    return data.matches.map((match: any) => {
+      const team1 = match.teams?.[0];
+      const team2 = match.teams?.[1];
+      
+      const getScore = (team: any) => {
+        const cricketScore = team?.cricketScore?.[0];
+        if (cricketScore) {
+          return `${cricketScore.runs}/${cricketScore.wickets}`;
+        }
+        return undefined;
+      };
+
+      const getOvers = (team: any) => {
+        const cricketScore = team?.cricketScore?.[0];
+        return cricketScore?.overs || undefined;
+      };
+
+      return {
+        id: match.match_id?.toString() || `match-${Date.now()}`,
+        tournament: match.tournament || 'Live Match',
+        sport: match.category || 'Cricket',
+        team1: {
+          name: team1?.name || 'Team 1',
+          code: team1?.shortName || 'T1',
+          flag: team1?.flag?.src || '🏏',
+          score: getScore(team1),
+          overs: getOvers(team1)
+        },
+        team2: {
+          name: team2?.name || 'Team 2',
+          code: team2?.shortName || 'T2',
+          flag: team2?.flag?.src || '🏏',
+          score: getScore(team2),
+          overs: getOvers(team2)
+        },
+        status: this.mapMatchStatus(match.status),
+        venue: `${match.tournament}`,
+        startTime: match.startTime,
+        matchFormat: 'T20',
+        lastUpdate: new Date().toISOString()
+      };
+    }).filter((match: ScoreboardMatch) => match.status === 'live' || match.status === 'completed');
+  }
+
+  private static mapMatchStatus(status: string): 'live' | 'upcoming' | 'completed' {
+    if (!status) return 'upcoming';
+    const lowerStatus = status.toLowerCase();
+    if (lowerStatus.includes('live')) return 'live';
+    if (lowerStatus.includes('completed') || lowerStatus.includes('finished')) return 'completed';
+    return 'upcoming';
+  }
+
   static async fetchSchedule(days: number = 7): Promise<MatchSchedule[]> {
     try {
-      const response = await fetch(`${this.BASE_URL}/schedule?days=${days}`);
+      // Fetch from JSON file for upcoming matches
+      const response = await fetch('https://raw.githubusercontent.com/Jitendra-unatti/fancode/refs/heads/main/data/fancode.json');
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      
       const data = await response.json();
-      return data.schedule || this.getFallbackSchedule();
+      return this.transformScheduleData(data) || this.getFallbackSchedule();
     } catch (error) {
       console.error('Error fetching schedule:', error);
       return this.getFallbackSchedule();
     }
+  }
+
+  private static transformScheduleData(data: any): MatchSchedule[] {
+    if (!data || !Array.isArray(data.matches)) {
+      return this.getFallbackSchedule();
+    }
+
+    return data.matches
+      .filter((match: any) => {
+        const status = match.status?.toLowerCase();
+        return status === 'upcoming' || status === 'scheduled';
+      })
+      .map((match: any) => {
+        const team1 = match.teams?.[0];
+        const team2 = match.teams?.[1];
+
+        return {
+          id: match.match_id?.toString() || `match-${Date.now()}`,
+          tournament: match.tournament || 'Live Match',
+          team1: {
+            name: team1?.name || 'Team 1',
+            code: team1?.shortName || 'T1',
+            flag: team1?.flag?.src || '🏏'
+          },
+          team2: {
+            name: team2?.name || 'Team 2',
+            code: team2?.shortName || 'T2',
+            flag: team2?.flag?.src || '🏏'
+          },
+          dateTime: match.startTime || new Date().toISOString(),
+          venue: match.tournament,
+          matchFormat: 'T20',
+          status: 'upcoming' as const
+        };
+      });
   }
 
   private static getFallbackScoreboard(): ScoreboardMatch[] {

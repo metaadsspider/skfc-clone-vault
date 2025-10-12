@@ -14,7 +14,7 @@ export const TelegramPopup = () => {
 
   const handleJoin = () => {
     localStorage.setItem('telegram-popup-seen', 'true');
-    window.open('https://t.me/CricketNewsSkull', '_blank');
+    window.open('https://t.me/+jWWYoYpYlqgwMWM1', '_blank');
     setIsOpen(false);
   };
 
@@ -28,7 +28,7 @@ export const TelegramPopup = () => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center text-xl font-bold text-accent">
-            🏏 Welcome to Crick On Time!
+            🏏 Welcome to onee cric!
           </DialogTitle>
         </DialogHeader>
         
