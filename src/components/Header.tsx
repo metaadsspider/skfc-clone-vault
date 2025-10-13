@@ -32,7 +32,7 @@ export const Header = () => {
             className="text-2xl font-bold text-accent hover:scale-105 transition-transform duration-300 cursor-pointer"
             onClick={() => navigate('/')}
           >
-            onee cric
+            ONEE CRIC
           </h1>
           
           {/* Navigation */}
@@ -44,14 +44,6 @@ export const Header = () => {
               onClick={() => navigate('/')}
             >
               Live Matches
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={location.pathname === '/scoreboard' ? 'text-accent font-medium' : 'text-muted-foreground hover:text-foreground'}
-              onClick={() => navigate('/scoreboard')}
-            >
-              Scoreboard
             </Button>
             <Button
               variant="ghost"
