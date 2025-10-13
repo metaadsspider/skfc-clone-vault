@@ -54,9 +54,9 @@ const Play = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Back Navigation */}
-        <div className="mb-6">
+      <main className="pb-8">
+        {/* Back Navigation - Only on Desktop */}
+        <div className="max-w-7xl mx-auto px-4 py-4 hidden md:block">
           <Link to="/">
             <Button variant="outline" size="sm">
               ← Back to Matches
@@ -64,82 +64,94 @@ const Play = () => {
           </Link>
         </div>
 
-        {/* Match Info */}
-        <Card className="p-6 mb-6">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <img 
-                  src={currentMatch.team1.flag} 
-                  alt={`${currentMatch.team1.name} flag`}
-                  className="w-8 h-6 object-cover rounded"
-                />
-                <span className="font-semibold">{currentMatch.team1.name}</span>
-              </div>
-              
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-accent text-accent-foreground font-bold">
-                VS
-              </div>
-              
-              <div className="flex items-center space-x-3">
-                <span className="font-semibold">{currentMatch.team2.name}</span>
-                <img 
-                  src={currentMatch.team2.flag} 
-                  alt={`${currentMatch.team2.name} flag`}
-                  className="w-8 h-6 object-cover rounded"
-                />
-              </div>
-            </div>
-            
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">{currentMatch.tournament}</p>
-              <p className="text-sm font-medium">{currentMatch.sport}</p>
-              <div className="flex items-center mt-1">
-                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse mr-2"></div>
-                <span className="text-sm text-red-500 font-medium">LIVE</span>
-              </div>
-            </div>
-          </div>
-        </Card>
+        {/* Video Player - Full Width on Mobile, Contained on Desktop */}
+        <div className="w-full">
+          <VideoPlayer 
+            matchId={matchId}
+            matchTitle={matchTitle}
+          />
+        </div>
 
-        {/* Video Player */}
-        <VideoPlayer 
-          matchId={matchId}
-          matchTitle={matchTitle}
-        />
+        {/* Match Info Below Player */}
+        <div className="max-w-7xl mx-auto px-4 mt-6">
+          <Card className="bg-card/50 backdrop-blur border-border/50 overflow-hidden">
+            <div className="p-5">
+              {/* Teams Section */}
+              <div className="flex items-center justify-center mb-4">
+                <div className="flex items-center space-x-3">
+                  <img 
+                    src={currentMatch.team1.flag} 
+                    alt={currentMatch.team1.name}
+                    className="w-10 h-8 object-cover rounded shadow-md"
+                  />
+                  <span className="font-bold text-lg">{currentMatch.team1.name}</span>
+                </div>
+                
+                <div className="mx-6 flex items-center justify-center w-14 h-14 rounded-full bg-accent text-accent-foreground font-bold text-sm">
+                  VS
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <span className="font-bold text-lg">{currentMatch.team2.name}</span>
+                  <img 
+                    src={currentMatch.team2.flag} 
+                    alt={currentMatch.team2.name}
+                    className="w-10 h-8 object-cover rounded shadow-md"
+                  />
+                </div>
+              </div>
+              
+              {/* Match Details */}
+              <div className="text-center space-y-1">
+                <p className="text-sm text-muted-foreground font-medium">
+                  {currentMatch.tournament}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {currentMatch.sport}
+                </p>
+                <div className="flex items-center justify-center mt-2">
+                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse mr-2"></div>
+                  <span className="text-sm text-red-500 font-bold">LIVE</span>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
 
         {/* Other Matches */}
-        <Card className="p-6 mt-8">
-          <h3 className="text-xl font-bold mb-4">Other Live Matches</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {otherMatches.slice(0, 6).map((match) => (
-              <Link key={match.id} to={`/play?id=${match.id}`}>
-                <Card className="p-4 hover:bg-accent/10 transition-colors cursor-pointer">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <img 
-                        src={match.team1.flag} 
-                        alt={match.team1.name}
-                        className="w-6 h-4 object-cover rounded"
-                      />
-                      <span className="text-sm">{match.team1.name}</span>
+        <div className="max-w-7xl mx-auto px-4 mt-8">
+          <Card className="p-6">
+            <h3 className="text-xl font-bold mb-4">Other Live Matches</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {otherMatches.slice(0, 6).map((match) => (
+                <Link key={match.id} to={`/play?id=${match.id}`}>
+                  <Card className="p-4 hover:bg-accent/10 transition-colors cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <img 
+                          src={match.team1.flag} 
+                          alt={match.team1.name}
+                          className="w-6 h-4 object-cover rounded"
+                        />
+                        <span className="text-sm">{match.team1.name}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">vs</span>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm">{match.team2.name}</span>
+                        <img 
+                          src={match.team2.flag} 
+                          alt={match.team2.name}
+                          className="w-6 h-4 object-cover rounded"
+                        />
+                      </div>
                     </div>
-                    <span className="text-xs text-muted-foreground">vs</span>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm">{match.team2.name}</span>
-                      <img 
-                        src={match.team2.flag} 
-                        alt={match.team2.name}
-                        className="w-6 h-4 object-cover rounded"
-                      />
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">{match.tournament}</p>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </Card>
+                    <p className="text-xs text-muted-foreground mt-2">{match.tournament}</p>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </Card>
+        </div>
       </main>
     </div>
   );

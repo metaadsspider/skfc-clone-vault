@@ -105,11 +105,11 @@ export const CustomVideoControls = ({
       {/* Center Play Button */}
       {!isPlaying && (
         <div 
-          className="absolute inset-0 flex items-center justify-center cursor-pointer"
+          className="absolute inset-0 flex items-center justify-center cursor-pointer z-10"
           onClick={onPlayPause}
         >
-          <div className="bg-white/90 hover:bg-white rounded-full p-4 transition-all hover:scale-110 shadow-2xl">
-            <Play className="w-12 h-12 text-black fill-black ml-1" />
+          <div className="bg-white/90 hover:bg-white rounded-full p-5 md:p-4 transition-all hover:scale-110 shadow-2xl">
+            <Play className="w-14 h-14 md:w-12 md:h-12 text-black fill-black ml-1" />
           </div>
         </div>
       )}
@@ -121,33 +121,33 @@ export const CustomVideoControls = ({
         }`}
       >
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent pointer-events-none"></div>
         
-        <div className="relative px-4 pb-3 pt-6">
+        <div className="relative px-3 md:px-4 pb-4 md:pb-3 pt-8 md:pt-6">
           {/* Time and Live Badge */}
-          <div className="flex items-center justify-between mb-2 px-1">
-            <span className="text-white text-sm font-medium">{formatTime(currentTime)}</span>
+          <div className="flex items-center justify-between mb-3 md:mb-2 px-1">
+            <span className="text-white text-sm md:text-sm font-medium">{formatTime(currentTime)}</span>
             
-            <div className="flex items-center px-3 py-1 bg-red-600 rounded">
+            <div className="flex items-center px-3 py-1.5 md:py-1 bg-red-600 rounded">
               <div className="w-2 h-2 bg-white rounded-full animate-pulse mr-2"></div>
               <span className="text-white text-xs font-bold">LIVE</span>
             </div>
             
-            <span className="text-white text-sm font-medium">{formatTime(duration)}</span>
+            <span className="text-white text-sm md:text-sm font-medium">{formatTime(duration)}</span>
           </div>
         
           {/* Control Buttons */}
           <div className="flex items-center justify-between">
             {/* Left Controls */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 md:space-x-2">
               {/* Play/Pause */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onPlayPause}
-                className="text-white hover:bg-white/20 p-2 h-auto rounded-md"
+                className="text-white hover:bg-white/20 p-2.5 md:p-2 h-auto rounded-md"
               >
-                {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                {isPlaying ? <Pause className="w-6 h-6 md:w-5 md:h-5" /> : <Play className="w-6 h-6 md:w-5 md:h-5" />}
               </Button>
 
               {/* Volume Control */}
@@ -160,12 +160,12 @@ export const CustomVideoControls = ({
                   variant="ghost"
                   size="sm"
                   onClick={onMuteToggle}
-                  className="text-white hover:bg-white/20 p-2 h-auto rounded-md"
+                  className="text-white hover:bg-white/20 p-2.5 md:p-2 h-auto rounded-md"
                 >
-                  {isMuted || volume === 0 ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                  {isMuted || volume === 0 ? <VolumeX className="w-6 h-6 md:w-5 md:h-5" /> : <Volume2 className="w-6 h-6 md:w-5 md:h-5" />}
                 </Button>
                 
-                <div className={`overflow-hidden transition-all duration-300 ${showVolumeSlider ? 'w-20 opacity-100' : 'w-0 opacity-0'}`}>
+                <div className={`hidden md:block overflow-hidden transition-all duration-300 ${showVolumeSlider ? 'w-20 opacity-100' : 'w-0 opacity-0'}`}>
                   <Slider
                     value={[isMuted ? 0 : volume * 100]}
                     onValueChange={([value]) => {
@@ -181,32 +181,33 @@ export const CustomVideoControls = ({
             </div>
 
             {/* Right Controls */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 md:space-x-2">
               {/* Quality Selector */}
               {qualityLevels.length > 0 && (
-                <DropdownMenu>
+                <DropdownMenu modal={false}>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-white hover:bg-white/20 p-2 h-auto rounded-md"
+                      className="text-white hover:bg-white/20 p-2.5 md:p-2 h-auto rounded-md"
                     >
-                      <Settings className="w-5 h-5" />
+                      <Settings className="w-6 h-6 md:w-5 md:h-5" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent 
                     align="end"
                     side="top"
-                    className="bg-black/95 backdrop-blur-md border-white/20 min-w-[120px]"
+                    className="bg-black/95 backdrop-blur-md border-white/20 min-w-[140px] z-[9999]"
+                    sideOffset={8}
                   >
-                    <div className="px-2 py-1.5 text-xs font-semibold text-white/60 uppercase">
+                    <div className="px-3 py-2 text-xs font-semibold text-white/60 uppercase tracking-wide border-b border-white/10">
                       Quality
                     </div>
                     {qualityLevels.map((level, index) => (
                       <DropdownMenuItem
                         key={index}
                         onClick={() => onQualityChange(level.level)}
-                        className={`text-white hover:bg-white/20 cursor-pointer transition-colors ${
+                        className={`text-white hover:bg-white/20 cursor-pointer transition-colors px-3 py-2.5 text-sm ${
                           currentQuality === level.level ? 'bg-white/10 font-semibold' : ''
                         }`}
                       >
@@ -222,9 +223,9 @@ export const CustomVideoControls = ({
                 variant="ghost"
                 size="sm"
                 onClick={onFullscreen}
-                className="text-white hover:bg-white/20 p-2 h-auto rounded-md"
+                className="text-white hover:bg-white/20 p-2.5 md:p-2 h-auto rounded-md"
               >
-                {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+                {isFullscreen ? <Minimize className="w-6 h-6 md:w-5 md:h-5" /> : <Maximize className="w-6 h-6 md:w-5 md:h-5" />}
               </Button>
             </div>
           </div>

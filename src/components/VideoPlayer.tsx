@@ -313,56 +313,58 @@ export const VideoPlayer = ({ matchId, matchTitle }: VideoPlayerProps) => {
   }, [streamUrl]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4">
-      <div 
-        ref={containerRef}
-        className="relative bg-black rounded-lg overflow-hidden aspect-video shadow-2xl"
-      >
-        {/* Video Element */}
-        <video
-          ref={videoRef}
-          className="w-full h-full"
-          playsInline
-          onClick={handlePlayPause}
-        />
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/80">
-            <div className="flex flex-col items-center space-y-4">
-              <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-white font-medium">Loading stream...</p>
-            </div>
-          </div>
-        )}
-
-        {/* Error State */}
-        {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/90">
-            <div className="text-center px-6">
-              <p className="text-red-500 font-semibold text-lg mb-2">Stream Error</p>
-              <p className="text-white/70">{error}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Custom Controls */}
-        {!error && (
-          <CustomVideoControls
-            videoRef={videoRef}
-            isPlaying={isPlaying}
-            onPlayPause={handlePlayPause}
-            volume={volume}
-            onVolumeChange={handleVolumeChange}
-            isMuted={isMuted}
-            onMuteToggle={handleMuteToggle}
-            onFullscreen={handleFullscreen}
-            qualityLevels={qualityLevels}
-            currentQuality={currentQuality}
-            onQualityChange={handleQualityChange}
-            isFullscreen={isFullscreen}
+    <div className="w-full">
+      <div className="md:max-w-7xl md:mx-auto md:px-4">
+        <div 
+          ref={containerRef}
+          className="relative bg-black md:rounded-lg overflow-hidden aspect-video shadow-2xl"
+        >
+          {/* Video Element */}
+          <video
+            ref={videoRef}
+            className="w-full h-full"
+            playsInline
+            onClick={handlePlayPause}
           />
-        )}
+
+          {/* Loading State */}
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/80">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-white font-medium">Loading stream...</p>
+              </div>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/90">
+              <div className="text-center px-6">
+                <p className="text-red-500 font-semibold text-lg mb-2">Stream Error</p>
+                <p className="text-white/70">{error}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Custom Controls */}
+          {!error && (
+            <CustomVideoControls
+              videoRef={videoRef}
+              isPlaying={isPlaying}
+              onPlayPause={handlePlayPause}
+              volume={volume}
+              onVolumeChange={handleVolumeChange}
+              isMuted={isMuted}
+              onMuteToggle={handleMuteToggle}
+              onFullscreen={handleFullscreen}
+              qualityLevels={qualityLevels}
+              currentQuality={currentQuality}
+              onQualityChange={handleQualityChange}
+              isFullscreen={isFullscreen}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
