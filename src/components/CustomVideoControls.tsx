@@ -98,21 +98,35 @@ export const CustomVideoControls = ({
 
   return (
     <div 
-      className="absolute inset-0 z-20"
+      className="absolute inset-0 z-20 group"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseMove}
     >
-      {/* Center Play Button */}
+      {/* Center Play Button - Modern Design */}
       {!isPlaying && (
         <div 
-          className="absolute inset-0 flex items-center justify-center cursor-pointer z-10"
+          className="absolute inset-0 flex items-center justify-center cursor-pointer z-10 bg-black/30 backdrop-blur-sm"
           onClick={onPlayPause}
         >
-          <div className="bg-white/90 hover:bg-white rounded-full p-5 md:p-4 transition-all hover:scale-110 shadow-2xl">
-            <Play className="w-14 h-14 md:w-12 md:h-12 text-black fill-black ml-1" />
+          <div className="relative">
+            <div className="absolute inset-0 bg-white/20 rounded-full blur-xl animate-pulse"></div>
+            <div className="relative bg-gradient-to-br from-white to-white/90 hover:from-white hover:to-white rounded-full p-6 md:p-5 transition-all duration-300 hover:scale-110 shadow-2xl">
+              <Play className="w-16 h-16 md:w-12 md:h-12 text-black fill-black ml-1.5" />
+            </div>
           </div>
         </div>
       )}
+
+      {/* Top Gradient Overlay */}
+      <div className={`absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-black/60 to-transparent transition-opacity duration-300 ${
+        showControls || !isPlaying ? 'opacity-100' : 'opacity-0'
+      }`}>
+        {/* LIVE Badge - Top Right */}
+        <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-red-600/90 backdrop-blur-sm rounded-full shadow-lg">
+          <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+          <span className="text-white text-xs font-bold tracking-wide">LIVE</span>
+        </div>
+      </div>
 
       {/* Modern Control Bar */}
       <div 
@@ -121,38 +135,40 @@ export const CustomVideoControls = ({
         }`}
       >
         {/* Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-transparent pointer-events-none"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pointer-events-none"></div>
         
-        <div className="relative px-3 md:px-4 pb-4 md:pb-3 pt-8 md:pt-6">
-          {/* Time and Live Badge */}
-          <div className="flex items-center justify-between mb-3 md:mb-2 px-1">
-            <span className="text-white text-sm md:text-sm font-medium">{formatTime(currentTime)}</span>
-            
-            <div className="flex items-center px-3 py-1.5 md:py-1 bg-red-600 rounded">
-              <div className="w-2 h-2 bg-white rounded-full animate-pulse mr-2"></div>
-              <span className="text-white text-xs font-bold">LIVE</span>
-            </div>
-            
-            <span className="text-white text-sm md:text-sm font-medium">{formatTime(duration)}</span>
+        <div className="relative px-4 md:px-6 pb-3 md:pb-4 pt-6 md:pt-8">
+          {/* Time Display */}
+          <div className="flex items-center justify-between mb-4 md:mb-3 px-1">
+            <span className="text-white/90 text-xs md:text-sm font-medium tabular-nums">
+              {formatTime(currentTime)}
+            </span>
+            <span className="text-white/60 text-xs md:text-sm font-medium tabular-nums">
+              {formatTime(duration)}
+            </span>
           </div>
         
           {/* Control Buttons */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             {/* Left Controls */}
-            <div className="flex items-center space-x-2 md:space-x-2">
+            <div className="flex items-center gap-1 md:gap-2">
               {/* Play/Pause */}
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={onPlayPause}
-                className="text-white hover:bg-white/20 p-2.5 md:p-2 h-auto rounded-md"
+                className="text-white hover:bg-white/20 active:bg-white/30 p-3 md:p-2.5 h-auto rounded-lg transition-all duration-200 hover:scale-105"
               >
-                {isPlaying ? <Pause className="w-6 h-6 md:w-5 md:h-5" /> : <Play className="w-6 h-6 md:w-5 md:h-5" />}
+                {isPlaying ? (
+                  <Pause className="w-7 h-7 md:w-6 md:h-6" />
+                ) : (
+                  <Play className="w-7 h-7 md:w-6 md:h-6 ml-0.5" />
+                )}
               </Button>
 
               {/* Volume Control */}
               <div 
-                className="flex items-center space-x-2"
+                className="flex items-center gap-2"
                 onMouseEnter={() => setShowVolumeSlider(true)}
                 onMouseLeave={() => setShowVolumeSlider(false)}
               >
@@ -160,12 +176,16 @@ export const CustomVideoControls = ({
                   variant="ghost"
                   size="sm"
                   onClick={onMuteToggle}
-                  className="text-white hover:bg-white/20 p-2.5 md:p-2 h-auto rounded-md"
+                  className="text-white hover:bg-white/20 active:bg-white/30 p-3 md:p-2.5 h-auto rounded-lg transition-all duration-200 hover:scale-105"
                 >
-                  {isMuted || volume === 0 ? <VolumeX className="w-6 h-6 md:w-5 md:h-5" /> : <Volume2 className="w-6 h-6 md:w-5 md:h-5" />}
+                  {isMuted || volume === 0 ? (
+                    <VolumeX className="w-6 h-6 md:w-5 md:h-5" />
+                  ) : (
+                    <Volume2 className="w-6 h-6 md:w-5 md:h-5" />
+                  )}
                 </Button>
                 
-                <div className={`hidden md:block overflow-hidden transition-all duration-300 ${showVolumeSlider ? 'w-20 opacity-100' : 'w-0 opacity-0'}`}>
+                <div className={`hidden md:block overflow-hidden transition-all duration-300 ${showVolumeSlider ? 'w-24 opacity-100' : 'w-0 opacity-0'}`}>
                   <Slider
                     value={[isMuted ? 0 : volume * 100]}
                     onValueChange={([value]) => {
@@ -174,14 +194,14 @@ export const CustomVideoControls = ({
                     }}
                     max={100}
                     step={1}
-                    className="cursor-pointer [&_[role=slider]]:bg-white [&_[role=slider]]:w-3 [&_[role=slider]]:h-3 [&>span]:bg-white"
+                    className="cursor-pointer [&_[role=slider]]:bg-white [&_[role=slider]]:w-3.5 [&_[role=slider]]:h-3.5 [&_[role=slider]]:border-2 [&_[role=slider]]:border-white/20 [&_[role=slider]]:shadow-lg [&>span]:bg-white/90 [&>span]:h-1"
                   />
                 </div>
               </div>
             </div>
 
             {/* Right Controls */}
-            <div className="flex items-center space-x-2 md:space-x-2">
+            <div className="flex items-center gap-1 md:gap-2">
               {/* Quality Selector */}
               {qualityLevels.length > 0 && (
                 <DropdownMenu modal={false}>
@@ -189,7 +209,7 @@ export const CustomVideoControls = ({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-white hover:bg-white/20 p-2.5 md:p-2 h-auto rounded-md"
+                      className="text-white hover:bg-white/20 active:bg-white/30 p-3 md:p-2.5 h-auto rounded-lg transition-all duration-200 hover:scale-105"
                     >
                       <Settings className="w-6 h-6 md:w-5 md:h-5" />
                     </Button>
@@ -197,21 +217,26 @@ export const CustomVideoControls = ({
                   <DropdownMenuContent 
                     align="end"
                     side="top"
-                    className="bg-black/95 backdrop-blur-md border-white/20 min-w-[140px] z-[9999]"
-                    sideOffset={8}
+                    className="bg-black/95 backdrop-blur-xl border-white/10 min-w-[160px] z-[9999] shadow-2xl rounded-xl overflow-hidden"
+                    sideOffset={10}
                   >
-                    <div className="px-3 py-2 text-xs font-semibold text-white/60 uppercase tracking-wide border-b border-white/10">
-                      Quality
+                    <div className="px-4 py-3 text-xs font-bold text-white/70 uppercase tracking-wider border-b border-white/10">
+                      Video Quality
                     </div>
                     {qualityLevels.map((level, index) => (
                       <DropdownMenuItem
                         key={index}
                         onClick={() => onQualityChange(level.level)}
-                        className={`text-white hover:bg-white/20 cursor-pointer transition-colors px-3 py-2.5 text-sm ${
-                          currentQuality === level.level ? 'bg-white/10 font-semibold' : ''
+                        className={`text-white hover:bg-white/20 cursor-pointer transition-all duration-200 px-4 py-3 text-sm font-medium ${
+                          currentQuality === level.level ? 'bg-white/15 text-white' : 'text-white/80'
                         }`}
                       >
-                        {getQualityLabel(level)}
+                        <span className="flex items-center justify-between w-full">
+                          {getQualityLabel(level)}
+                          {currentQuality === level.level && (
+                            <div className="w-2 h-2 bg-green-500 rounded-full ml-2"></div>
+                          )}
+                        </span>
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
@@ -223,9 +248,13 @@ export const CustomVideoControls = ({
                 variant="ghost"
                 size="sm"
                 onClick={onFullscreen}
-                className="text-white hover:bg-white/20 p-2.5 md:p-2 h-auto rounded-md"
+                className="text-white hover:bg-white/20 active:bg-white/30 p-3 md:p-2.5 h-auto rounded-lg transition-all duration-200 hover:scale-105"
               >
-                {isFullscreen ? <Minimize className="w-6 h-6 md:w-5 md:h-5" /> : <Maximize className="w-6 h-6 md:w-5 md:h-5" />}
+                {isFullscreen ? (
+                  <Minimize className="w-6 h-6 md:w-5 md:h-5" />
+                ) : (
+                  <Maximize className="w-6 h-6 md:w-5 md:h-5" />
+                )}
               </Button>
             </div>
           </div>
