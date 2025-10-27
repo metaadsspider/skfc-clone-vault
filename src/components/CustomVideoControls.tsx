@@ -102,149 +102,142 @@ export const CustomVideoControls = ({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseMove}
     >
-      {/* Simple Center Play Button */}
+      {/* Center Play Button */}
       {!isPlaying && (
         <div 
           className="absolute inset-0 flex items-center justify-center cursor-pointer z-10"
           onClick={onPlayPause}
         >
-          <div className="bg-white/95 hover:bg-white rounded-full p-4 md:p-3.5 transition-all duration-200 hover:scale-105 shadow-xl">
-            <Play className="w-12 h-12 md:w-10 md:h-10 text-black fill-black ml-0.5" />
+          <div className="bg-white rounded-full p-4 transition-transform hover:scale-105">
+            <Play className="w-10 h-10 text-black fill-black ml-0.5" />
           </div>
         </div>
       )}
 
-      {/* Top LIVE Badge */}
-      <div className={`absolute top-3 right-3 md:top-4 md:right-4 transition-opacity duration-300 ${
+      {/* Top Branding Bar */}
+      <div className={`absolute top-0 left-0 right-0 flex items-center justify-between px-4 py-3 transition-opacity duration-300 ${
         showControls || !isPlaying ? 'opacity-100' : 'opacity-0'
       }`}>
-        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-red-600 rounded shadow-lg">
+        <div className="text-white text-sm font-semibold">
+          ONEE CRIC
+        </div>
+        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-red-600 rounded-sm">
           <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
-          <span className="text-white text-[10px] md:text-xs font-bold">LIVE</span>
+          <span className="text-white text-xs font-bold">LIVE</span>
         </div>
       </div>
 
-      {/* Simple Control Bar */}
+      {/* Bottom Control Bar - Fancode Style */}
       <div 
-        className={`absolute bottom-0 left-0 right-0 transition-all duration-300 ${
+        className={`absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm transition-all duration-300 ${
           showControls || !isPlaying ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
         }`}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
-        
-        <div className="relative px-3 md:px-4 pb-2.5 md:pb-3 pt-6">
-          {/* Simple Time Display */}
-          <div className="flex items-center justify-between mb-3 px-0.5">
-            <span className="text-white/80 text-xs font-normal tabular-nums">
-              {formatTime(currentTime)}
-            </span>
-            <span className="text-white/60 text-xs font-normal tabular-nums">
-              {formatTime(duration)}
+        <div className="flex items-center justify-between px-3 md:px-4 py-2 md:py-2.5 gap-2">
+          {/* Left: Play + Time */}
+          <div className="flex items-center gap-2 md:gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onPlayPause}
+              className="text-white hover:bg-white/10 p-1.5 md:p-2 h-auto rounded"
+            >
+              {isPlaying ? (
+                <Pause className="w-6 h-6 md:w-5 md:h-5" />
+              ) : (
+                <Play className="w-6 h-6 md:w-5 md:h-5" />
+              )}
+            </Button>
+            
+            <span className="text-white text-sm md:text-base font-medium tabular-nums">
+              -{formatTime(duration - currentTime)}
             </span>
           </div>
-        
-          {/* Control Buttons - Simple Layout */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              {/* Play/Pause */}
+
+          {/* Right: Volume + Quality + Fullscreen */}
+          <div className="flex items-center gap-1 md:gap-2">
+            {/* Volume */}
+            <div 
+              className="flex items-center gap-1.5"
+              onMouseEnter={() => setShowVolumeSlider(true)}
+              onMouseLeave={() => setShowVolumeSlider(false)}
+            >
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={onPlayPause}
-                className="text-white hover:bg-white/10 p-2 h-auto rounded transition-colors"
+                onClick={onMuteToggle}
+                className="text-white hover:bg-white/10 p-1.5 md:p-2 h-auto rounded"
               >
-                {isPlaying ? (
-                  <Pause className="w-6 h-6 md:w-5 md:h-5" />
+                {isMuted || volume === 0 ? (
+                  <VolumeX className="w-5 h-5 md:w-4 md:h-4" />
                 ) : (
-                  <Play className="w-6 h-6 md:w-5 md:h-5" />
+                  <Volume2 className="w-5 h-5 md:w-4 md:h-4" />
                 )}
               </Button>
-
-              {/* Volume */}
-              <div 
-                className="flex items-center gap-1.5"
-                onMouseEnter={() => setShowVolumeSlider(true)}
-                onMouseLeave={() => setShowVolumeSlider(false)}
-              >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onMuteToggle}
-                  className="text-white hover:bg-white/10 p-2 h-auto rounded transition-colors"
-                >
-                  {isMuted || volume === 0 ? (
-                    <VolumeX className="w-5 h-5 md:w-4 md:h-4" />
-                  ) : (
-                    <Volume2 className="w-5 h-5 md:w-4 md:h-4" />
-                  )}
-                </Button>
-                
-                <div className={`hidden md:block overflow-hidden transition-all duration-200 ${showVolumeSlider ? 'w-16 opacity-100' : 'w-0 opacity-0'}`}>
-                  <Slider
-                    value={[isMuted ? 0 : volume * 100]}
-                    onValueChange={([value]) => {
-                      const newVolume = value / 100;
-                      onVolumeChange(newVolume);
-                    }}
-                    max={100}
-                    step={1}
-                    className="cursor-pointer [&_[role=slider]]:bg-white [&_[role=slider]]:w-2.5 [&_[role=slider]]:h-2.5 [&>span]:bg-white/80"
-                  />
-                </div>
+              
+              <div className={`hidden md:block overflow-hidden transition-all duration-200 ${showVolumeSlider ? 'w-20 opacity-100' : 'w-0 opacity-0'}`}>
+                <Slider
+                  value={[isMuted ? 0 : volume * 100]}
+                  onValueChange={([value]) => {
+                    const newVolume = value / 100;
+                    onVolumeChange(newVolume);
+                  }}
+                  max={100}
+                  step={1}
+                  className="cursor-pointer [&_[role=slider]]:bg-white [&_[role=slider]]:w-2.5 [&_[role=slider]]:h-2.5 [&>span]:bg-cyan-500"
+                />
               </div>
             </div>
 
-            <div className="flex items-center gap-1">
-              {/* Quality */}
-              {qualityLevels.length > 0 && (
-                <DropdownMenu modal={false}>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-white hover:bg-white/10 p-2 h-auto rounded transition-colors"
-                    >
-                      <Settings className="w-5 h-5 md:w-4 md:h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent 
-                    align="end"
-                    side="top"
-                    className="bg-black/90 backdrop-blur-lg border-white/5 min-w-[120px] z-[9999] rounded-lg"
-                    sideOffset={8}
+            {/* Quality */}
+            {qualityLevels.length > 0 && (
+              <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-white hover:bg-white/10 p-1.5 md:p-2 h-auto rounded"
                   >
-                    <div className="px-3 py-2 text-[10px] font-semibold text-white/50 uppercase tracking-wide">
-                      Quality
-                    </div>
-                    {qualityLevels.map((level, index) => (
-                      <DropdownMenuItem
-                        key={index}
-                        onClick={() => onQualityChange(level.level)}
-                        className={`text-white hover:bg-white/10 cursor-pointer px-3 py-2 text-sm transition-colors ${
-                          currentQuality === level.level ? 'bg-white/5' : ''
-                        }`}
-                      >
-                        {getQualityLabel(level)}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
+                    <Settings className="w-5 h-5 md:w-4 md:h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent 
+                  align="end"
+                  side="top"
+                  className="bg-black/95 backdrop-blur-md border-white/10 min-w-[120px] z-[9999] rounded"
+                  sideOffset={8}
+                >
+                  <div className="px-3 py-1.5 text-[10px] font-semibold text-white/50 uppercase">
+                    Quality
+                  </div>
+                  {qualityLevels.map((level, index) => (
+                    <DropdownMenuItem
+                      key={index}
+                      onClick={() => onQualityChange(level.level)}
+                      className={`text-white hover:bg-white/10 cursor-pointer px-3 py-2 text-sm ${
+                        currentQuality === level.level ? 'bg-white/10' : ''
+                      }`}
+                    >
+                      {getQualityLabel(level)}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
-              {/* Fullscreen */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onFullscreen}
-                className="text-white hover:bg-white/10 p-2 h-auto rounded transition-colors"
-              >
-                {isFullscreen ? (
-                  <Minimize className="w-5 h-5 md:w-4 md:h-4" />
-                ) : (
-                  <Maximize className="w-5 h-5 md:w-4 md:h-4" />
-                )}
-              </Button>
-            </div>
+            {/* Fullscreen */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onFullscreen}
+              className="text-white hover:bg-white/10 p-1.5 md:p-2 h-auto rounded"
+            >
+              {isFullscreen ? (
+                <Minimize className="w-5 h-5 md:w-4 md:h-4" />
+              ) : (
+                <Maximize className="w-5 h-5 md:w-4 md:h-4" />
+              )}
+            </Button>
           </div>
         </div>
       </div>
