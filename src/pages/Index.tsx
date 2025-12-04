@@ -53,23 +53,18 @@ const Index = () => {
         </div>
 
         {/* Stats Bar */}
-        <div className="grid grid-cols-2 gap-4 mb-10 animate-fade-in max-w-md mx-auto">
-          <div className="glass rounded-xl p-4 text-center border border-primary/20">
-            <Zap className="w-5 h-5 text-primary mx-auto mb-2" />
-            <p className="text-2xl font-bold text-foreground">4K</p>
-            <p className="text-xs text-muted-foreground">HD Quality</p>
-          </div>
-          <div className="glass rounded-xl p-4 text-center border border-primary/20">
-            <Radio className="w-5 h-5 text-primary mx-auto mb-2" />
-            <p className="text-2xl font-bold text-foreground">&lt;1s</p>
-            <p className="text-xs text-muted-foreground">Latency</p>
-          </div>
-        </div>
-
-        {/* Live Matches Count */}
-        <div className="text-center mb-6 animate-fade-in">
-          <span className="text-4xl font-bold text-primary">{matches.length}</span>
-          <span className="text-lg text-muted-foreground ml-2">Live Matches</span>
+        <div className="grid grid-cols-3 gap-4 mb-10 animate-fade-in">
+          {[
+            { icon: Tv, label: "Live Matches", value: matches.length || "0" },
+            { icon: Zap, label: "HD Quality", value: "4K" },
+            { icon: Radio, label: "Latency", value: "<1s" },
+          ].map((stat, i) => (
+            <div key={i} className="glass rounded-xl p-4 text-center">
+              <stat.icon className="w-5 h-5 text-primary mx-auto mb-2" />
+              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+              <p className="text-xs text-muted-foreground">{stat.label}</p>
+            </div>
+          ))}
         </div>
 
         {/* Live Matches Section */}
