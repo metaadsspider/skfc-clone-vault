@@ -1,96 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* onee cric Sports Streaming Design System */
+/* CRICK ON TIME - Premium Sports Streaming Design System */
 
 @layer base {
   :root {
-    --background: 214 27% 11%;
+    --background: 222 47% 5%;
     --foreground: 0 0% 98%;
 
-    --card: 216 29% 14%;
+    --card: 222 44% 8%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 216 29% 14%;
+    --popover: 222 44% 8%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 147 100% 12%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 38 100% 50%;
+    --primary-foreground: 222 47% 5%;
 
-    --secondary: 216 29% 18%;
+    --secondary: 222 40% 12%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 216 29% 18%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 222 35% 15%;
+    --muted-foreground: 220 15% 55%;
 
-    --accent: 147 73% 50%;
-    --accent-foreground: 216 29% 14%;
+    --accent: 38 100% 50%;
+    --accent-foreground: 222 47% 5%;
 
-    --destructive: 0 100% 60%;
+    --destructive: 0 85% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 216 29% 18%;
-    --input: 216 29% 18%;
-    --ring: 147 73% 50%;
+    --border: 222 30% 15%;
+    --input: 222 30% 15%;
+    --ring: 38 100% 50%;
 
     --radius: 0.75rem;
 
-    /* Custom onee cric colors */
-    --fc-green: 147 73% 50%;
-    --fc-green-dark: 147 100% 12%;
-    --fc-dark: 214 27% 11%;
-    --fc-card: 216 29% 14%;
-    --fc-red: 0 100% 60%;
-    --fc-cyan: 191 100% 50%;
-    --fc-purple: 271 81% 56%;
-    --fc-orange: 25 95% 53%;
+    /* Custom CRICK ON TIME colors */
+    --cot-gold: 38 100% 50%;
+    --cot-gold-light: 42 100% 65%;
+    --cot-dark: 222 47% 5%;
+    --cot-card: 222 44% 8%;
+    --cot-red: 0 85% 60%;
+    --cot-cyan: 185 100% 50%;
+    --cot-purple: 265 85% 60%;
+    --cot-green: 155 80% 45%;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 214 27% 11%;
+    --background: 222 47% 5%;
     --foreground: 0 0% 98%;
 
-    --card: 216 29% 14%;
+    --card: 222 44% 8%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 216 29% 14%;
+    --popover: 222 44% 8%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 147 100% 12%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 38 100% 50%;
+    --primary-foreground: 222 47% 5%;
 
-    --secondary: 216 29% 18%;
+    --secondary: 222 40% 12%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 216 29% 18%;
-    --muted-foreground: 215 15% 65%;
+    --muted: 222 35% 15%;
+    --muted-foreground: 220 15% 55%;
 
-    --accent: 147 73% 50%;
-    --accent-foreground: 216 29% 14%;
+    --accent: 38 100% 50%;
+    --accent-foreground: 222 47% 5%;
 
-    --destructive: 0 100% 60%;
+    --destructive: 0 85% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 216 29% 18%;
-    --input: 216 29% 18%;
-    --ring: 147 73% 50%;
+    --border: 222 30% 15%;
+    --input: 222 30% 15%;
+    --ring: 38 100% 50%;
   }
 }
 
@@ -100,17 +95,24 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', sans-serif;
   }
 }
 
 @layer components {
+  /* Premium Match Card */
   .match-card {
-    @apply relative overflow-hidden rounded-xl bg-card border border-border;
+    @apply relative overflow-hidden rounded-2xl bg-card border border-border;
     @apply transition-all duration-500 ease-out;
-    @apply hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/20;
-    @apply hover:-translate-y-2 hover:border-accent/30;
+    @apply hover:scale-[1.02] hover:shadow-2xl hover:shadow-primary/20;
+    @apply hover:-translate-y-2 hover:border-primary/40;
     @apply animate-fade-in;
+    background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(222 44% 6%) 100%);
   }
 
   .match-card::before {
@@ -123,15 +125,24 @@
     @apply opacity-100;
   }
 
+  .match-card::after {
+    content: '';
+    @apply absolute top-0 left-0 right-0 h-px;
+    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent);
+  }
+
+  /* Watch Live Button */
   .watch-live-btn {
     @apply w-full py-4 font-bold text-white transition-all duration-300;
     @apply hover:scale-105 active:scale-95 hover:shadow-lg;
-    @apply relative overflow-hidden;
+    @apply relative overflow-hidden rounded-xl;
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--cot-gold-light)) 100%);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
   }
 
   .watch-live-btn::before {
     content: '';
-    @apply absolute inset-0 bg-white/20 transform translate-x-[-100%];
+    @apply absolute inset-0 bg-white/30 transform translate-x-[-100%];
     @apply transition-transform duration-500;
   }
 
@@ -139,46 +150,61 @@
     @apply translate-x-[100%];
   }
 
+  /* Sport Badge */
   .sport-badge {
-    @apply absolute top-3 left-3 z-10 px-3 py-1 rounded-full text-xs font-medium;
-    @apply bg-accent text-accent-foreground backdrop-blur-sm;
+    @apply absolute top-3 left-3 z-10 px-3 py-1.5 rounded-full text-xs font-semibold;
+    @apply bg-primary text-primary-foreground backdrop-blur-sm;
     @apply transition-all duration-300 hover:scale-110;
-    @apply shadow-lg shadow-accent/20;
+    @apply shadow-lg shadow-primary/30;
   }
 
+  /* Team VS Section */
   .team-vs {
     @apply flex items-center justify-between p-4 bg-card/90 backdrop-blur-md;
     @apply transition-all duration-300;
   }
 
   .team-logo {
-    @apply w-12 h-12 rounded-full border-2 border-accent/30;
-    @apply transition-all duration-300 hover:scale-110 hover:border-accent;
-    @apply shadow-lg hover:shadow-accent/20;
+    @apply w-12 h-12 rounded-full border-2 border-primary/30;
+    @apply transition-all duration-300 hover:scale-110 hover:border-primary;
+    @apply shadow-lg hover:shadow-primary/30;
   }
 
   .vs-divider {
     @apply flex items-center justify-center w-12 h-12 rounded-full;
-    @apply bg-accent text-accent-foreground font-bold text-lg;
+    @apply bg-primary text-primary-foreground font-bold text-lg;
     @apply transition-all duration-300 hover:scale-110 hover:rotate-12;
-    @apply shadow-lg shadow-accent/30 animate-pulse-slow;
+    @apply shadow-lg shadow-primary/40;
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.4); }
+    50% { box-shadow: 0 0 40px hsl(var(--primary) / 0.6); }
+  }
+
+  /* Header Time */
   .header-time {
-    @apply font-mono text-sm bg-card/50 px-3 py-1 rounded-lg;
-    @apply border border-accent/20 backdrop-blur-sm;
-    @apply transition-all duration-300 hover:bg-accent/10;
+    @apply font-mono text-sm bg-secondary px-4 py-2 rounded-lg;
+    @apply border border-primary/20 backdrop-blur-sm;
+    @apply transition-all duration-300 hover:bg-primary/10 hover:border-primary/40;
   }
 
+  /* Telegram Button */
   .telegram-btn {
     @apply relative overflow-hidden;
     @apply transition-all duration-300 hover:scale-105;
-    @apply hover:shadow-lg hover:shadow-fc-cyan/30;
+    @apply hover:shadow-lg;
+    background: linear-gradient(135deg, hsl(var(--cot-cyan)) 0%, hsl(185 100% 40%) 100%);
+  }
+  
+  .telegram-btn:hover {
+    box-shadow: 0 10px 25px -5px hsl(var(--cot-cyan) / 0.4);
   }
 
   .telegram-btn::after {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent;
     @apply transform translate-x-[-100%] transition-transform duration-700;
   }
 
@@ -186,11 +212,13 @@
     @apply translate-x-[100%];
   }
 
+  /* Alert Banner */
   .alert-banner {
     @apply animate-slide-up transition-all duration-300;
     @apply hover:shadow-lg hover:shadow-destructive/20;
   }
 
+  /* Stagger Animation */
   .card-stagger {
     animation-delay: calc(var(--stagger) * 0.1s);
   }
@@ -199,20 +227,20 @@
     scroll-behavior: smooth;
   }
 
-  /* Hover effects for links */
+  /* Match Link Hover */
   .match-link {
     @apply block transition-all duration-300;
     @apply hover:transform hover:scale-[1.02];
   }
 
-  /* Loading states */
+  /* Loading States */
   .loading-shimmer {
-    @apply relative overflow-hidden bg-muted;
+    @apply relative overflow-hidden bg-muted rounded-xl;
   }
 
   .loading-shimmer::after {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent;
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent;
     @apply animate-[shimmer_2s_ease-in-out_infinite];
   }
 
@@ -220,4 +248,78 @@
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
   }
+
+  /* Hero Gradient Text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--cot-gold-light)) 50%, hsl(var(--primary)) 100%);
+    background-size: 200% auto;
+    animation: gradient-flow 3s ease-in-out infinite;
+  }
+
+  @keyframes gradient-flow {
+    0%, 100% { background-position: 0% center; }
+    50% { background-position: 100% center; }
+  }
+
+  /* Glass Effect */
+  .glass {
+    @apply bg-card/60 backdrop-blur-xl border border-white/10;
+  }
+
+  /* Premium Video Player */
+  .player-container {
+    @apply relative rounded-2xl overflow-hidden;
+    @apply shadow-2xl shadow-black/50;
+    background: linear-gradient(180deg, hsl(222 47% 8%) 0%, hsl(222 47% 3%) 100%);
+  }
+
+  .player-controls {
+    background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 50%, transparent 100%);
+  }
+
+  .player-top-bar {
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
+  }
+
+  /* LIVE Badge Animation */
+  .live-badge {
+    @apply relative px-3 py-1 rounded-md font-bold text-xs;
+    background: linear-gradient(135deg, hsl(var(--cot-red)) 0%, hsl(0 90% 50%) 100%);
+    animation: live-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes live-pulse {
+    0%, 100% { box-shadow: 0 0 10px hsl(var(--cot-red) / 0.5); }
+    50% { box-shadow: 0 0 25px hsl(var(--cot-red) / 0.8); }
+  }
+
+  .live-dot {
+    @apply w-2 h-2 bg-white rounded-full;
+    animation: live-dot-pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes live-dot-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
 }
