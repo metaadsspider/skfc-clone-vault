@@ -53,14 +53,14 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				// CRICK ON TIME custom colors
-				'fc-green': 'hsl(var(--fc-green))',
-				'fc-green-dark': 'hsl(var(--fc-green-dark))',
-				'fc-dark': 'hsl(var(--fc-dark))',
-				'fc-card': 'hsl(var(--fc-card))',
-				'fc-red': 'hsl(var(--fc-red))',
-				'fc-cyan': 'hsl(var(--fc-cyan))',
-				'fc-purple': 'hsl(var(--fc-purple))',
-				'fc-orange': 'hsl(var(--fc-orange))',
+				'cot-gold': 'hsl(var(--cot-gold))',
+				'cot-gold-light': 'hsl(var(--cot-gold-light))',
+				'cot-dark': 'hsl(var(--cot-dark))',
+				'cot-card': 'hsl(var(--cot-card))',
+				'cot-red': 'hsl(var(--cot-red))',
+				'cot-cyan': 'hsl(var(--cot-cyan))',
+				'cot-purple': 'hsl(var(--cot-purple))',
+				'cot-green': 'hsl(var(--cot-green))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
