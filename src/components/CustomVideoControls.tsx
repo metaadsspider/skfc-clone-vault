@@ -42,7 +42,7 @@ export const CustomVideoControls = ({
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const hideControlsTimeoutRef = useRef<NodeJS.Timeout>();
+  const hideControlsTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   // Update time and duration
   useEffect(() => {
