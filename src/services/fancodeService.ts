@@ -137,34 +137,29 @@ export class FancodeService {
     }
 
     return data.matches.map((match: any) => {
-      const team1 = match.teams?.[0];
-      const team2 = match.teams?.[1];
+      // Prioritize adfree_url over dai_url
+      const streamUrl = match.adfree_url || match.dai_url;
       
-      // Prioritize adfree streams over DAI streams for better compatibility
-      let streamUrl = match.adfree_stream || match.STREAMING_CDN?.fancode_cdn || match.STREAMING_CDN?.Primary_Playback_URL;
-      
-      // Only use DAI as fallback if no other streams available
-      if (!streamUrl) {
-        streamUrl = match.dai_stream || match.STREAMING_CDN?.dai_google_cdn;
-      }
-      
+      const team1Name = match.team_1 || 'Team 1';
+      const team2Name = match.team_2 || 'Team 2';
+
       return {
         id: match.match_id?.toString() || `match-${Date.now()}`,
-        tournament: match.tournament || 'Live Match',
-        sport: match.category?.toLowerCase() || 'cricket',
+        tournament: match.event_name || 'Live Match',
+        sport: match.event_category?.toLowerCase() || 'cricket',
         team1: {
-          code: team1?.shortName || team1?.name?.substring(0, 3).toUpperCase() || 'T1',
-          name: team1?.name || 'Team 1',
-          flag: team1?.flag?.src || this.getTeamFlag(team1?.name)
+          code: team1Name.substring(0, 3).toUpperCase(),
+          name: team1Name,
+          flag: this.getTeamFlag(team1Name)
         },
         team2: {
-          code: team2?.shortName || team2?.name?.substring(0, 3).toUpperCase() || 'T2',
-          name: team2?.name || 'Team 2',
-          flag: team2?.flag?.src || this.getTeamFlag(team2?.name)
+          code: team2Name.substring(0, 3).toUpperCase(),
+          name: team2Name,
+          flag: this.getTeamFlag(team2Name)
         },
-        image: match.image_cdn?.APP || match.image_cdn?.PLAYBACK || match.image || '',
+        image: match.src || '',
         buttonColor: this.getRandomButtonColor(),
-        sportIcon: this.getSportIcon(match.category),
+        sportIcon: this.getSportIcon(match.event_category),
         status: this.mapGithubStatus(match.status),
         streamUrl: streamUrl || undefined
       };
